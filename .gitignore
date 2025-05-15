@@ -4,6 +4,12 @@ npm-debug.log
 yarn-debug.log
 yarn-error.log
 
+# Node
+node_modules/
+dist/
+.env
+*.log
+
 # Environment variables
 .env
 
@@ -14,4 +20,9 @@ build/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# VSCode 
+.vscode/
+
+
 
