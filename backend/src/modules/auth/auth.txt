@@ -1,0 +1,7 @@
+auth/
+├── auth.controller.ts    <- Route definitions (e.g., /login, /signup)
+├── auth.service.ts       <- Business logic (e.g., token generation)
+├── auth.module.ts        <- Nest module definition
+├── dto/                  <- Input validation (e.g., LoginDto)
+├── guards/               <- Route guards like JwtGuard
+└── strategies/           <- Passport strategies (e.g., JWT strategy)

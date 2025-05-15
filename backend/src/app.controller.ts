@@ -3,9 +3,9 @@ import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {} //tells Nest to inject an instance of AppService into the controller
 
-  @Get()
+  @Get('hello')
   getHello(): string {
     return this.appService.getHello();
   }
