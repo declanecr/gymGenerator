@@ -1,1 +1,2 @@
-* text=auto     
+# enforce LF in the repo for all text files
+* text=auto eol=lf
