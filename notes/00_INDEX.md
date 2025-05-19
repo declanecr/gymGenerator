@@ -8,7 +8,7 @@
 
 ## 🔒 Authentication & Backend
 
-- [[Authentication Flow]]
+- [[Authentication_Flow]]
 - [[Prisma]]
 - [[backend/NodeJS]]
 - [[backend/SQLite-PostgreSQL]]
