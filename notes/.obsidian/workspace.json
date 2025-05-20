@@ -8,45 +8,45 @@
         "type": "tabs",
         "children": [
           {
-            "id": "5cbae5dee2c874e9",
+            "id": "6402a2ffd56dc157",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "backend/Prisma.md",
+                "file": "Database planning/Database-Planning.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Prisma"
+              "title": "Database-Planning"
             }
           },
           {
-            "id": "6a40e789fba60a23",
+            "id": "1dcae16dce33bd5b",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "other things/Client.md",
+                "file": "daily/2025-05-20.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Client"
+              "title": "2025-05-20"
             }
           },
           {
-            "id": "aba378dec3eaf16e",
+            "id": "56b853ec8e432841",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "daily/2025-05-19.md",
+                "file": "Obsidian/Callouts.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-05-19"
+              "title": "Callouts"
             }
           }
         ]
@@ -81,7 +81,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "tag:#Database",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -106,7 +106,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "1ccb142d0acbaf25",
@@ -122,7 +122,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "backend/Prisma.md",
+                "file": "Database planning/Templates-and-Instances.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -132,7 +132,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Prisma"
+              "title": "Backlinks for Templates-and-Instances"
             }
           },
           {
@@ -141,12 +141,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "backend/Prisma.md",
+                "file": "Database planning/Templates-and-Instances.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Prisma"
+              "title": "Outgoing links from Templates-and-Instances"
             }
           },
           {
@@ -170,20 +170,41 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "backend/Prisma.md",
+                "file": "Database planning/Database-Planning.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Prisma"
+              "title": "Outline of Database-Planning"
+            }
+          },
+          {
+            "id": "1517e79ef0f484eb",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {},
+              "icon": "spreadsheet",
+              "title": "Advanced Tables"
+            }
+          },
+          {
+            "id": "8ab77eebe338efe8",
+            "type": "leaf",
+            "state": {
+              "type": "smart-connections-view",
+              "state": {},
+              "icon": "smart-connections",
+              "title": "Smart Connections"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 300,
+    "width": 200,
     "collapsed": true
   },
   "left-ribbon": {
@@ -193,21 +214,35 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "daily-notes-editor:Open Daily Note Editor": false,
+      "smart-connections:Open: View Smart Connections": false,
+      "smart-connections:Open: Smart Chat Conversation": false
     }
   },
-  "active": "5cbae5dee2c874e9",
+  "active": "6402a2ffd56dc157",
   "lastOpenFiles": [
-    "other things/Client.md",
+    "Database planning/Templates-and-Instances.md",
+    "Database planning/Database-Planning.md",
     "backend/Prisma.md",
-    "other things/Fluent API.md",
+    "Obsidian/Callouts.md",
+    "daily/2025-05-20.md",
+    "00_INDEX.md",
+    "architecture.md",
+    "Untitled.canvas",
+    "daily/2025-05-19.md",
+    "Obsidian",
+    "Database planning",
+    "other things/Prisma-Generate vs Migrate Dev.md",
+    "backend/Authentication_Flow.md",
+    "backend/NestJS.md",
+    "other things/Client.md",
     "other things/Migration.md",
     "other things/type-safe.md",
-    "daily/2025-05-19.md",
+    "other things/Fluent API.md",
     "daily/index.md",
-    "backend/NestJS.md",
     "other things/Dependency Injection.md",
-    "backend/Authentication_Flow.md",
     "Depend.md",
     "^.md",
     "other things/Modules.md",
@@ -217,15 +252,7 @@
     "Single.md",
     "other things/Single Thread.md",
     "backend/SQLite-PostgreSQL.md",
-    "backend/Untitled.md",
-    "Untitled",
     "other things",
-    "TECH_STACK.md",
-    "frontend/React-Hook-Form.md",
-    "CI-CD.md",
-    "architecture.md",
-    "00_INDEX.md",
-    "backend/Jest+Supertest.md",
     "templates",
     "New folder",
     "frontend/React-Hook-Form+Zod",

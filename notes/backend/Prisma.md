@@ -40,6 +40,9 @@ This does **three things**:
 2. Generates SQL migration files
     
 3. Creates a fully-typed `PrismaClient` class in `node_modules/.prisma`
+
+## [[Prisma-Generate vs Migrate Dev]]
+
 ---
 ### 🔧 3. Use Prisma in Node.js
 
