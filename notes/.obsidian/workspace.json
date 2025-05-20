@@ -49,7 +49,8 @@
               "title": "Callouts"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -170,13 +171,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Database planning/Database-Planning.md",
+                "file": "daily/2025-05-20.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Database-Planning"
+              "title": "Outline of 2025-05-20"
             }
           },
           {
@@ -221,10 +222,10 @@
       "smart-connections:Open: Smart Chat Conversation": false
     }
   },
-  "active": "6402a2ffd56dc157",
+  "active": "1dcae16dce33bd5b",
   "lastOpenFiles": [
-    "Database planning/Templates-and-Instances.md",
     "Database planning/Database-Planning.md",
+    "Database planning/Templates-and-Instances.md",
     "backend/Prisma.md",
     "Obsidian/Callouts.md",
     "daily/2025-05-20.md",
