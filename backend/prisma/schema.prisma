@@ -15,9 +15,54 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String?
-  createdAt DateTime @default(now())
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  password          String
+  name              String?
+  createdAt         DateTime           @default(now())
+  workoutTemplates  WorkoutTemplate[]
+  templateExercises TemplateExercise[]
+  templateSets      TemplateSet[]
+}
+
+//========TEMPLATES===========
+model WorkoutTemplate {
+  id        String             @id @default(cuid())
+  name      String
+  createdAt DateTime           @default(now())
+  user      User               @relation(fields: [userId], references: [id])
+  userId    Int
+  exercises TemplateExercise[]
+}
+
+model TemplateExercise {
+  id                String          @id @default(cuid())
+  exercise          Exercise        @relation(fields: [exerciseId], references: [id])
+  exerciseId        String
+  position          Int
+  //name              String
+  createdAt         DateTime        @default(now())
+  user              User            @relation(fields: [userId], references: [id])
+  userId            Int
+  sets              TemplateSet[]
+  workoutTemplates  WorkoutTemplate @relation(fields: [workoutTemplateId], references: [id])
+  workoutTemplateId String
+}
+
+model TemplateSet {
+  id                 String           @id @default(cuid())
+  position           Int
+  createdAt          DateTime         @default(now())
+  user               User             @relation(fields: [userId], references: [id])
+  userId             Int
+  reps               Int
+  weight             Int
+  templateExercise   TemplateExercise @relation(fields: [templateExerciseId], references: [id])
+  templateExerciseId String
+}
+
+//============INSTANCES
+model Exercise {
+  id                String             @id @default(cuid())
+  templateExercises TemplateExercise[]
 }
