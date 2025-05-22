@@ -15,54 +15,135 @@ datasource db {
 }
 
 model User {
-  id                Int                @id @default(autoincrement())
-  email             String             @unique
-  password          String
-  name              String?
-  createdAt         DateTime           @default(now())
-  workoutTemplates  WorkoutTemplate[]
-  templateExercises TemplateExercise[]
-  templateSets      TemplateSet[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+
+  workouts         Workout[] //the user's workout log (performed workouts)
+  templateWorkouts TemplateWorkout[] //the user's workout templates (i.e., planned workouts)
 }
 
 //========TEMPLATES===========
-model WorkoutTemplate {
-  id        String             @id @default(cuid())
+model TemplateWorkout {
+  id        String   @id @default(cuid())
   name      String
-  createdAt DateTime           @default(now())
-  user      User               @relation(fields: [userId], references: [id])
-  userId    Int
-  exercises TemplateExercise[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workouts Workout[] //workouts performed which followed this template
+
+  templateExercises TemplateExercise[] //exercises within this workout template
+
+  user   User @relation(onDelete: Cascade, fields: [userId], references: [id]) //the user who this template belongs to
+  userId Int
 }
 
 model TemplateExercise {
-  id                String          @id @default(cuid())
-  exercise          Exercise        @relation(fields: [exerciseId], references: [id])
-  exerciseId        String
-  position          Int
-  //name              String
-  createdAt         DateTime        @default(now())
-  user              User            @relation(fields: [userId], references: [id])
-  userId            Int
-  sets              TemplateSet[]
-  workoutTemplates  WorkoutTemplate @relation(fields: [workoutTemplateId], references: [id])
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //the workout template this exercise is contained in
+  workoutTemplate   TemplateWorkout @relation(onDelete: Cascade, fields: [workoutTemplateId], references: [id])
   workoutTemplateId String
+
+  //the workout Exercises which use this exercise template. allows comparison of planned workout vs actual workout
+  //PROBABLY UNNECESSARY BUT ADDED IN CASE
+  workoutExercises WorkoutExercise[]
+
+  //the position in the workout of this exercise
+  position Int @unique
+
+  //the exercise from the catalog that this exercise represents
+  exercise   Exercise @relation(onDelete: Cascade, fields: [exerciseId], references: [id])
+  exerciseId String
+
+  //the planned sets for this exercise
+  sets TemplateSet[]
 }
 
 model TemplateSet {
-  id                 String           @id @default(cuid())
-  position           Int
-  createdAt          DateTime         @default(now())
-  user               User             @relation(fields: [userId], references: [id])
-  userId             Int
-  reps               Int
-  weight             Int
-  templateExercise   TemplateExercise @relation(fields: [templateExerciseId], references: [id])
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //the exercise in the workout which an this set instance is tied to
+  templateExercise   TemplateExercise @relation(onDelete: Cascade, fields: [templateExerciseId], references: [id])
   templateExerciseId String
+
+  //the position of this set for the corresponding exercise
+  position Int @unique
+
+  //data
+  reps   Int
+  weight Int
 }
 
-//============INSTANCES
+//============EXERCISE CATALOG MODEL=============
 model Exercise {
   id                String             @id @default(cuid())
-  templateExercises TemplateExercise[]
+  name              String
+  templateExercises TemplateExercise[] //the 
+  workoutExercises  WorkoutExercise[]
+  //add info for the exercises later
+}
+
+//============LOG MODELS============
+model Workout {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //the template that was followed for this workout (optional)
+  workoutTemplate   TemplateWorkout? @relation(fields: [workoutTemplateId], references: [id])
+  workoutTemplateId String?
+
+  //The exercises performed in the workout
+  workoutExercises WorkoutExercise[]
+
+  //the user performing the workout
+  user   User @relation(onDelete: Cascade, fields: [userId], references: [id])
+  userId Int
+}
+
+model WorkoutExercise {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //What workout it is being included in
+  workout   Workout @relation(onDelete: Cascade, fields: [workoutId], references: [id])
+  workoutId String
+  //The position of this exercise within the workout
+  position  Int     @unique
+
+  //What exercise it's pulling it's information from
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String
+
+  //allows comparison of planned reps/weight vs actual reps/weight
+  templateExercise   TemplateExercise? @relation(fields: [templateExerciseId], references: [id])
+  templateExerciseId String?
+
+  //The sets for this exercise
+  workoutSets WorkoutSet[]
+}
+
+model WorkoutSet {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //The exercise for which the set is performed
+  workoutExercise   WorkoutExercise @relation(onDelete: Cascade, fields: [workoutExerciseId], references: [id])
+  workoutExerciseId String
+
+  //an individual sets position within the sets of an exercise
+  position Int @unique
+
+  //data
+  reps   Int
+  weight Int
 }
