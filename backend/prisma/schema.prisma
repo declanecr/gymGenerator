@@ -88,6 +88,8 @@ model Exercise {
   templateExercises TemplateExercise[] //the 
   workoutExercises  WorkoutExercise[]
   //add info for the exercises later
+  //ensure both name and userId are unique, 
+  // this way custom exercises can't be created with same name as an exercise that already exists
 }
 
 //============LOG MODELS============
