@@ -1,3 +1,6 @@
+#database
+#Cheatsheet
+#backend 
 ### 📦 Basic Scalar Types
 ``` Prisma
 String     // text or UUID

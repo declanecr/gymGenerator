@@ -1,3 +1,4 @@
+#database
 ## 🔍 Why you might need both `TemplateExercise` and `WorkoutExercise`
 
 ### 🎯 **Your app supports both planning and logging**

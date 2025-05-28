@@ -1,3 +1,4 @@
+#Database  
 ## Want to log:
 a users workouts -> which consist of exercises -> which consist of sets -> which consist of reps
 

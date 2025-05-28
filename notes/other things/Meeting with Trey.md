@@ -1,0 +1,6 @@
+- the rec center already has an app
+- def want to group machines into sub areas
+	- will need to include map of facility
+- will need to talk to Traci about this more for planning purposes
+- key focus should be on making the gym experience as FRICTIONLESS as possible
+- am going to start with just the Siddall machines as a trial run
