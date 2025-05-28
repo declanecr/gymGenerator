@@ -6,6 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1');
   app.enableCors(); // Enable CORS for frontend
+  app.enableShutdownHooks();
 
   /* in NestJS a PIPE is a class used to 
     +Transform input data, 
