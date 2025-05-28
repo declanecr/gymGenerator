@@ -27,7 +27,7 @@ A full-stack workout tracker and generator built with NestJS, React, Prisma, and
 
 - [x] NestJS backend scaffolding
 - [x] Prisma setup with SQLite
-- [x] Initial User model defined and migrated
+- [ ] Initial User model defined and migrated
 - [ ] Auth module with JWT + bcrypt
 - [ ] User signup & login endpoints
 - [ ] Workout and Exercise models
