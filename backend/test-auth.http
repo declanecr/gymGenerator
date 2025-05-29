@@ -8,10 +8,20 @@ Content-Type: application/json
 }
 
 ### Login - Invalid User
-POST http://localhost:3000/auth/login
+POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
   "email": "wrong@example.com",
   "password": "badpassword"
+}
+
+### Create - Valid User
+Post http://localhost:3000/api/v1/users
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "yourpassword",
+  "name": "testName"
 }
