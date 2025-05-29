@@ -1,0 +1,47 @@
+### Create - Valid User
+POST http://localhost:3000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "yourpassword",
+  "name": "testName"
+}
+
+
+### Login - Invalid User
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "wrong@example.com",
+  "password": "badpassword"
+}
+
+### Login - Valid User
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "yourpassword"
+}
+### access token from successful login
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc0ODU2MjM4MiwiZXhwIjoxNzQ4NTY1OTgyfQ.r1TZGeVALBkodNVuJMJD4djrP4--DpxLkGbxwDD-hrQ
+
+### GET - Get Profile
+GET http://localhost:3000/api/v1/users/me
+Authorization: Bearer {{token}}
+
+### PATCH - Update Profile
+PATCH http://localhost:3000/api/v1/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "updatedTestName"
+}
+
+### DELETE - current user
+DELETE http://localhost:3000/api/v1/users/me
+Authorization: Bearer {{token}}

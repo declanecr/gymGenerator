@@ -3,7 +3,7 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
 
 // This tells Nest how to issue JWTs for the login route
 @Module({

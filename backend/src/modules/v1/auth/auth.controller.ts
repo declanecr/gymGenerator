@@ -8,12 +8,12 @@ import { UserResponseDto } from '../users/dto/users-response.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Post('login') // POST auth/login
   async login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
   }
 
-  @Post('register')
+  @Post('register') //POST auth/register
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
     return this.authService.create(dto);
   }
