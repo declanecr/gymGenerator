@@ -1,6 +1,8 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from '../users/dto/login-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UserResponseDto } from '../users/dto/users-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,14 +11,10 @@ export class AuthController {
   @Post('login')
   async login(@Body() dto: LoginUserDto) {
     return this.authService.login(dto);
-    /*  if you want to return basic user info as well, try:
-        return {
-            accessToken,
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name
-            }
-        }; */
+  }
+
+  @Post('register')
+  async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
+    return this.authService.create(dto);
   }
 }

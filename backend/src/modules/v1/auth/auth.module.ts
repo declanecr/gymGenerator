@@ -3,6 +3,7 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { JwtStrategy } from './jwt.strategy';
 
 // This tells Nest how to issue JWTs for the login route
 @Module({
@@ -13,7 +14,7 @@ import { AuthController } from './auth.controller';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy], //these are just services, just different name for them
   controllers: [AuthController],
   exports: [AuthService], // So other modules (like guards) can use AuthService/JwtModule if needed
 })
