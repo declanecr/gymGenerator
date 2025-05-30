@@ -75,3 +75,6 @@ This clean layering promotes **SOLID principles**, especially _Single Responsibi
 - Built-in testing support (Jest + Supertest)
 - Integrates easily with Prisma, JWT, bcrypt, etc.
 - Type safety reduces runtime bugs
+
+---
+# You can also use [[Decorators]] 

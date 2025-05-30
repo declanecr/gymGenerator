@@ -1,3 +1,4 @@
+#API
 ### What It Means:
 
 A **fluent API** is one that uses **method chaining** and **natural language-like syntax** to make code expressive and readable.

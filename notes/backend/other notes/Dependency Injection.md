@@ -1,3 +1,4 @@
+#API #backend 
 ## 💡 **What Is Dependency Injection (DI)?**
 
 **Dependency Injection** is a design pattern where a class **doesn't create its own dependencies** — instead, they are **provided (injected)** by some external system (like a framework or container).

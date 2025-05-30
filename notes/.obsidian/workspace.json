@@ -8,49 +8,35 @@
         "type": "tabs",
         "children": [
           {
-            "id": "ab333f6fdf83ead1",
+            "id": "3817d568746dce55",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "2025-05-28.md",
+                "file": "2025-05-30.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-05-28"
+              "title": "2025-05-30"
             }
           },
           {
-            "id": "9fafd645c4d66073",
+            "id": "8bf89d8f31657270",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "issues/Prisma Error Handling Best Practice.md",
+                "file": "mermaid diagrams.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Prisma Error Handling Best Practice"
-            }
-          },
-          {
-            "id": "616760a185ecbdf6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "other things/Prisma.PrismaClientKnownRequestError.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Prisma.PrismaClientKnownRequestError"
+              "title": "mermaid diagrams"
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -82,7 +68,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "pipe",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -201,7 +187,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -222,35 +208,36 @@
       "smart-connections:Open: Smart Chat Conversation": false
     }
   },
-  "active": "616760a185ecbdf6",
+  "active": "8bf89d8f31657270",
   "lastOpenFiles": [
+    "2025-05-30.md",
+    "mermaid diagrams.md",
+    "backend/other notes/Decorators.md",
     "Obsidian/Callouts.md",
-    "Cheatsheets/bcrypt.md",
-    "other things/Prisma.PrismaClientKnownRequestError.md",
-    "issues/Prisma Error Handling Best Practice.md",
-    "2025-05-28.md",
-    "other things/type-safe.md",
-    "other things/Single Thread.md",
-    "other things/Prisma-Generate vs Migrate Dev.md",
-    "other things/Non-Blocking I-O.md",
-    "other things/Migration.md",
-    "issues/Mapping to a DTO class.md",
-    "other things/Fluent API.md",
-    "other things/DTO vs Module-Service-Controller.md",
-    "other things/Dependency Injection.md",
-    "issues",
+    "2025-05-29.md",
     "backend/Prisma.md",
-    "Database planning/API-endpoint planning.md",
-    "daily/2025-05-19.md",
-    "Database planning/Templates-and-Instances.md",
-    "daily/2025-05-20.md",
-    "Database planning/Database-Planning.md",
     "daily/2025-05-21.md",
-    "daily/2025-05-22.md",
     "daily/2025-05-23.md",
-    "daily/2025-05-26.md",
-    "Cheatsheets/Prisma Cheatsheet.md",
-    "Cheatsheets/HTTP Actions.md",
+    "daily/2025-05-27.md",
+    "daily/2025-05-28.md",
+    "2025-05-28.md",
+    "Database planning/API-endpoint planning.md",
+    "backend/other notes/DTO vs Module-Service-Controller.md",
+    "backend/other notes/Dependency Injection.md",
+    "backend/other notes/auth-user API flow.md",
+    "issues/Prisma Error Handling Best Practice.md",
+    "other things/DTO vs Module-Service-Controller.md",
+    "backend/other notes/Migration.md",
+    "other things/Migration.md",
+    "daily/2025-05-19.md",
+    "other things/Dependency Injection.md",
+    "backend/NestJS.md",
+    "backend/other notes/prisma dev.db.md",
+    "other things/Prisma.PrismaClientKnownRequestError.md",
+    "other things/Prisma-Generate vs Migrate Dev.md",
+    "other things/Fluent API.md",
+    "backend/other notes",
+    "issues",
     "Database planning/API planning",
     "Cheatsheets",
     "Untitled.canvas",
@@ -259,7 +246,6 @@
     "other things",
     "templates",
     "New folder",
-    "frontend/React-Hook-Form+Zod",
-    "backend/SQLite-PostgreSQL"
+    "frontend/React-Hook-Form+Zod"
   ]
 }

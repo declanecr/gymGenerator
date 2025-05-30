@@ -118,3 +118,28 @@ Now you have **type-safe DB access** with autocompletion, validation, and TS sup
 |Code Generation|`PrismaClient` class with typed queries|
 |Nest Integration|Use a `PrismaService` + `PrismaModule`|
 |Querying|Like `.findUnique`, `.create`, `.update`, etc.|
+```mermaid
+flowchart TB
+  subgraph Client_Operations["Client Operations"]
+    A["Register User"]
+    B["Login User"]
+    C["Update/Delete User"]
+  end
+
+  subgraph Prisma_Layer["Prisma Layer"]
+    D["Prisma Schema<br/>(models: User, ...)"]
+    E["Prisma Client<br/>(PrismaService)"]
+  end
+
+  subgraph Database["Database"]
+    F["User Table<br/>- stores only hashed passwords"]
+  end
+
+  A -->|hash & send data| E
+  B -->|send credentials| E
+  C -->|send ID & changes| E
+
+  D -->|defines/migrates| F
+  E -->|CRUD operations| F
+
+```
