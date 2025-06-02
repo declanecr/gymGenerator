@@ -253,3 +253,132 @@ flowchart TD
   US -- "return DTO" --> UC
   UC -- "JSON response" --> C1
 ```
+---
+```mermaid
+sequenceDiagram
+    actor Client
+    participant AuthController as "Auth Controller<br>POST /auth/register"
+    participant AuthService    as "Auth Service"
+    participant UsersService   as "Users Service"
+    participant PrismaClient   as "Prisma Client"
+    participant DB             as Database
+
+    Client->>AuthController: POST /auth/register { email, password, name }
+    AuthController->>AuthService: createUser(dto)
+    AuthService->>UsersService: create(dto)
+    UsersService->>PrismaClient: user.create({ email, hashedPw, name })
+    PrismaClient-->>DB: INSERT INTO User...
+    DB-->>PrismaClient: new row
+    PrismaClient-->>UsersService: User record
+    UsersService-->>AuthService: UserResponseDto
+    AuthService-->>AuthController: UserResponseDto
+    AuthController-->>Client: 201 Created + user data
+```
+
+---
+```mermaid
+sequenceDiagram
+    actor Client
+    participant AuthController as "Auth Controller<br>POST /auth/login"
+    participant AuthService    as "Auth Service"
+    participant UsersService   as "Users Service"
+    participant PrismaClient   as "Prisma Client"
+    participant DB             as Database
+    participant JwtService     as "JWT Service"
+
+    Client->>AuthController: POST /auth/login { email, password }
+    AuthController->>AuthService: login(dto)
+    AuthService->>UsersService: findByEmail(email)
+    UsersService->>PrismaClient: user.findUnique({ email })
+    PrismaClient-->>DB: SELECT * FROM User...
+    DB-->>PrismaClient: User row
+    PrismaClient-->>UsersService: User row
+    UsersService-->>AuthService: User row
+    AuthService->>AuthService: bcrypt.compare(password, hash)
+    alt valid credentials
+        AuthService->>JwtService: sign({ sub: user.id, email })
+        JwtService-->>AuthService: accessToken
+        AuthService-->>AuthController: { accessToken }
+        AuthController-->>Client: 200 OK + token
+    else invalid credentials
+        AuthService-->>AuthController: UnauthorizedException
+        AuthController-->>Client: 401 Invalid credentials
+    end
+
+```
+---
+```mermaid
+sequenceDiagram
+    actor Client
+    participant AuthGuard as "AuthGuard('jwt')"
+    participant JwtStrategy as "JwtStrategy"
+    participant UsersController as "Users Controller<br/>GET /users/me"
+    participant UsersService as "Users Service"
+    participant PrismaClient as "Prisma Client"
+    participant DB as Database
+
+    Client->>UsersController: GET /users/me
+    UsersController->>AuthGuard: Authorize request
+    AuthGuard->>JwtStrategy: Extract & verify JWT
+    JwtStrategy-->>AuthGuard: payload { sub: id, email }
+    AuthGuard-->>UsersController: Authenticated, attach user
+    UsersController->>UsersService: findById(user.id)
+    UsersService->>PrismaClient: user.findUnique({ where: { id } })
+    PrismaClient-->>DB: SELECT * FROM User …
+    DB-->>PrismaClient: User record
+    PrismaClient-->>UsersService: User object
+    UsersService-->>UsersController: UserResponseDto
+    UsersController-->>Client: 200 OK + UserResponseDto
+
+```
+
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant AuthGuard as "AuthGuard('jwt')"
+    participant JwtStrategy as "JwtStrategy"
+    participant UsersController as "Users Controller<br/>PATCH /users/me"
+    participant UsersService as "Users Service"
+    participant PrismaClient as "Prisma Client"
+    participant DB as Database
+
+    Client->>UsersController: PATCH /users/me { name: "New Name" }
+    UsersController->>AuthGuard: Authorize request
+    AuthGuard->>JwtStrategy: Extract & verify JWT
+    JwtStrategy-->>AuthGuard: payload { sub: id, email }
+    AuthGuard-->>UsersController: Authenticated, attach user
+    UsersController->>UsersService: update(user.id, { name: "New Name" })
+    UsersService->>PrismaClient: user.update({ where: { id }, data: { name } })
+    PrismaClient-->>DB: UPDATE User SET name="New Name" …
+    DB-->>PrismaClient: Updated record
+    PrismaClient-->>UsersService: Updated User object
+    UsersService-->>UsersController: UserResponseDto
+    UsersController-->>Client: 200 OK + UserResponseDto
+
+```
+
+```mermaid
+sequenceDiagram
+    actor Client
+    participant AuthGuard as "AuthGuard('jwt')"
+    participant JwtStrategy as "JwtStrategy"
+    participant UsersController as "Users Controller<br/>DELETE /users/me"
+    participant UsersService as "Users Service"
+    participant PrismaClient as "Prisma Client"
+    participant DB as Database
+
+    Client->>UsersController: DELETE /users/me
+    UsersController->>AuthGuard: Authorize request
+    AuthGuard->>JwtStrategy: Extract & verify JWT
+    JwtStrategy-->>AuthGuard: payload { sub: id, email }
+    AuthGuard-->>UsersController: Authenticated, attach user
+    UsersController->>UsersService: delete(user.id)
+    UsersService->>PrismaClient: user.delete({ where: { id } })
+    PrismaClient-->>DB: DELETE FROM User WHERE id=…
+    DB-->>PrismaClient: Deletion confirmed
+    PrismaClient-->>UsersService: Deleted User object
+    UsersService-->>UsersController: void
+    UsersController-->>Client: 200 OK + { message: "User deleted" }
+
+```

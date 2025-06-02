@@ -3,7 +3,7 @@
 [[Endpoint Syntax]]
 [[Determining API Actions]]
 [[DTO vs Module-Service-Controller]]
-# / V1 planning
+# / V1 planning (`/api/v1`)
 ---
 ## USER
 
@@ -19,11 +19,11 @@
 ## EXERCISE CATALOG MODEL
 ### Exercise
 
-| Resource | HTTP Verb | Endpoint                  | Description        |
-| -------- | --------- | ------------------------- | ------------------ |
-| Exercise | GET       | `/exercises-catalog`      | List all (catalog) |
-|          | GET       | `/exercises-catalog/:eid` | Get one exercise   |
-|          |           |                           |                    |
+| Resource | HTTP Verb | Endpoint                      | Description        |
+| -------- | --------- | ----------------------------- | ------------------ |
+| Exercise | GET       | `/exercises-catalog`          | List all (catalog) |
+|          | GET       | `/exercises-catalog/:eid`     | Get one exercise   |
+|          |           | `/exercises-catalog/search?=` |                    |
 
 ---
 
