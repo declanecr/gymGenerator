@@ -27,7 +27,7 @@ Content-Type: application/json
   "password": "yourpassword"
 }
 ### access token from successful login
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc0ODU2MjM4MiwiZXhwIjoxNzQ4NTY1OTgyfQ.r1TZGeVALBkodNVuJMJD4djrP4--DpxLkGbxwDD-hrQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaWF0IjoxNzQ4NjM2OTUxLCJleHAiOjE3NDg2NDA1NTF9.gabRdSazptooWfrftZjQYQ2t8QPqYpvJUVBj_aGNXMo
 
 ### GET - Get Profile
 GET http://localhost:3000/api/v1/users/me

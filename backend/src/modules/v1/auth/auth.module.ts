@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
 
-// This tells Nest how to issue JWTs for the login route
+// This tells Nest how to issue JSON Web Tokens (JWTs) for the login route
 @Module({
   imports: [
     UsersModule,

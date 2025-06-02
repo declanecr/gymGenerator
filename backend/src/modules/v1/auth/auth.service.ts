@@ -32,7 +32,7 @@ export class AuthService {
     //used the same error to prevent giving away which part is incorrect
 
     //if both -> succeed
-    const payload = { sub: user.id, email: user.email };
+    const payload = { id: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };
   }
