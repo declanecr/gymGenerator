@@ -9,4 +9,8 @@ import { UsersService } from './users.service';
   providers: [UsersService],
   exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule {
+  constructor() {
+    console.log('UsersModule loaded');
+  }
+}

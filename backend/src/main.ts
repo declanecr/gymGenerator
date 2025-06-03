@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+console.log('Starting backend...');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   app.setGlobalPrefix('api/v1');
   app.enableCors(); // Enable CORS for frontend
   app.enableShutdownHooks();
@@ -14,7 +16,13 @@ async function bootstrap() {
     +Throw errors if validation failed
      WHITELIST causes NestJS to automatically strip out any properties that aren't defined in the DTO
   */
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true })); // Enable validation for DTOs (Data Transfer Objects)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  ); // Enable validation for DTOs (Data Transfer Objects)
   await app.listen(3000);
 }
 void bootstrap();

@@ -23,6 +23,7 @@ model User {
 
   workouts         Workout[] //the user's workout log (performed workouts)
   templateWorkouts TemplateWorkout[] //the user's workout templates (i.e., planned workouts)
+  Exercise         Exercise[]
 }
 
 //========TEMPLATES===========
@@ -58,7 +59,7 @@ model TemplateExercise {
 
   //the exercise from the catalog that this exercise represents
   exercise   Exercise @relation(onDelete: Cascade, fields: [exerciseId], references: [id])
-  exerciseId String
+  exerciseId Int
 
   //the planned sets for this exercise
   sets TemplateSet[]
@@ -83,13 +84,21 @@ model TemplateSet {
 
 //============EXERCISE CATALOG MODEL=============
 model Exercise {
-  id                String             @id @default(cuid())
-  name              String
-  templateExercises TemplateExercise[] //the 
+  id   Int    @id @default(autoincrement())
+  name String
+
+  description   String?
+  primaryMuscle String
+  equipment     String?
+
+  default Boolean @default(false)
+  userId  Int? //nullable for default/global exercises
+  user    User?   @relation(fields: [userId], references: [id])
+
+  templateExercises TemplateExercise[]
   workoutExercises  WorkoutExercise[]
-  //add info for the exercises later
-  //ensure both name and userId are unique, 
-  // this way custom exercises can't be created with same name as an exercise that already exists
+
+  @@unique([name, userId]) //allows duplicate names IF userId is different (or null)
 }
 
 //============LOG MODELS============
@@ -123,7 +132,7 @@ model WorkoutExercise {
 
   //What exercise it's pulling it's information from
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
-  exerciseId String
+  exerciseId Int
 
   //allows comparison of planned reps/weight vs actual reps/weight
   templateExercise   TemplateExercise? @relation(fields: [templateExerciseId], references: [id])
