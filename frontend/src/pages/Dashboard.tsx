@@ -1,9 +1,16 @@
 import React from 'react'
 import { Typography, Box, Button } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 export default function Dashboard() {
   const { logout, token } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()    // clear token + state
+    navigate('/login')   //redirect immediately
+  }
 
   return (
     <Box p={4}>
@@ -27,7 +34,7 @@ export default function Dashboard() {
         {token}
       </Box>
 
-      <Button variant="outlined" onClick={logout}>
+      <Button variant="outlined" onClick={handleLogout}>
         Logout
       </Button>
     </Box>
