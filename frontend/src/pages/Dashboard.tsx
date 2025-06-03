@@ -19,6 +19,7 @@ export default function Dashboard() {
         p={2}
         bgcolor="#f5f5f5"
         borderRadius="8px"
+        color="text.primary"
         fontFamily="monospace"
         fontSize="0.9rem"
         mb={3}
