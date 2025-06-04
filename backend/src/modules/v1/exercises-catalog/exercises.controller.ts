@@ -3,7 +3,7 @@ import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ExercisesCatalogService } from './exercises.service';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { GetUser } from 'src/shared/decorators/get-user.decorator';
-import { User } from 'generated/prisma';
+import { User } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))

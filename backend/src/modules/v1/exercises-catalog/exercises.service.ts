@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException, ConflictException } from '@nestjs/common';
-import { Exercise } from 'generated/prisma';
+import { Exercise } from '@prisma/client';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
 

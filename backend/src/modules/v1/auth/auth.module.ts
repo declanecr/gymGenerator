@@ -10,7 +10,7 @@ import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET, // || 'myDefaultSecret', // use env var in prod!
+      secret: process.env.JWT_SECRET || 'myDefaultSecret', // use env var in prod!
       signOptions: { expiresIn: '1h' },
     }),
   ],

@@ -29,7 +29,6 @@ notes.Obsidian/workspace.json
 notes/.obsidian/cache
 
 # Prisma generated client
-/backend/generated/prisma
 /backend/prisma/dev.db
 /backend/prisma/dev.db-journal
 

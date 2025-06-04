@@ -27,8 +27,7 @@ Content-Type: application/json
   "password": "yourpassword"
 }
 ### access token from successful login
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc0ODk4OTU0NSwiZXhwIjoxNzQ4OTkzMTQ1fQ.7OII5znGBtP0E8oSVjj0pVp2UWKZUi8sYBWfs66fOeQ
-
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc0ODk5ODc2MywiZXhwIjoxNzQ5MDAyMzYzfQ.ZiYL9DBQU8p7HDR7GFtxq_XZc_EMy7CgYTQ_SkAf1_4
 
 ### GET - Get Profile
 GET http://localhost:3000/api/v1/users/me
@@ -53,7 +52,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Spider Curl",
+  "name": "Spider Curl1",
   "primaryMuscle": "Biceps",
   "equipment": "Dumbbell",
   "description": "Isolated bicep curl with support bench"
