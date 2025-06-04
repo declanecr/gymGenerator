@@ -4,6 +4,7 @@ import { ForbiddenException, ConflictException } from '@nestjs/common';
 import { Exercise } from '@prisma/client';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
+import { ExerciseResponseDto } from './dto/exercise-response.dto';
 
 @Injectable()
 export class ExercisesCatalogService {
@@ -33,12 +34,15 @@ export class ExercisesCatalogService {
   async getVisibleExercises(
     userId: number,
     showCustom: boolean,
-  ): Promise<Exercise[]> {
-    return await this.prisma.exercise.findMany({
+  ): Promise<ExerciseResponseDto[]> {
+    const exercises = await this.prisma.exercise.findMany({
       where: {
         OR: [{ default: true }, ...(showCustom ? [{ userId }] : [])],
       },
+      orderBy: { name: 'desc' },
     });
+
+    return exercises.map((e) => new ExerciseResponseDto(e));
   }
 
   async createCustomExercise(userId: number, dto: CreateCustomExerciseDto) {

@@ -1,5 +1,5 @@
 // exercises.controller.ts
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Query, Get } from '@nestjs/common';
 import { ExercisesCatalogService } from './exercises.service';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { GetUser } from 'src/shared/decorators/get-user.decorator';
@@ -19,5 +19,12 @@ export class ExercisesCatalogController {
     @GetUser() user: User,
   ) {
     return this.exercisesService.createCustomExercise(user.id, dto);
+  }
+
+  // GET exercises visible to the user (i.e. include custom exercises)
+  @Get()
+  async getExercises(@Query('custom') custom: string, @GetUser() user: User) {
+    const showCustom = custom === 'true';
+    return this.exercisesService.getVisibleExercises(user.id, showCustom);
   }
 }
