@@ -69,11 +69,11 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    
+    "preset": "ts-jest",
     "moduleFileExtensions": ["js", "json", "ts"],
     "rootDir": "./",
     "testRegex": ".*\\.(spec|e2e-spec)\\.ts$",
-
+    "roots": ["<rootDir>/src", "<rootDir>/test"],
     "transform": {
       "^.\\.(t|j)s$": "ts-jest"
     },

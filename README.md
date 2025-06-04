@@ -39,25 +39,26 @@ cd gymGenerator
    yarn install
    ```
 
-3. Generate and apply the initial Prisma migration (creates `dev.db` in backend/prisma):
+3. Create a simple `.env` file at `backend/.env` with at least:
+
+   ```
+   DATABASE_URL="file:./dev.db"
+   JWT_SECRET="yourStrongSecretHere"
+   ```
+
+   > You can choose any string for `JWT_SECRET`. Make sure it’s at least 32 characters in production.
+
+4. Generate and apply the initial Prisma migration (creates `dev.db` in backend/prisma):
 
    ```bash
    npx prisma migrate dev --name init
    ```
 
-4. Generate Prisma Client:
+5. Generate Prisma Client:
 
    ```bash
    npx prisma generate
    ```
-
-5. Create a simple `.env` file at `backend/.env` with at least:
-
-   ```
-   JWT_SECRET=yourStrongSecretHere
-   ```
-
-   > You can choose any string for `JWT_SECRET`. Make sure it’s at least 32 characters in production.
 
 6. Start the NestJS backend in watch mode:
 
