@@ -88,7 +88,7 @@ GET http://localhost:3000/api/v1/exercises-catalog/search?term=press
 Authorization: Bearer {{adminToken}}
 
 ###
-GET http://localhost:3000/api/v1/exercises-catalog/63
+GET http://localhost:3000/api/v1/exercises-catalog/65
 Authorization: Bearer {{adminToken}}
 
 ###
