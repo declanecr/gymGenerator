@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ForbiddenException, ConflictException } from '@nestjs/common';
-import { Exercise } from '@prisma/client';
+import { Exercise, User } from '@prisma/client';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
 import { ExerciseResponseDto } from './dto/exercise-response.dto';
@@ -61,12 +61,20 @@ export class ExercisesCatalogService {
     });
   }
 
-  async getById(id: number, userId: number): Promise<Exercise> {
+  async getById(id: number, user: User): Promise<Exercise> {
     const exercise = await this.prisma.exercise.findUnique({
       where: { id: id },
     });
 
-    if (!exercise || (!exercise.default && exercise.userId !== userId)) {
+    if (!exercise) {
+      throw new NotFoundException('Exercise not found.');
+    }
+    // if it’s custom, ensure the user owns it or is an admin
+    if (
+      !exercise.default &&
+      exercise.userId !== user.id &&
+      user.role !== 'ADMIN'
+    ) {
       throw new ForbiddenException('Not allowed to view this exercise.');
     }
 
@@ -112,5 +120,53 @@ export class ExercisesCatalogService {
     }
 
     await this.prisma.exercise.delete({ where: { id: id } });
+  }
+
+  async searchExercises(term: string, user: User): Promise<Exercise[]> {
+    // Build a “where” clause: name or description contains (case‐insensitive)
+    const filter = {
+      AND: [
+        {
+          OR: [
+            { name: { contains: term } },
+            { description: { contains: term } },
+          ],
+        },
+        {
+          OR: [
+            { default: true },
+            { userId: user.id },
+            // If admin, allow also custom of others
+            ...(user.role === 'ADMIN' ? [{ default: false }] : []),
+          ],
+        },
+      ],
+    };
+
+    return this.prisma.exercise.findMany({
+      where: filter,
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async createDefaultExercise(dto: CreateCustomExerciseDto): Promise<Exercise> {
+    // 1) Check name collision among existing default exercises
+    if (await this.isNameTakenByDefault(dto.name)) {
+      throw new ConflictException(
+        'Default exercise with this name already exists.',
+      );
+    }
+
+    // 2) Create the exercise with default: true, userId: null
+    return this.prisma.exercise.create({
+      data: {
+        name: dto.name,
+        primaryMuscle: dto.primaryMuscle,
+        description: dto.description,
+        equipment: dto.equipment,
+        default: true,
+        userId: null,
+      },
+    });
   }
 }

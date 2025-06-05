@@ -48,14 +48,14 @@ Authorization: Bearer {{token}}
 
 ### POST -- custom exercise
 POST http://localhost:3000/api/v1/exercises-catalog/custom
-Authorization: Bearer {{token}}
+Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "name": "aaaaaa",
-  "primaryMuscle": "Biceps",
-  "equipment": "Dumbbell",
-  "description": "Isolated bicep curl with support bench"
+  "name": "test press2",
+  "primaryMuscle": "Chest",
+  "equipment": "Barbell",
+  "description": "Isolated chest press on bench"
 }
 
 ### Get default + custom
@@ -65,5 +65,43 @@ Authorization: Bearer {{token}}
 ### Get only default
 GET http://localhost:3000/api/v1/exercises-catalog
 Authorization: Bearer {{token}}
+
+
+
+
+# As an ADMIN user (you’ll need to either seed an admin or manually set a user’s role via Prisma Studio):
+
+### Login - Valid ADMIN User
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "testAdmin@example.com",
+  "password": "yourAdminpassword"
+}
+
+###
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3NDkxNDkxODUsImV4cCI6MTc0OTE1Mjc4NX0.G8Hkw0DRR8ML-aVVTiJJchKlO-ahTomAlXWtBcA3u3o
+
+###
+GET http://localhost:3000/api/v1/exercises-catalog/search?term=press
+Authorization: Bearer {{adminToken}}
+
+###
+GET http://localhost:3000/api/v1/exercises-catalog/63
+Authorization: Bearer {{adminToken}}
+
+###
+POST http://localhost:3000/api/v1/exercises-catalog/default
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Goblet Squat",
+  "primaryMuscle": "Legs",
+  "equipment": "Dumbbell",
+  "description": "Front squat with dumbbell held at chest"
+}
+
 
 

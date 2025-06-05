@@ -19,12 +19,48 @@ import { User } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
 import { ExerciseResponseDto } from './dto/exercise-response.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('exercises-catalog')
 export class ExercisesCatalogController {
   constructor(private readonly exercisesService: ExercisesCatalogService) {}
 
+  /** ADMIN ONLY: Create a new default (global) exercise */
+  @Post('default')
+  @Roles('ADMIN')
+  async createDefaultExercise(
+    @Body() dto: CreateCustomExerciseDto, // same DTO fields but will be forced to default=true
+  ): Promise<ExerciseResponseDto> {
+    // Note: service logic will have to set `default: true` and userId: null
+    const raw = await this.exercisesService.createDefaultExercise(dto);
+    return new ExerciseResponseDto(raw);
+  }
+
+  //**NOTE Search must come BEFORE :id, or Nest will try to parse 'search' as a number*/
+  // GET /exercises-catalog/search?term=foo
+  @Get('search')
+  async searchExercises(
+    @Query('term') term: string,
+    @GetUser() user: User,
+  ): Promise<ExerciseResponseDto[]> {
+    // Supply `term` to service and map results to DTO
+    const raws = await this.exercisesService.searchExercises(term, user);
+    return raws.map((e) => new ExerciseResponseDto(e));
+  }
+
+  // Get exercise by ID
+  @Get(':id')
+  async getExerciseById(
+    @GetUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ExerciseResponseDto> {
+    const exercise = await this.exercisesService.getById(id, user);
+    return new ExerciseResponseDto(exercise);
+  }
+
+  // Create custom exercise
   @Post('custom')
   async createCustomExercise(
     @Body() dto: CreateCustomExerciseDto,

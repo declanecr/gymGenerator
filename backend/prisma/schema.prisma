@@ -13,12 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
   name      String?
   createdAt DateTime @default(now())
+  role      Role     @default(USER)
 
   workouts         Workout[] //the user's workout log (performed workouts)
   templateWorkouts TemplateWorkout[] //the user's workout templates (i.e., planned workouts)
