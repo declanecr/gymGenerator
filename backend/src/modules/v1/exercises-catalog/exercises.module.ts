@@ -8,8 +8,4 @@ import { ExercisesCatalogService } from './exercises.service';
   controllers: [ExercisesCatalogController],
   providers: [ExercisesCatalogService],
 })
-export class ExercisesCatalogModule {
-  constructor() {
-    console.log('ExercisesCatalogModule loaded');
-  }
-}
+export class ExercisesCatalogModule {}

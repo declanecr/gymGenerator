@@ -18,8 +18,4 @@ import { JwtStrategy } from '../../../shared/guards/jwt.strategy';
   controllers: [AuthController],
   exports: [AuthService], // So other modules (like guards) can use AuthService/JwtModule if needed
 })
-export class AuthModule {
-  constructor() {
-    console.log('AuthModule loaded');
-  }
-}
+export class AuthModule {}
