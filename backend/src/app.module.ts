@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/v1/auth/auth.module';
 import { ExercisesCatalogModule } from './modules/v1/exercises-catalog/exercises.module';
+import { UsersModule } from './modules/v1/users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ExercisesCatalogModule } from './modules/v1/exercises-catalog/exercises
     }),
     PrismaModule,
     AuthModule,
+    UsersModule,
     ExercisesCatalogModule,
     // Add other modules here
   ],

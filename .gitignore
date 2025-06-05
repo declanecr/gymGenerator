@@ -25,7 +25,7 @@ Thumbs.db
 .vscode/
 
 # Obsidian
-notes.Obsidian/workspace.json
+notes/.obsidian/workspace.json
 notes/.obsidian/cache
 notes/
 
