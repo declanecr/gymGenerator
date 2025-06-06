@@ -73,7 +73,7 @@ cd gymGenerator
 
 ---
 
-## 5. Verify the REST API
+## 4. Verify the REST API
 
 A sample VS Code REST Client script is provided at `backend/test-user-auth.http`. To test basic auth endpoints:
 
@@ -89,7 +89,7 @@ This confirms that the SQLite database, Prisma schema, and JWT auth flow are wor
 
 ---
 
-## 6. (Optional) Prisma Studio
+## 5. (Optional) Prisma Studio
 
 If you want to peek at your local data:
 
@@ -103,24 +103,24 @@ Then open the URL shown in your browser to view and edit records.
 
 ---
 
-## 4. Frontend Setup
+## 6. Frontend Setup
 
 > The React app lives in **`frontend/`** and talks to the backend at `http://localhost:3000/api/v1`.
 
-### 4.1 Prerequisites
+### 6.1 Prerequisites
 
 - Same **Node 20.x** install you used for the backend.
 - Yarn or npm (examples use npm here).
 
-### 4.2 Bootstrap the Vite + TypeScript project
+### 6.2 Bootstrap the Vite + TypeScript project
 
 ```bash
 # From the repo root
-npm create vite@latest frontend -- --template react-ts
 cd frontend
+npm install
 ```
 
-### 4.3 Install dependencies
+### 6.3 Install dependencies
 
 ```bash
 npm install \
@@ -131,7 +131,7 @@ npm install \
 
 _Optional extras you’ll likely add soon:_ React Query, React Testing Library, Jest, etc.
 
-### 4.4 Create an Axios instance
+### 6.4 Create an Axios instance
 
 Create `src/api/axios.ts`:
 
@@ -144,7 +144,7 @@ export default axios.create({
 });
 ```
 
-### 4.5 Environment file (front-end)
+### 6.5 Environment file (front-end)
 
 Add `.env` in `frontend/`:
 
@@ -154,7 +154,7 @@ VITE_API_URL=http://localhost:3000/api/v1
 
 > Change this for staging/production builds.
 
-### 4.6 Start the dev server
+### 6.6 Start the dev server
 
 ```bash
 npm run dev
@@ -162,7 +162,7 @@ npm run dev
 
 Open the printed URL (usually `http://localhost:5173`) — hot-reload is active.
 
-### 4.7 Verify auth flow
+### 6.7 Verify auth flow
 
 1. Navigate to `/register`, create a user.
 2. On success you should land on `/dashboard` and see the token box.
