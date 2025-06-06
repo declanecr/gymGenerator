@@ -68,6 +68,8 @@ describe('Catalog search and admin features (e2e)', () => {
     });
     adminId = adminRecord!.id;
 
+    console.log({ userId, adminId });
+
     // seed default exercise
     await prisma.exercise.create({
       data: { name: 'Bench Press', primaryMuscle: 'Chest', default: true },
