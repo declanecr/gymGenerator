@@ -68,7 +68,7 @@ describe('Catalog search and admin features (e2e)', () => {
     });
     adminId = adminRecord!.id;
 
-    console.log({ userId, adminId });
+    //console.log({ userId, adminId });
 
     // seed default exercise
     await prisma.exercise.create({
