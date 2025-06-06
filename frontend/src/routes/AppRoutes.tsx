@@ -4,6 +4,8 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
+import TemplateWorkoutPage from '../pages/TemplateWorkout'
+import WorkoutPage from '../pages/Workout'
 
 export default function AppRoutes() {
   return (
@@ -16,6 +18,23 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <Dashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/workouts/:id"
+        element={
+          <PrivateRoute>
+            <WorkoutPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/template-workouts/:id"
+        element={
+          <PrivateRoute>
+            <TemplateWorkoutPage />
           </PrivateRoute>
         }
       />
