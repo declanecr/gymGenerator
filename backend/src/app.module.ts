@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/v1/auth/auth.module';
 import { ExercisesCatalogModule } from './modules/v1/exercises-catalog/exercises.module';
 import { UsersModule } from './modules/v1/users/users.module';
+import { WorkoutsModule } from './modules/v1/workouts/workouts.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsersModule } from './modules/v1/users/users.module';
     AuthModule,
     UsersModule,
     ExercisesCatalogModule,
+    WorkoutsModule,
     // Add other modules here
   ],
   controllers: [AppController],
