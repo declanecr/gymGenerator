@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "allowJs": true,
+    "types": ["node", "jest", "msw", "@testing-library/jest-dom"]
   },
-  "include": ["src"]
+  "include": ["src", "jest.setup.ts"]
 }
