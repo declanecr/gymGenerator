@@ -33,3 +33,6 @@ notes/
 /backend/prisma/dev.db
 /backend/prisma/dev.db-journal
 
+# Jest coverage
+coverage/
+

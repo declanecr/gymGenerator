@@ -181,6 +181,14 @@ You now have a working full-stack auth MVP.
 └─ frontend/     ← Vite + React + MUI client
 ```
 
+### Run tests (monorepo)
+
+```bash
+npm test
+```
+
+This command runs Jest across both packages using the root configuration.
+
 > **Tip:** keep backend and frontend dev servers running in two terminal tabs for a smooth workflow.
 
 ---
