@@ -28,6 +28,8 @@ Thumbs.db
 notes/.obsidian/workspace.json
 notes/.obsidian/cache
 notes/
+./notes
+notes
 
 # Prisma generated client
 /backend/prisma/dev.db

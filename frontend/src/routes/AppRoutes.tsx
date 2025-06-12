@@ -6,6 +6,7 @@ import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkout'
 import WorkoutPage from '../pages/Workout'
+import CreateWorkoutContainer from '../components/forms/CreateWorkoutContainer'
 
 export default function AppRoutes() {
   return (
@@ -38,6 +39,9 @@ export default function AppRoutes() {
           </PrivateRoute>
         }
       />
+
+      <Route path="/workouts/new" element={<PrivateRoute><CreateWorkoutContainer /></PrivateRoute>} />
+
     </Routes>
 
   )

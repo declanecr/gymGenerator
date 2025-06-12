@@ -7,7 +7,6 @@
   "scripts": {
     "test": "jest --watchAll --runInBand",
     "test:e2e": "jest --config=backend/test/jest-e2e.json --runInBand"
-
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

@@ -21,6 +21,19 @@ git clone https://github.com/declanecr/gymGenerator.git
 cd gymGenerator
 ```
 
+Install root dependencies
+
+```bash
+npm install
+```
+
+Install backend and frontend packages
+
+```bash
+cd backend && npm install
+cd ../frontend && npm install
+```
+
 ---
 
 ## 3. Backend Setup

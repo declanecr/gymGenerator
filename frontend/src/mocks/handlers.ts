@@ -33,7 +33,7 @@ export const handlers = [
     );
   }),
 
-  // (optional) also intercept list
+  // also intercept list
   http.get('http://localhost:3000/api/v1/workouts', async () => {
     return new Response(
       JSON.stringify([
