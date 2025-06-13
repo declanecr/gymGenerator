@@ -42,7 +42,7 @@ const CreateWorkoutContainer: React.FC = () => {
   // React Hook Form setup with Zod resolver
   const form = useForm<CreateWorkoutInput>({
     resolver: zodResolver(createWorkoutSchema),
-    defaultValues: { workoutTemplateId: '' },
+    defaultValues: { workoutTemplateId: '', name: '', notes: ''},
   });
 
   // Mutation for creating a workout using object syntax with generics

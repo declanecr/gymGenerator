@@ -2,6 +2,8 @@ import { Workout } from '@prisma/client';
 
 export class WorkoutResponseDto {
   id: string;
+  name: string;
+  notes?: string;
   createdAt: Date;
   updatedAt: Date;
   workoutTemplateId?: string | null;

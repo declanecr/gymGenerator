@@ -3,10 +3,11 @@ import { z } from 'zod';
 
 /**
  * Zod schema matching the CreateWorkoutDto on the server.
- * Only the template ID is required, and it’s optional.
  */
 export const createWorkoutSchema = z.object({
   workoutTemplateId: z.string().optional(),
+  name: z.string().min(1, "Name required"),
+  notes: z.string().optional(),
 });
 
 /**

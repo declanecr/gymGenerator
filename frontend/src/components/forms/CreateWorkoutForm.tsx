@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  TextField
 } from '@mui/material';
 
 interface CreateWorkoutFormProps {
@@ -64,6 +65,36 @@ const CreateWorkoutForm: React.FC<CreateWorkoutFormProps> = ({
         <FormHelperText>
           {errors.workoutTemplateId?.message}
         </FormHelperText>
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Workout Name"
+              required
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              fullWidth
+              margin="normal"
+            />
+          )}
+        />
+        <Controller
+          name="notes"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Notes"
+              multiline
+              error={!!errors.notes}
+              helperText={errors.notes?.message}
+              fullWidth
+              margin="normal"
+            />
+          )}
+        />
       </FormControl>
 
       <Button

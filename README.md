@@ -44,15 +44,7 @@ cd ../frontend && npm install
    cd backend
    ```
 
-2. Install dependencies:
-
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. Create a simple `.env` file at `backend/.env` with at least:
+2. Create a simple `.env` file at `backend/.env` with at least:
 
    ```
    DATABASE_URL="file:./dev.db"
@@ -61,19 +53,19 @@ cd ../frontend && npm install
 
    > You can choose any string for `JWT_SECRET`. Make sure it’s at least 32 characters in production.
 
-4. Generate and apply the initial Prisma migration (creates `dev.db` in backend/prisma):
+3. Generate and apply the initial Prisma migration (creates `dev.db` in backend/prisma):
 
    ```bash
    npx prisma migrate dev --name init
    ```
 
-5. Generate Prisma Client:
+4. Generate Prisma Client:
 
    ```bash
    npx prisma generate
    ```
 
-6. Start the NestJS backend in watch mode:
+5. Start the NestJS backend in watch mode:
 
    ```bash
    npm run start:dev
@@ -133,18 +125,7 @@ cd frontend
 npm install
 ```
 
-### 6.3 Install dependencies
-
-```bash
-npm install \
-  @mui/material @emotion/react @emotion/styled \
-  react-hook-form @hookform/resolvers zod \
-  react-router-dom axios
-```
-
-_Optional extras you’ll likely add soon:_ React Query, React Testing Library, Jest, etc.
-
-### 6.4 Create an Axios instance
+### 6.3 Create an Axios instance
 
 Create `src/api/axios.ts`:
 
@@ -157,7 +138,7 @@ export default axios.create({
 });
 ```
 
-### 6.5 Environment file (front-end)
+### 6.4 Environment file (front-end)
 
 Add `.env` in `frontend/`:
 
@@ -167,7 +148,7 @@ VITE_API_URL=http://localhost:3000/api/v1
 
 > Change this for staging/production builds.
 
-### 6.6 Start the dev server
+### 6.5 Start the dev server
 
 ```bash
 npm run dev
@@ -175,7 +156,7 @@ npm run dev
 
 Open the printed URL (usually `http://localhost:5173`) — hot-reload is active.
 
-### 6.7 Verify auth flow
+### 6.6 Verify auth flow
 
 1. Navigate to `/register`, create a user.
 2. On success you should land on `/dashboard` and see the token box.
@@ -194,9 +175,10 @@ You now have a working full-stack auth MVP.
 └─ frontend/     ← Vite + React + MUI client
 ```
 
-### Run tests (monorepo)
+### Run tests in root folder (monorepo)
 
 ```bash
+cd ..
 npm test
 ```
 

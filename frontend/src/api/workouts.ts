@@ -5,6 +5,8 @@ export interface Workout {
   createdAt: string
   updatedAt: string
   workoutTemplateId?: string | null
+  name: string
+  notes?: string | null
   workoutExercises: WorkoutExercise[]
 
 }
@@ -13,7 +15,9 @@ export interface Workout {
 /*********** DTOs ***************/
 /** Matches CreateWorkoutDto on the server */
 export interface CreateWorkoutDto {
-  workoutTemplateId?: string;
+  workoutTemplateId?: string | null;
+  name: string
+  notes?: string | null
 }
 
 export type UpdateWorkoutDto = Partial<CreateWorkoutDto>

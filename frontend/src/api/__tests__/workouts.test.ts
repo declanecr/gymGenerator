@@ -24,6 +24,8 @@ describe('workouts API', () => {
       createdAt: '2025-06-09T00:00:00.000Z',
       updatedAt: '2025-06-09T00:00:00.000Z',
       workoutTemplateId: null,
+      name: 'testWorkout',
+      notes: ' ',
       workoutExercises: [],
     }
 
@@ -42,8 +44,8 @@ describe('workouts API', () => {
   test('listWorkouts calls GET /workouts and returns array', async () => {
     // Create a fake array of workouts
     const workouts = [
-      { id: 'A', createdAt: '…', updatedAt: '…', workoutTemplateId: null, workoutExercises: [] },
-      { id: 'B', createdAt: '…', updatedAt: '…', workoutTemplateId: null, workoutExercises: [] },
+      { id: 'A', createdAt: '…', updatedAt: '…', workoutTemplateId: null, name: 'testNameA', notes: ' ', workoutExercises: [] },
+      { id: 'B', createdAt: '…', updatedAt: '…', workoutTemplateId: null, name: 'testNameB', notes: ' ', workoutExercises: [] },
     ];
     //stub the GET method to resolve with {data: workouts }
     mockedApi.get.mockResolvedValueOnce({ data: workouts })
@@ -61,6 +63,8 @@ describe('workouts API', () => {
     // Arrange: build a payload matching CreateWorkoutDto
     const dto={
       workoutTemplateId: 'TEMPLATE123',
+      name: 'testWorkout',
+      notes: ' ',
     };
     // Define the fake workout that the server should respond with
     const newWorkout = {
@@ -68,6 +72,8 @@ describe('workouts API', () => {
         createdAt: '…', 
         updatedAt: '…', 
         workoutTemplateId: 'TEMPLATE123', 
+        name: 'testWorkout',
+        notes: ' ',
         workoutExercises: [] }
     };
 
@@ -86,7 +92,9 @@ describe('workouts API', () => {
   it ('PATCHs to /workout/:id and returns updated workout', async () =>{
     // Arrange: define the DTO to send when updating a workout, by building a payload matching UpdateWorkoutDto
     const dto={
-      workoutTemplateId: 'UPDATED_TEMPLATE'
+      workoutTemplateId: 'UPDATED_TEMPLATE',
+      name: 'testName',
+      notes: 'notes',
     };
 
     // Define the fake updated workout that the server would respond with
@@ -95,6 +103,8 @@ describe('workouts API', () => {
         createdAt: '…', 
         updatedAt: '…', 
         workoutTemplateId: 'UPDATED_TEMPLATE', 
+        name: 'testName',
+        notes: 'notes',
         workoutExercises: [] }
     };
     mockedApi.patch.mockResolvedValueOnce({ data: updatedWorkout.data});

@@ -17,7 +17,12 @@ export class WorkoutsService {
 
   async create(userId: number, dto: CreateWorkoutDto) {
     return this.prisma.workout.create({
-      data: { userId, workoutTemplateId: dto.workoutTemplateId ?? null },
+      data: {
+        userId,
+        workoutTemplateId: dto.workoutTemplateId ?? null,
+        name: dto.name,
+        notes: dto.notes,
+      },
     });
   }
 

@@ -27,7 +27,7 @@ describe('CreateWorkoutContainer (integration)', () => {
       }),
       // Stub POST for creating a workout, casting dto to object
       http.post('http://localhost:3000/api/v1/workouts', async ({ request }) => {
-        const dto = (await request.json()) as { workoutTemplateId?: string };
+        const dto = (await request.json()) as { workoutTemplateId?: string, name: string, notes?: string | null };
         return new Response(
           JSON.stringify({
             id: 'NEW123',
@@ -65,11 +65,15 @@ describe('CreateWorkoutContainer (integration)', () => {
     await act(async()=>{
       await userEvent.click(await screen.findByRole('option', { name: /template one/i }));
     });
-    // 3) Submit the form
+    // 3) Type name into workout name field
+    await act(async () => {
+      await userEvent.type(await screen.getByLabelText(/workout name/i), "Test Workout");
+    });
+    // 4) Submit the form
     await act(async()=>{
       await userEvent.click(screen.getByRole('button', { name: /create workout/i }));
     });
-    // 4) Assert success snackbar appears
+    // 5) Assert success snackbar appears
     expect(await screen.findByText(/workout created!/i)).toBeInTheDocument();
   });
 });
