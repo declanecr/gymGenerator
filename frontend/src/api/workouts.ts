@@ -1,12 +1,13 @@
 import api from './axios'
+import { WorkoutExercise } from './exercises'
 
 export interface Workout {
   id: string
+  name: string
+  notes?: string | null
   createdAt: string
   updatedAt: string
   workoutTemplateId?: string | null
-  name: string
-  notes?: string | null
   workoutExercises: WorkoutExercise[]
 
 }
@@ -21,35 +22,6 @@ export interface CreateWorkoutDto {
 }
 
 export type UpdateWorkoutDto = Partial<CreateWorkoutDto>
-
-
-export interface WorkoutExercise {
-  id: string                       // the PK
-  exerciseId: string               // FK to an Exercise
-  // optional: if you include the related Exercise payload
-  exercise?: {
-    id: string
-    name: string
-    // any other fields you’ll render (e.g. muscle group, defaultReps)
-  }
-  // This can be used for progress comparison
-  // any template-level targets you copied over:
-  targetReps?: number
-  targetWeight?: number
-  targetRpe?: number
-
-  // the performed sets for this exercise:
-  workoutSets: WorkoutSet[]        // see below
-}
-
-// nested sets:
-export interface WorkoutSet {
-  id: string
-  reps: number
-  weight: number
-  rpe?: number
-  // createdAt/updatedAt only if you need timestamps in the UI
-}
 
 
 export async function fetchWorkout(id: string): Promise<Workout> {
