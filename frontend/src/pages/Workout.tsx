@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
-import { fetchWorkout, Workout } from '../api/workouts'
+import { getWorkout, Workout } from '../api/workouts'
 
 export default function WorkoutPage() {
   const { id } = useParams()
@@ -9,7 +9,7 @@ export default function WorkoutPage() {
 
   useEffect(() => {
     if (id) {
-      fetchWorkout(id)
+      getWorkout(id)
         .then(setWorkout)
         .catch((err) => console.error('Failed to load workout', err))
     }

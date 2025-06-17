@@ -6,7 +6,7 @@ import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkout'
 import WorkoutPage from '../pages/Workout'
-import CreateWorkoutContainer from '../components/forms/CreateWorkoutContainer'
+import CreateWorkoutContainer from '../components/workouts/CreateWorkoutContainer'
 
 export default function AppRoutes() {
   return (

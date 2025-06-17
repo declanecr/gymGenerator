@@ -2,7 +2,7 @@ import React, {useEffect, useState } from 'react'
 import { Typography, Box, Button, List, ListItem, ListItemText } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
-import { listWorkouts, Workout } from '../api/workouts'
+import { fetchWorkouts, Workout } from '../api/workouts'
 import { listTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 
 export default function Dashboard() {
@@ -17,7 +17,7 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    listWorkouts()
+    fetchWorkouts()
       .then(setWorkouts)
       .catch((err) => console.error('Failed to load workouts', err))
     listTemplateWorkouts()

@@ -3,7 +3,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { Workout } from '../api/workouts';
-import { listWorkouts } from '../api/workouts';
+import { fetchWorkouts } from '../api/workouts';
 import {
   Container,
   Typography,
@@ -19,7 +19,7 @@ const WorkoutList: React.FC = () => {
   // Fetch workouts with proper typing for data and error
   const { data: workouts, isLoading, error } = useQuery<Workout[], Error>({
     queryKey: ['workouts'],
-    queryFn: listWorkouts,
+    queryFn: fetchWorkouts,
   });
 
   // Loading state
