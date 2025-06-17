@@ -39,6 +39,16 @@ export async function createWorkoutSet(
 }
 
 
+export async function fetchWorkoutSets(
+  workoutId: string,
+  exerciseId: string
+): Promise< WorkoutSet[]> {
+  const res = await api.get<WorkoutSet[]>(
+    `/workouts/${workoutId}/exercises/${exerciseId}/sets`
+  );
+  return res.data;
+}
+
 /**
  * PATCH /workouts/:workoutId/exercises/:exerciseId/sets/:id
  */

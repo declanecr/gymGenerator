@@ -76,6 +76,14 @@ export class WorkoutsController {
     return this.workoutsService.addExercise(workoutId, user.id, dto);
   }
 
+  @Get(':id/exercises')
+  async fetchExercises(
+    @GetUser() user: JwtPayload,
+    @Param('id') workoutId: string,
+  ) {
+    return this.workoutsService.getExercises(workoutId, user.id);
+  }
+
   @Patch(':id/exercises/:eid')
   async updateExercise(
     @GetUser() user: JwtPayload,
@@ -107,6 +115,15 @@ export class WorkoutsController {
     @Body() dto: CreateWorkoutSetDto,
   ) {
     return this.workoutsService.addSet(exerciseId, user.id, dto);
+  }
+
+  @Get(':id/exercises/:eid/sets')
+  async getSets(
+    @GetUser() user: JwtPayload,
+    @Param('eid') exerciseId: string,
+    @Param('id') workoutId: string,
+  ) {
+    return this.workoutsService.getSets(exerciseId, workoutId, user.id);
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')

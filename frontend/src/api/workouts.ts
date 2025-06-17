@@ -24,12 +24,12 @@ export interface CreateWorkoutDto {
 export type UpdateWorkoutDto = Partial<CreateWorkoutDto>
 
 
-export async function fetchWorkout(id: string): Promise<Workout> {
+export async function getWorkout(id: string): Promise<Workout> {
   const res = await api.get<Workout>(`/workouts/${id}`)
   return res.data
 }
 
-export async function listWorkouts(): Promise<Workout[]> {
+export async function fetchWorkouts(): Promise<Workout[]> {
   const res = await api.get<Workout[]>(`/workouts`)
   return res.data
 }

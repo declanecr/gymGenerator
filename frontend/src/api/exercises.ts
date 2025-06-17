@@ -28,6 +28,11 @@ export async function createWorkoutExercise(dto: CreateWorkoutExerciseDto, worko
     return res.data
 }
 
+export async function fetchWorkoutExercises(workoutId: string): Promise<WorkoutExercise[]> {
+    const res =await api.get<WorkoutExercise[]>(`/workouts/${workoutId}/exercises`)
+    return res.data
+}
+
 // use workoutId property as the "id" in the API endpoint url
 export async function updateWorkoutExercise(dto: UpdateWorkoutExerciseDto, id: string, workoutId: string): Promise<WorkoutExercise> {
     const res = await api.patch<WorkoutExercise>(`/workouts/${workoutId}/exercises/${id}`, dto)

@@ -3,7 +3,7 @@ import React from 'react';
 import { act, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import CreateWorkoutContainer from '../../components/forms/CreateWorkoutContainer';
+import CreateWorkoutContainer from '../../components/forms/workouts/CreateWorkoutContainer';
 import { server } from '../../mocks/server';
 import { http } from 'msw';
 import userEvent from '@testing-library/user-event'

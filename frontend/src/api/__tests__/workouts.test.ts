@@ -1,6 +1,6 @@
 
 import api from '../axios';
-import { fetchWorkout, listWorkouts, createWorkout, updateWorkout, deleteWorkout } from '../workouts';
+import { fetchWorkouts, getWorkout, createWorkout, updateWorkout, deleteWorkout } from '../workouts';
 
 // provide a manual mock so api.get actually exists
 jest.mock('../axios', () => ({
@@ -17,7 +17,7 @@ const mockedApi = api as jest.Mocked<typeof api>
 
 
 describe('workouts API', () => {
-  test('fetchWorkout calls GET /workouts/:id and returns data', async () => {
+  test('getWorkout calls GET /workouts/:id and returns data', async () => {
     // Arrange: prepare a fake workout object to return -- shape it like your Workout interface
     const workout = {
       id: 'XYZ',
@@ -32,8 +32,8 @@ describe('workouts API', () => {
     // Stub the api.get to resolve with { data: workout }
     mockedApi.get.mockResolvedValueOnce({ data: workout })
 
-    // Act -- call fetchworkout with a specific ID
-    const result = await fetchWorkout('XYZ')
+    // Act -- call getworkout with a specific ID
+    const result = await getWorkout('XYZ')
 
     // Assert: that api.get was called with the correct URL... (i.e. to the correct endpoint)
     expect(mockedApi.get).toHaveBeenCalledWith('/workouts/XYZ')
@@ -41,7 +41,7 @@ describe('workouts API', () => {
     expect(result).toEqual(workout)
   })
 
-  test('listWorkouts calls GET /workouts and returns array', async () => {
+  test('fetchWorkouts calls GET /workouts and returns array', async () => {
     // Create a fake array of workouts
     const workouts = [
       { id: 'A', createdAt: '…', updatedAt: '…', workoutTemplateId: null, name: 'testNameA', notes: ' ', workoutExercises: [] },
@@ -50,8 +50,8 @@ describe('workouts API', () => {
     //stub the GET method to resolve with {data: workouts }
     mockedApi.get.mockResolvedValueOnce({ data: workouts })
 
-    //called listWorkouts
-    const result = await listWorkouts()
+    //called fetchWorkouts
+    const result = await fetchWorkouts()
 
     //Assert: ensure GET was called on the correct endpoint
     expect(mockedApi.get).toHaveBeenCalledWith('/workouts')
