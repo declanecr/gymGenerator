@@ -69,11 +69,11 @@ export async function updateWorkoutSet(
  * DELETE /workouts/:workoutId/exercises/:exerciseId/sets/:id
  */
 export async function deleteWorkoutSet(
-  id: string,
+  setId: string,
   workoutId: string,
   exerciseId: string
 ): Promise<void> {
   await api.delete(
-    `/workouts/${workoutId}/exercises/${exerciseId}/sets/${id}`
+    `/workouts/${workoutId}/exercises/${exerciseId}/sets/${setId}`
   );
 }
