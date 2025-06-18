@@ -1,6 +1,6 @@
 // src/components/forms/exercises/ExerciseFields.tsx
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import { WorkoutFormValues } from '../types';
 
 interface ExerciseFieldsProps {
@@ -9,8 +9,15 @@ interface ExerciseFieldsProps {
 }
 
 export function ExerciseFields({ index, onRemove }: ExerciseFieldsProps) {
-  const { register } = useFormContext<WorkoutFormValues>();
-  // (we'll wire nested sets here later)
+  const { register, control } = useFormContext<WorkoutFormValues>();
+
+  // New: field array for sets nested under this exercise
+  const { fields: setFields, append: appendSet, remove: removeSet } = useFieldArray({
+    control,
+    name: `exercises.${index}.sets`,
+  });
+
+  
   return (
     <div>
       <label htmlFor={`exercises.${index}.exerciseId`}>Exercise</label>
@@ -28,6 +35,35 @@ export function ExerciseFields({ index, onRemove }: ExerciseFieldsProps) {
         type="number"
         {...register(`exercises.${index}.position`, { valueAsNumber: true })}
       />
+
+      {/* 2. Render each set */}
+      {setFields.map((set, sIdx) => (
+        <div key={set.id}>
+          <input
+            type="number"
+            placeholder="Reps"
+            {...register(`exercises.${index}.sets.${sIdx}.reps`, { valueAsNumber: true })}
+          />
+          <input
+            type="number"
+            placeholder="Weight"
+            {...register(`exercises.${index}.sets.${sIdx}.weight`, { valueAsNumber: true })}
+          />
+          <button type="button" onClick={() => removeSet(sIdx)}>
+            Remove Set
+          </button>
+        </div>
+      ))}
+
+      {/* 3. “Add Set” button */}
+      <button
+        type="button"
+        onClick={() =>
+          appendSet({ reps: 0, weight: 0, position: setFields.length + 1 })
+        }
+      >
+        Add Set
+      </button>
 
       <button type="button" onClick={onRemove}>
         Remove
