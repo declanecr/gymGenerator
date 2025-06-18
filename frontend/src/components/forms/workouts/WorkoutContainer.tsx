@@ -10,13 +10,8 @@ interface WorkoutContainerProps {
   onSubmit: (data: WorkoutFormValues) => void | Promise<void>
 }
 
-export function WorkoutContainer({
-  initialValues,
-  onSubmit,
-}: WorkoutContainerProps) {
-  const methods = useForm<WorkoutFormValues>({
-    defaultValues: initialValues,
-  })
+export function WorkoutContainer({ initialValues, onSubmit }: WorkoutContainerProps) {
+  const methods = useForm<WorkoutFormValues>({ defaultValues: initialValues })
 
   return (
     <FormProvider {...methods}>

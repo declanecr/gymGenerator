@@ -6,7 +6,7 @@ import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkout'
 import WorkoutPage from '../pages/Workout'
-import CreateWorkoutContainer from '../components/workouts/CreateWorkoutContainer'
+import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer'
 
 export default function AppRoutes() {
   return (
@@ -40,7 +40,15 @@ export default function AppRoutes() {
         }
       />
 
-      <Route path="/workouts/new" element={<PrivateRoute><CreateWorkoutContainer /></PrivateRoute>} />
+      <Route
+        path="/workouts/start"
+        element={
+          <WorkoutContainer
+            initialValues={{ name: '', notes: '', exercises: [] }}
+            onSubmit={data => console.log(data)}
+          />
+        }
+      />
 
     </Routes>
 
