@@ -1,9 +1,16 @@
 {
+  "name": "gym-generator-monorepo",
   "private": true,
   "workspaces": [
     "backend",
     "frontend"
   ],
+  "overrides": {
+    "@nestjs/cli": {
+      "minimatch": "3.0.5",
+      "brace-expansion": "1.1.11"
+    }
+  },
   "scripts": {
     "test": "jest --watchAll --runInBand",
     "test:e2e": "jest --config=backend/test/jest-e2e.json --runInBand"
