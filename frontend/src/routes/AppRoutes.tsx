@@ -1,3 +1,4 @@
+// frontend\src\routes\AppRoutes.tsx
 import { Routes, Route } from 'react-router-dom'
 
 import Login from '../pages/Login'
@@ -11,6 +12,15 @@ import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer'
 export default function AppRoutes() {
   return (
     <Routes>
+      <Route
+        path="/"  // overrides default url launched by frontend to open dashboard. which typically will take you straight to /Login
+        element={
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
@@ -43,10 +53,12 @@ export default function AppRoutes() {
       <Route
         path="/workouts/start"
         element={
-          <WorkoutContainer
-            initialValues={{ name: '', notes: '', exercises: [] }}
-            onSubmit={data => console.log(data)}
-          />
+          <PrivateRoute>
+            <WorkoutContainer
+              initialValues={{ name: '', notes: '', exercises: [] }}
+              onSubmit={data => console.log(data)}
+            />
+          </PrivateRoute>
         }
       />
 
