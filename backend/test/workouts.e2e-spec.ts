@@ -67,7 +67,7 @@ describe('Workouts (e2e)', () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/workouts')
       .set('Authorization', `Bearer ${token}`)
-      .send({});
+      .send({ name: 'testWorkoutName' });
 
     expect(res.status).toBe(201);
     const body = res.body as unknown as WorkoutResponseDto;

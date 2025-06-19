@@ -1,1 +1,0 @@
-the purpose of continuous integration/deployment is to set guard rails on a repo; so that anytime a test app is attempted to be deployed, it goes through a set of tests/actions to ensure that, basically the code isn't fucked up in any way

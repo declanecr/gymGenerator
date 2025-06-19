@@ -17,7 +17,12 @@ export class WorkoutsService {
 
   async create(userId: number, dto: CreateWorkoutDto) {
     return this.prisma.workout.create({
-      data: { userId, workoutTemplateId: dto.workoutTemplateId ?? null },
+      data: {
+        userId,
+        workoutTemplateId: dto.workoutTemplateId ?? null,
+        name: dto.name,
+        notes: dto.notes,
+      },
     });
   }
 
@@ -71,6 +76,13 @@ export class WorkoutsService {
     });
   }
 
+  async getExercises(workoutId: string, userId: number) {
+    await this.ensureExerciseOwner(workoutId, userId);
+    return this.prisma.workoutExercise.findMany({
+      where: { workoutId: workoutId },
+    });
+  }
+
   async updateExercise(
     workoutId: string,
     exerciseId: string,
@@ -111,6 +123,14 @@ export class WorkoutsService {
         weight: dto.weight,
         position: dto.position,
       },
+    });
+  }
+
+  async getSets(exerciseId: string, workoutId: string, userId: number) {
+    await this.ensureExerciseOwner(workoutId, userId);
+    return this.prisma.workoutSet.findMany({
+      //should be confined to only sets withing this workout, under the specified exercise
+      where: { workoutExerciseId: exerciseId },
     });
   }
 

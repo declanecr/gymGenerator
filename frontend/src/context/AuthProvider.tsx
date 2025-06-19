@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactNode} from "react";
 import { AuthContext } from "./AuthContext";
+import api from "../api/axios";
 
 
 
@@ -16,6 +17,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const stored = localStorage.getItem('accessToken')
     if (stored) setToken(stored)
   }, [])
+
+   // Attach auth token to each request
+  useEffect(() => {
+    const requestInterceptor = api.interceptors.request.use((config) => {
+      if (token) {
+        config.headers = config.headers ?? {}
+        config.headers['Authorization'] = `Bearer ${token}`
+      }
+      return config
+    })
+
+    return () => {
+      api.interceptors.request.eject(requestInterceptor)
+    }
+  }, [token])
+
 
   const login = (newToken: string) => {
     localStorage.setItem('accessToken', newToken)
