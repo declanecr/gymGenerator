@@ -10,6 +10,8 @@ export class WorkoutResponseDto {
 
   constructor(workout: Workout) {
     this.id = workout.id;
+    this.name = workout.name;
+    this.notes = workout.notes ?? undefined;
     this.createdAt = workout.createdAt;
     this.updatedAt = workout.updatedAt;
     this.workoutTemplateId = workout.workoutTemplateId;

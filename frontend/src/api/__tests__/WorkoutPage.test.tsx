@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import WorkoutPage from '../../pages/Workout';
+import WorkoutPage from '../../pages/WorkoutPage';
 
 describe('WorkoutPage (integration)', () => {
   it('shows a loading state then renders fetched workout data', async () => {

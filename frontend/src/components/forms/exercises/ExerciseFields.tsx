@@ -26,7 +26,7 @@ export function ExerciseFields({ index, onRemove }: ExerciseFieldsProps) {
         {...register(`exercises.${index}.exerciseId` as const)}
       >
         <option value="">Select…</option>
-        <option value="squat">Squat</option>
+        <option value={1}>Squat</option > {/** 1 is the example ID */}
       </select>
 
       <label htmlFor={`exercises.${index}.position`}>Position</label>

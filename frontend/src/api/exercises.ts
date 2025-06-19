@@ -1,3 +1,4 @@
+// frontend\src\api\exercises.ts
 import api from "./axios";
 import { WorkoutSet } from "./sets";
 
