@@ -27,9 +27,8 @@ Thumbs.db
 # Obsidian
 notes/.obsidian/workspace.json
 notes/.obsidian/cache
-notes/
-./notes
-notes
+notes/.obsidian/
+
 
 # Prisma generated client
 /backend/prisma/dev.db
