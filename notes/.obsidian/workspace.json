@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "frontend/Axios-ReactQuery.md",
+                "file": "daily/2025-05-30.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Axios-ReactQuery"
+              "title": "2025-05-30"
             }
           },
           {
@@ -49,8 +49,7 @@
               "title": "2025-06-19"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -107,8 +106,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "1ccb142d0acbaf25",
@@ -187,8 +185,8 @@
             "state": {
               "type": "advanced-tables-toolbar",
               "state": {},
-              "icon": "spreadsheet",
-              "title": "Advanced Tables"
+              "icon": "lucide-file",
+              "title": "Plugin no longer active"
             }
           },
           {
@@ -216,51 +214,47 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": false,
-      "daily-notes-editor:Open Daily Note Editor": false,
-      "smart-connections:Open: View Smart Connections": false,
-      "smart-connections:Open: Smart Chat Conversation": false
+      "command-palette:Open command palette": false
     }
   },
-  "active": "569ca429a2e51a1c",
+  "active": "6d266f3dbfef2865",
   "lastOpenFiles": [
-    "2025-06-04.md",
-    "daily/2025-06-18.md",
-    "2025-06-19.md",
-    "frontend/Axios-ReactQuery.md",
-    "Progress as of June 17th.md",
-    "Current Progress (June 6).md",
-    "daily/2025-06-17.md",
+    "daily/2025-06-04.md",
+    "daily/2025-06-02.md",
+    "daily/2025-05-29.md",
+    "daily/2025-05-28.md",
+    "daily/2025-05-26.md",
+    "daily/2025-05-23.md",
+    "Jest+Supertest.md",
     "templates/daily-template.md",
-    "Database planning/API-endpoint planning.md",
-    "FUTURE TASKS.md",
+    "templates",
+    "other things/type-safe.md",
+    "other things/Single Thread.md",
+    "other things/Non-Blocking I-O.md",
+    "other things/Modules.md",
+    "other things/Meeting with Trey.md",
+    "other things/HTTP Request.md",
     "other things/Auth-Context.md",
-    "Obsidian/Callouts.md",
-    "frontend/React-Hook-Form.md",
-    "daily/2025-06-05.md",
-    "daily/2025-06-09.md",
-    "daily/2025-06-11.md",
-    "daily/2025-06-12.md",
-    "daily/2025-06-16.md",
-    "daily/2025-06-13.md",
-    "excalibrain.md",
-    "2025-06-15.md",
-    "2025-06-14.md",
-    "backend/NestJS.md",
-    "backend/other notes/Dependency Injection.md",
-    "daily/Current Progress (June 3).md",
-    "frontend/current progress.md",
-    "Excalidraw",
-    "frontend/Files",
-    "backend/other notes",
+    "mermaid diagrams.md",
+    "issues/Prisma Error Handling Best Practice.md",
+    "issues/Mapping to a DTO class.md",
     "issues",
+    "frontend/Zod.md",
+    "frontend/ReactJS.md",
+    "frontend/React-Testing-Library+Jest.md",
+    "frontend/React-Hook-Form.md",
+    "frontend/MaterialUI.md",
+    "frontend/Files/LoginForm.tsx.md",
+    "frontend/Files",
+    "frontend/Context-Api.md",
+    "frontend/Axios-ReactQuery.md",
+    "Database Planning",
+    "Obsidian",
+    "Excalidraw",
+    "backend/other notes",
     "Database planning/API planning",
     "Cheatsheets",
     "Untitled.canvas",
-    "Obsidian",
-    "Database planning",
-    "other things",
-    "templates"
+    "Database planning"
   ]
 }

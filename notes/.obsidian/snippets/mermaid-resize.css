@@ -1,0 +1,20 @@
+/* ─── Mermaid diagram auto-fit & text shrink ────────────────────── */
+
+/* Shrink SVG to pane width */
+.markdown-preview-view svg[id^="mermaid"],
+.markdown-source-view svg[id^="mermaid"] {
+  max-width: 100% !important;   /* never overflow horizontally   */
+  height: auto !important;      /* preserve aspect ratio         */
+}
+
+/* Make labels a bit smaller so nodes compress nicely */
+.markdown-preview-view svg[id^="mermaid"] text,
+.markdown-source-view svg[id^="mermaid"] text {
+  font-size: 12px !important;   /* tweak: 10–14px as you prefer  */
+}
+
+/* Optional: tighten node spacing */
+.markdown-preview-view svg[id^="mermaid"] .node rect,
+.markdown-source-view svg[id^="mermaid"] .node rect {
+  rx: 3px;                      /* slightly round corners        */
+}
