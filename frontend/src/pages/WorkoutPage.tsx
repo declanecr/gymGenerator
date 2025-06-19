@@ -21,7 +21,6 @@ function toExerciseFormValues(apiExercise: WorkoutExercise): ExerciseFormValues 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
   return {
-    setId: Number(apiSet.id), // convert string to number
     reps: apiSet.reps,
     weight: apiSet.weight,
     position: apiSet.position,
@@ -43,33 +42,34 @@ export default function WorkoutPage() {
  
 
   function handleSubmit(data: WorkoutFormValues){
-    console.log('SUBMIT EXERCISES/SETS', data);
+    console.log('SUBMIT WORKOUT:\n', data);
     // For each exercise in the form
     data.exercises.forEach(async (exercise) => {
-      if (!exercise.exerciseId) {
+      //console.log('SUBMIT EXERCISE:\nexerciseId:', exercise.exerciseId, '\nposition:', exercise.position, '\nsets:', exercise.sets)
+      if (exercise.exerciseId) {
         // This is a new exercise
         const { exerciseId, position, sets } = exercise;
+        //console.log('new exercise');
         if(sets && sets.length > 0){
           // Create the exercise on backend
           const { id: newExerciseId } = await createExercise.mutateAsync({
             workoutId,
-            dto: { exerciseId, position },
+            dto: { exerciseId: Number(exerciseId), position },
           });
+          //console.log('WorkoutPage.tsx ')
           // For each set in this exercise
           sets.forEach(async (set) => {
-            if (!set.setId) {
-              // Create the set, now with real exerciseId
-              await createSet.mutateAsync({
-                workoutId,
-                exerciseId: newExerciseId,
-                dto: {
-                  reps: set.reps,
-                  weight: set.weight,
-                  position: set.position,
-                  // add more as needed
-                },
-              });
-            }
+            // Create the set, now with real exerciseId
+            await createSet.mutateAsync({
+              workoutId,
+              exerciseId: newExerciseId,
+              dto: {
+                reps: set.reps,
+                weight: set.weight,
+                position: set.position,
+                // add more as needed
+              },
+            });
           });
         } else {
           // added error or warning about empty exercise

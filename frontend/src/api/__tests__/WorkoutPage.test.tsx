@@ -26,8 +26,11 @@ describe('WorkoutPage (integration)', () => {
 
     // 4. Wait for MSW to respond and the UI to update
     //    We're expecting to see the workout ID or any field your component displays
-    const workoutIdHeading = await screen.findByText(/xyz/i);
-    expect(workoutIdHeading).toBeInTheDocument();
+    const nameLabel = await screen.findByText(/name:/i);
+    expect(nameLabel).toBeInTheDocument();
+
+    const notesLabel = await screen.findByText(/notes:/i);
+    expect(notesLabel).toBeInTheDocument();
 
     // 5. (Optional) Assert on other fields, e.g. createdAt, exercises list, etc.
     //    expect(screen.getByText(/workoutExercises/i)).toBeInTheDocument();

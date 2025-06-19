@@ -1,7 +1,6 @@
 // frontend\src\components\forms\types.ts
 
 export interface SetFormValues {
-  setId: number;
   reps: number;
   weight: number;
   position: number;          // order within the exercise
@@ -9,7 +8,7 @@ export interface SetFormValues {
 }
 
 export interface ExerciseFormValues {
-  exerciseId: number;                // catalog ID
+  exerciseId: number;                // exercise-catalog ID
   position: number;                  // ordering under the workout
   // if you want to nest sets here:
   sets?: SetFormValues[];
