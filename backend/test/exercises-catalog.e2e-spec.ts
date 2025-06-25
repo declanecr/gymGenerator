@@ -21,6 +21,8 @@ describe('ExercisesCatalog (e2e)', () => {
   let seededCustomId: number;
 
   beforeAll(async () => {
+    console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
