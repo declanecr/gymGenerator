@@ -75,9 +75,12 @@ export class ExercisesCatalogController {
 
   // GET exercises visible to the user (i.e. include custom exercises)
   @Get()
-  async getExercises(@Query('custom') custom: string, @GetUser() user: User) {
+  async getExercises(
+    @Query('custom') custom: string,
+    @GetUser() user: User,
+  ): Promise<ExerciseResponseDto[]> {
     const showCustom = custom === 'true';
-    return this.exercisesService.getVisibleExercises(user.id, showCustom);
+    return this.exercisesService.getVisibleExercises(user, showCustom);
   }
 
   // PATCH custom exercise

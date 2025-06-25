@@ -2,6 +2,7 @@
 import React from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { WorkoutFormValues } from '../types';
+import { useExercisesCatalog } from '../../../hooks/useExercisesCatalog';
 
 interface ExerciseFieldsProps {
   index: number;
@@ -10,23 +11,31 @@ interface ExerciseFieldsProps {
 
 export function ExerciseFields({ index, onRemove }: ExerciseFieldsProps) {
   const { register, control } = useFormContext<WorkoutFormValues>();
+  const {data: catalog = [], isLoading, error}= useExercisesCatalog();
 
+  
+  
   // New: field array for sets nested under this exercise
   const { fields: setFields, append: appendSet, remove: removeSet } = useFieldArray({
     control,
     name: `exercises.${index}.sets`,
   });
-
+  
+  if (isLoading) return <div>Loading exercises…</div>;
+  if (error)    return <div>Error loading exercises</div>;
   
   return (
     <div>
       <label htmlFor={`exercises.${index}.exerciseId`}>Exercise</label>
       <select
-        id={`exercises.${index}.exerciseId`}
-        {...register(`exercises.${index}.exerciseId` as const)}
+         {...register(`exercises.${index}.exerciseId`, { valueAsNumber: true })}
       >
-        <option value="">Select…</option>
-        <option value={1}>Squat</option > {/** 1 is the example ID */}
+        <option value="">Select an exercise...</option>
+        {catalog.map(ex => (
+          <option key={ex.id} value={ex.id}>
+            {ex.name} ({ex.primaryMuscle})
+          </option>
+        ))}
       </select>
 
       <label htmlFor={`exercises.${index}.position`}>Position</label>

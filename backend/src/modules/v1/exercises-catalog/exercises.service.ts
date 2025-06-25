@@ -32,13 +32,19 @@ export class ExercisesCatalogService {
 
   // Fetch user-visible catalog
   async getVisibleExercises(
-    userId: number,
+    user: User,
     showCustom: boolean,
   ): Promise<ExerciseResponseDto[]> {
+    // Admin sees *everything*
+    const isAdmin = user.role === 'ADMIN';
+
+    const whereClause = isAdmin
+      ? {}
+      : {
+          OR: [{ default: true }, ...(showCustom ? [{ userId: user.id }] : [])],
+        };
     const exercises = await this.prisma.exercise.findMany({
-      where: {
-        OR: [{ default: true }, ...(showCustom ? [{ userId }] : [])],
-      },
+      where: whereClause,
       orderBy: { name: 'desc' },
     });
 
