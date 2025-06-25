@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link,  useNavigate } from 'react-router-dom';
 import { useGetWorkout } from '../hooks/workouts/useGetWorkout';
 import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer';
 import { WorkoutFormValues } from '../components/forms/types';
@@ -35,6 +35,7 @@ export default function WorkoutPage() {
   const { data: workout, isLoading, error } = useGetWorkout(workoutId);
   const createExercise = useCreateExercise();
   const createSet = useCreateSet();
+  const navigate= useNavigate();
 
   if (isLoading) return <div>Loading…</div>;
   if (error || !workout) return <div>Error loading workout</div>;
@@ -70,6 +71,7 @@ export default function WorkoutPage() {
                 // add more as needed
               },
             });
+            navigate("/dashboard");
           });
         } else {
           // added error or warning about empty exercise
@@ -79,6 +81,7 @@ export default function WorkoutPage() {
         // Optionally handle updating existing exercise/sets
       }
     });
+    navigate("/dashboard");
   }
 
   return (
