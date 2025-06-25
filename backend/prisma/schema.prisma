@@ -61,7 +61,7 @@ model TemplateExercise {
   workoutExercises WorkoutExercise[]
 
   //the position in the workout of this exercise
-  position Int @unique
+  position Int
 
   //the exercise from the catalog that this exercise represents
   exercise   Exercise @relation(onDelete: Cascade, fields: [exerciseId], references: [id])
@@ -69,6 +69,8 @@ model TemplateExercise {
 
   //the planned sets for this exercise
   sets TemplateSet[]
+
+  @@unique([workoutTemplateId, position])
 }
 
 model TemplateSet {
@@ -81,11 +83,13 @@ model TemplateSet {
   templateExerciseId String
 
   //the position of this set for the corresponding exercise
-  position Int @unique
+  position Int
 
   //data
   reps   Int
   weight Int
+
+  @@unique([templateExerciseId, position])
 }
 
 //============EXERCISE CATALOG MODEL=============
@@ -136,7 +140,7 @@ model WorkoutExercise {
   workout   Workout @relation(onDelete: Cascade, fields: [workoutId], references: [id])
   workoutId String
   //The position of this exercise within the workout
-  position  Int     @unique
+  position  Int
 
   //What exercise it's pulling it's information from
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
@@ -148,6 +152,8 @@ model WorkoutExercise {
 
   //The sets for this exercise
   workoutSets WorkoutSet[]
+
+  @@unique([workoutId, position])
 }
 
 model WorkoutSet {
@@ -160,9 +166,11 @@ model WorkoutSet {
   workoutExerciseId String
 
   //an individual sets position within the sets of an exercise
-  position Int @unique
+  position Int
 
   //data
   reps   Int
   weight Int
+
+  @@unique([workoutExerciseId, position])
 }
