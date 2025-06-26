@@ -9,18 +9,19 @@ import { WorkoutExercise } from '../api/exercises';
 import { ExerciseFormValues } from '../components/forms/types';
 import { SetFormValues } from '../components/forms/types';
 import { WorkoutSet } from '../api/sets';
+import { fetchWorkoutSets } from '../api/sets';
+import { useWorkoutExercises } from '../hooks/useExercises';
+import { useQueries } from '@tanstack/react-query';
 
-// Transform API workout.exercise to form values
-function toExerciseFormValues(apiExercise: WorkoutExercise): ExerciseFormValues {
-  return {
-    exerciseId: Number(apiExercise.exerciseId),  // convert string to number
-    position: apiExercise.position,
-    sets: (apiExercise.workoutSets ?? []).map(toSetFormValues),
-  };
-}
+import { useUpdateExercise } from '../hooks/workoutExercises/useUpdateExercise';
+import { useUpdateSet } from '../hooks/sets/useUpdateSet';
+import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
+import { useDeleteSet } from '../hooks/sets/useDeleteSet';
+
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
   return {
+    id: apiSet.id,
     reps: apiSet.reps,
     weight: apiSet.weight,
     position: apiSet.position,
@@ -32,56 +33,117 @@ function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
 export default function WorkoutPage() {
   const { id } = useParams();
   const workoutId = id as string;
-  const { data: workout, isLoading, error } = useGetWorkout(workoutId);
-  const createExercise = useCreateExercise();
-  const createSet = useCreateSet();
   const navigate= useNavigate();
+   // react-query hooks for create/update/delete
+  const { mutateAsync: createExercise } = useCreateExercise();
+  const { mutateAsync: updateExercise } = useUpdateExercise();
+  const { mutateAsync: deleteExercise } = useDeleteExercise();
+  const { mutateAsync: createSet } = useCreateSet();
+  const { mutateAsync: updateSet } = useUpdateSet();
+  const { mutateAsync: deleteSet } = useDeleteSet();
 
-  if (isLoading) return <div>Loading…</div>;
-  if (error || !workout) return <div>Error loading workout</div>;
 
- 
+  // fetch workout
+  const { 
+    data: workout, 
+    isLoading: isWorkoutLoading, 
+    error: workoutError
+  } = useGetWorkout(workoutId);
 
-  function handleSubmit(data: WorkoutFormValues){
-    console.log('SUBMIT WORKOUT:\n', data);
-    // For each exercise in the form
-    data.exercises.forEach(async (exercise) => {
-      //console.log('SUBMIT EXERCISE:\nexerciseId:', exercise.exerciseId, '\nposition:', exercise.position, '\nsets:', exercise.sets)
-      if (exercise.exerciseId) {
-        // This is a new exercise
-        const { exerciseId, position, sets } = exercise;
-        //console.log('new exercise');
-        if(sets && sets.length > 0){
-          // Create the exercise on backend
-          const { id: newExerciseId } = await createExercise.mutateAsync({
-            workoutId,
-            dto: { exerciseId: Number(exerciseId), position },
-          });
-          //console.log('WorkoutPage.tsx ')
-          // For each set in this exercise
-          sets.forEach(async (set) => {
-            // Create the set, now with real exerciseId
-            await createSet.mutateAsync({
-              workoutId,
-              exerciseId: newExerciseId,
-              dto: {
-                reps: set.reps,
-                weight: set.weight,
-                position: set.position,
-                // add more as needed
-              },
-            });
-            navigate("/dashboard");
-          });
-        } else {
-          // added error or warning about empty exercise
-          return;
-        }
+  // fetch exercises for this workout
+  const {
+    data: workoutExercises,
+    isLoading: isExercisesLoading,
+    error: exercisesError,
+  } = useWorkoutExercises(workoutId);
+
+
+  // fetch sets for each exercise
+  const setsQueries = useQueries({
+    queries:
+      workoutExercises?.map((ex: WorkoutExercise) => ({
+        queryKey: ['sets', workoutId, ex.id],
+        queryFn: () => fetchWorkoutSets(workoutId, ex.id),
+      })) || [],
+  });
+
+
+  const isSetsLoading = setsQueries.some(q => q.isLoading);
+  const hasSetsError = setsQueries.some(q => q.error);
+
+  // loading & error states
+  if (isWorkoutLoading || isExercisesLoading || isSetsLoading) {
+    return <div>Loading…</div>;
+  }
+  if (workoutError || exercisesError || hasSetsError || !workout) {
+    return <div>Error loading workout</div>;
+  }
+
+ // build initial form data
+  const initialExercises: ExerciseFormValues[] =
+    (workoutExercises || []).map((ex, idx) => ({
+      id: ex.id,
+      exerciseId: Number(ex.exerciseId),
+      position: ex.position,
+      sets:
+        ((setsQueries[idx].data as WorkoutSet[]) || [])
+          .map(toSetFormValues),
+    }));
+
+  const initialValues: WorkoutFormValues = {
+    id: workout.id,
+    name: workout.name,
+    notes: workout.notes ?? '',
+    exercises: initialExercises,
+  };
+
+   // handle create vs update calls
+  async function handleSubmit(data: WorkoutFormValues) {
+    // DELETE removed exercises
+    const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
+    const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
+    await Promise.all(
+      originalIds
+        .filter(id => !currentIds.includes(id))
+        .map(id => deleteExercise({ id, workoutId }))
+    );
+
+    // UPSERT exercises and their sets
+    for (const ex of data.exercises) {
+      const dtoEx = { exerciseId: ex.exerciseId, position: ex.position };
+      let exId = ex.id;
+      if (exId) {
+        await updateExercise({ workoutId, id: exId, dto: dtoEx });
       } else {
-        // Optionally handle updating existing exercise/sets
+        const newEx = await createExercise({ workoutId, dto: dtoEx });
+        exId = newEx.id;
       }
-    });
-    navigate("/dashboard");
+
+      // DELETE removed sets
+      const origSets =
+        (initialValues.exercises.find(e => e.id === ex.id)?.sets || [])
+          .map(s => s.id)
+          .filter(Boolean) as string[];
+      const curSets = (ex.sets || [])
+        .map(s => s.id)
+        .filter(Boolean) as string[];
+      await Promise.all(
+        origSets
+          .filter(id => !curSets.includes(id))
+          .map(setId => deleteSet({ workoutId, exerciseId: exId!, setId }))
+      );
+
+      // UPSERT sets
+      for (const s of ex.sets || []) {
+        const dtoSet = { reps: s.reps, weight: s.weight, position: s.position };
+        if (s.id) {
+          await updateSet({ workoutId, exerciseId: exId!, setId: s.id, dto: dtoSet });
+        } else {
+          await createSet({ workoutId, exerciseId: exId!, dto: dtoSet });
+        }
+      }
+    }
+    navigate('/dashboard');
   }
 
   return (
@@ -93,11 +155,7 @@ export default function WorkoutPage() {
 
       {/* Exercises/sets are always editable */}
       <WorkoutContainer
-        initialValues={{
-          name: workout.name, 
-          notes: workout.notes ?? '',
-          exercises: (workout.workoutExercises ?? []).map(toExerciseFormValues)
-        }}
+        initialValues={initialValues}
         onSubmit={handleSubmit}
       />
     </div>

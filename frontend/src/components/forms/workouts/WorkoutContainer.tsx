@@ -19,7 +19,8 @@ export function WorkoutContainer({ initialValues, onSubmit, isLoading }: Workout
   return (
     <FormProvider {...methods}>
       {/* handleSubmit returns an event handler */}
-      <WorkoutForm onSubmit={methods.handleSubmit(onSubmit)}
+      <WorkoutForm 
+        onSubmit={methods.handleSubmit(onSubmit)}
         isLoading={isLoading}
         //error={error}
       >

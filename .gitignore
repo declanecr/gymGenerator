@@ -33,6 +33,7 @@ notes/.obsidian/
 # Prisma generated client
 /backend/prisma/dev.db
 /backend/prisma/dev.db-journal
+/backend/prisma/test.sqlite
 
 # Jest coverage
 coverage/

@@ -58,9 +58,9 @@ export function WorkoutForm({ onSubmit, children}: WorkoutFormProps) {
 
     <form onSubmit={onSubmit}>
       <WorkoutInfoEditable
-      name={nameValue}
-      notes={notesValue}
-      onPatch={handleInfoPatch}
+        name={nameValue}
+        notes={notesValue}
+        onPatch={handleInfoPatch}
       />
 
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
