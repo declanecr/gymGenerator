@@ -1,6 +1,6 @@
 // --- src/components/workout/WorkoutForm.tsx ---
 import React, {useEffect} from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import {  useFormContext, FieldArrayWithId, UseFieldArrayMove, UseFieldArrayRemove } from 'react-hook-form';
 import { WorkoutFormValues } from '../types';
 import { ExerciseFields } from '../exercises/ExerciseFields';
 import { WorkoutInfoEditable } from './WorkoutInfoEditable';
@@ -10,18 +10,24 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 export interface WorkoutFormProps {
     onSubmit: React.FormEventHandler<HTMLFormElement>;
-    children?: React.ReactNode;
+    //children?: React.ReactNode;
     isLoading?: boolean;
+    openSelector: () => void;
+    fields: FieldArrayWithId<WorkoutFormValues, "exercises", "id">[];    
+    removeExercise: UseFieldArrayRemove;
+    moveExercise: UseFieldArrayMove;
     //error?: unknown;
 }
 
-export function WorkoutForm({ onSubmit, children}: WorkoutFormProps) {
-  const { control, register, watch, setValue } = useFormContext<WorkoutFormValues>();  
-  const { fields, append, remove, move } =useFieldArray({
-    control,
-    name: "exercises",  // field in your WorkoutFormValues
-  })
-
+export function WorkoutForm({ onSubmit,
+  isLoading,
+  fields,
+  removeExercise,
+  moveExercise,
+  openSelector,
+}: WorkoutFormProps) {
+  
+  const { register, watch, setValue } = useFormContext<WorkoutFormValues>()
   const sensors =useSensors(useSensor(PointerSensor)); //just says to use mouse as the tracked sensor for moving exercises
 
   // Make sure name & notes are registered in RHF
@@ -46,7 +52,7 @@ export function WorkoutForm({ onSubmit, children}: WorkoutFormProps) {
 
     const oldIndex = fields.findIndex(f => f.id === active.id);
     const newIndex = fields.findIndex(f => f.id === over.id);
-    move(oldIndex, newIndex);
+    moveExercise(oldIndex, newIndex);
 
     // now overwrite all positions
     fields.forEach((_, idx) => {
@@ -74,18 +80,19 @@ export function WorkoutForm({ onSubmit, children}: WorkoutFormProps) {
               key={field.id}
               id={field.id}   // for useSortable
               index={idx}   // for RHF
-              onRemove={() => remove(idx)}
+              onRemove={() => removeExercise(idx)}
           />
       ))}
       </SortableContext>
       </DndContext>
 
-      <button type="button" onClick={() => append({ exerciseId: -1,position: fields.length +1, sets: [] })}>
+      <button type="button" onClick={openSelector}>
         Add Exercise
       </button>
 
-      {children}
-      <button type="submit">Finish</button>
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? 'Saving…' : 'Finish'}
+      </button>
     </form>
 
   )

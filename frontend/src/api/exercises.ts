@@ -15,7 +15,7 @@ export interface WorkoutExercise {
 
 /*********** DTOs ***************/
 export interface CreateWorkoutExerciseDto {
-    exerciseId: number
+    exerciseId: string
     templateExerciseId?: string
     position: number
 } 

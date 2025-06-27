@@ -1,9 +1,12 @@
 
 // --- src/components/workout/WorkoutContainer.tsx ---
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form'
+import React, {useState} from 'react';
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { WorkoutForm } from './WorkoutForm';
 import { WorkoutFormValues } from '../types';
+import { Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
+import { ExerciseCatalogList } from '../../ExerciseCatalogList';
+import { ExerciseCatalogItem } from '../../../api/exerciseCatalog';
 
 interface WorkoutContainerProps {
   initialValues: WorkoutFormValues
@@ -14,18 +17,76 @@ interface WorkoutContainerProps {
 
 export function WorkoutContainer({ initialValues, onSubmit, isLoading }: WorkoutContainerProps) {
   const methods = useForm<WorkoutFormValues>({ defaultValues: initialValues })
+  const { control, handleSubmit } = methods;
+  const { fields, append, remove, move } = useFieldArray({
+    control,
+    name: 'exercises',
+  });
 
+  const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
+
+
+  // selector state
+  const [showSelector, setShowSelector] = useState(false);
 
   return (
     <FormProvider {...methods}>
       {/* handleSubmit returns an event handler */}
       <WorkoutForm 
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         isLoading={isLoading}
-        //error={error}
-      >
-        {/* …render your exercises list here… */}
-      </WorkoutForm>
+
+        // field-array props:
+        fields={fields}       // FieldArrayWithId<...>[]
+        removeExercise={remove}
+        moveExercise={move}
+    
+        // selector props:
+        openSelector={() => setShowSelector(true)}
+      />
+        <Dialog open={showSelector} onClose={() => setShowSelector(false)}>
+          <ExerciseCatalogList
+            showCustom
+            onSelect={(exercise)=>setDetailEx(exercise)}  //opens details
+            onAdd={(exercise)=> {
+              append({
+                exerciseId: exercise.id,
+                position: fields.length + 1,
+                sets: [],
+              });
+              setShowSelector(false);
+            }}
+          />
+        </Dialog>
+        <Dialog
+          open={!!detailEx}
+          onClose={() => setDetailEx(null)}
+        >
+          {detailEx && (
+            <>
+              <DialogTitle>{detailEx.name}</DialogTitle>
+              <DialogContent>
+                {/* show whatever info you have: description, muscles, etc. */}
+                <p>{detailEx.description}</p>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    append({
+                      exerciseId: detailEx.id,
+                      position: fields.length + 1,
+                      sets: [],
+                    });
+                    setDetailEx(null);
+                    setShowSelector(false);
+                  }}
+                >
+                  Add to workout
+                </Button>
+              </DialogContent>
+            </>
+          )}
+        </Dialog>
+      
     </FormProvider>
   )
 }

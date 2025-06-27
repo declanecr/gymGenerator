@@ -83,7 +83,7 @@ export default function WorkoutPage() {
   const initialExercises: ExerciseFormValues[] =
     (workoutExercises || []).map((ex, idx) => ({
       id: ex.id,
-      exerciseId: Number(ex.exerciseId),
+      exerciseId: String(ex.exerciseId),
       position: ex.position,
       sets:
         ((setsQueries[idx].data as WorkoutSet[]) || [])
