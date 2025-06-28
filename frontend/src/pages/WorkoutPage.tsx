@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link,  useNavigate } from 'react-router-dom';
 import { useGetWorkout } from '../hooks/workouts/useGetWorkout';
-import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer';
+import { WorkoutContainer } from '../components/workouts/WorkoutContainer';
 import { WorkoutFormValues } from '../components/forms/types';
 import { useCreateExercise } from '../hooks/workoutExercises/useCreateExercise';
 import { useCreateSet } from '../hooks/sets/useCreateSet';

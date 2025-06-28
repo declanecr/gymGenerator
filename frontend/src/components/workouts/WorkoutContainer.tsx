@@ -3,10 +3,11 @@
 import React, {useState} from 'react';
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { WorkoutForm } from './WorkoutForm';
-import { WorkoutFormValues } from '../types';
-import { Dialog, DialogTitle, DialogContent, Button } from '@mui/material';
-import { ExerciseCatalogList } from '../../ExerciseCatalogList';
-import { ExerciseCatalogItem } from '../../../api/exerciseCatalog';
+import { WorkoutFormValues } from '../forms/types';
+import { Dialog } from '@mui/material';
+import { ExerciseCatalogList } from '../ExerciseCatalogList';
+import { ExerciseCatalogItem } from '../../api/exerciseCatalog';
+import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
 
 interface WorkoutContainerProps {
   initialValues: WorkoutFormValues
@@ -24,7 +25,6 @@ export function WorkoutContainer({ initialValues, onSubmit, isLoading }: Workout
   });
 
   const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
-
 
   // selector state
   const [showSelector, setShowSelector] = useState(false);
@@ -58,34 +58,12 @@ export function WorkoutContainer({ initialValues, onSubmit, isLoading }: Workout
             }}
           />
         </Dialog>
-        <Dialog
+        <ExerciseInfoModal
           open={!!detailEx}
+          exercise={detailEx}
           onClose={() => setDetailEx(null)}
-        >
-          {detailEx && (
-            <>
-              <DialogTitle>{detailEx.name}</DialogTitle>
-              <DialogContent>
-                {/* show whatever info you have: description, muscles, etc. */}
-                <p>{detailEx.description}</p>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    append({
-                      exerciseId: detailEx.id,
-                      position: fields.length + 1,
-                      sets: [],
-                    });
-                    setDetailEx(null);
-                    setShowSelector(false);
-                  }}
-                >
-                  Add to workout
-                </Button>
-              </DialogContent>
-            </>
-          )}
-        </Dialog>
+        />
+        
       
     </FormProvider>
   )

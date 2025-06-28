@@ -1,8 +1,8 @@
 // src/components/forms/exercises/ExerciseFields.tsx
 import React from 'react';
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form';
-import { WorkoutFormValues } from '../types';
-import { useExercisesCatalog } from '../../../hooks/useExercisesCatalog';
+import { WorkoutFormValues } from '../forms/types';
+import { useExercisesCatalog } from '../../hooks/useExercisesCatalog';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';

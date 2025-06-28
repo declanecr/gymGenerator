@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
 import { listTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
-import StartWorkoutModal from '../components/StartWorkoutModal'
+import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 
 export default function Dashboard() {
   const { logout, token } = useAuth()

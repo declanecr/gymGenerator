@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from '@mui/material/Modal'; // or use your preferred modal
-import { useCreateWorkout } from '../hooks/workouts/useCreateWorkout';
+import { useCreateWorkout } from '../../hooks/workouts/useCreateWorkout';
 import { useNavigate } from 'react-router-dom';
 
 interface StartWorkoutModalProps {

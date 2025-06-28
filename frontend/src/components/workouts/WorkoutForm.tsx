@@ -1,7 +1,7 @@
 // --- src/components/workout/WorkoutForm.tsx ---
 import React, {useEffect} from 'react';
 import {  useFormContext, FieldArrayWithId, UseFieldArrayMove, UseFieldArrayRemove } from 'react-hook-form';
-import { WorkoutFormValues } from '../types';
+import { WorkoutFormValues } from '../forms/types';
 import { ExerciseFields } from '../exercises/ExerciseFields';
 import { WorkoutInfoEditable } from './WorkoutInfoEditable';
 

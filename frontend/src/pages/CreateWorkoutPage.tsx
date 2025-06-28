@@ -1,6 +1,6 @@
 // src/pages/CreateWorkoutPage.tsx
 import React from 'react';
-import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer';
+import { WorkoutContainer } from '../components/workouts/WorkoutContainer';
 import { useCreateWorkout } from '../hooks/workouts/useCreateWorkout';
 import { WorkoutFormValues } from '../components/forms/types';
 
