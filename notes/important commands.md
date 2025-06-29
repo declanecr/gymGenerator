@@ -6,4 +6,4 @@ npm run dev
 npm test
 ### prisma
 npx prisma studio
-npm prisma db seed
+npx prisma db seed

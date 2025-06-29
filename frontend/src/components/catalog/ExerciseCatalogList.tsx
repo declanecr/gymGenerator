@@ -9,10 +9,10 @@ import {
   Box 
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add'
-import { ExerciseCatalogItem } from "../api/exerciseCatalog";
+import { ExerciseCatalogItem } from "../../api/exerciseCatalog";
 import { useState } from "react";
-import { useFilteredExercises } from "../hooks/useFilteredExercise";
-import { useDebounce } from "../hooks/useDebounce";
+import { useFilteredExercises } from "../../hooks/useFilteredExercise";
+import { useDebounce } from "../../hooks/useDebounce";
 
 export interface ExerciseCatalogListProps {
   showCustom?: boolean;

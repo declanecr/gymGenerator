@@ -5,7 +5,7 @@ import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
 import { WorkoutForm } from './WorkoutForm';
 import { WorkoutFormValues } from '../forms/types';
 import { Dialog } from '@mui/material';
-import { ExerciseCatalogList } from '../ExerciseCatalogList';
+import { ExerciseCatalogList } from '../catalog/ExerciseCatalogList';
 import { ExerciseCatalogItem } from '../../api/exerciseCatalog';
 import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
 

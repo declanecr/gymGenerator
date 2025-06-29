@@ -6,5 +6,5 @@ export class CreateTemplateExerciseDto {
 
   @IsOptional()
   @IsInt()
-  position?: number;
+  position: number;
 }

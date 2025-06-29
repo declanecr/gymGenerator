@@ -44,7 +44,48 @@ const fakeExercises = [
     equipment: 'Barbell',
     default: true,
   },
+  {
+    name: 'Overhead Press',
+    description: 'A overhead press shoulder exercise',
+    primaryMuscle: 'Shoulder',
+    equipment: 'Barbell',
+    default: true,
+  },
   // Add as many as you want...
+];
+
+// --- Fake template workouts---
+const fakeTemplateWorkouts = [
+  {
+    name: 'Push Day',
+    isGlobal: true,
+    exercises: [
+      {
+        name: 'Bench Press',
+        sets: [
+          { reps: 8, weight: 135 },
+          { reps: 6, weight: 145 },
+        ],
+      },
+      {
+        name: 'Overhead Press',
+        sets: [{ reps: 10, weight: 65 }],
+      },
+    ],
+  },
+  {
+    name: 'User Leg Day',
+    isGlobal: false,
+    exercises: [
+      {
+        name: 'Squat',
+        sets: [
+          { reps: 5, weight: 185 },
+          { reps: 5, weight: 195 },
+        ],
+      },
+    ],
+  },
 ];
 
 async function main() {
@@ -74,16 +115,16 @@ async function main() {
     }
   }
 
-  // --- (Optional) Seed User-specific exercises ---
-  const user = await prisma.user.findUnique({
+  // --- Seed User-specific exercises ---
+  const testUser = await prisma.user.findUnique({
     where: { email: 'testuser1@example.com' },
   });
-  if (user) {
+  if (testUser) {
     await prisma.exercise.upsert({
       where: {
         name_userId: {
           name: 'Single-arm Row',
-          userId: user.id,
+          userId: testUser.id,
         },
       },
       update: {},
@@ -93,7 +134,52 @@ async function main() {
         primaryMuscle: 'Back',
         equipment: 'Dumbbell',
         default: false,
-        userId: user.id,
+        userId: testUser.id,
+      },
+    });
+  }
+
+  const allExercises = await prisma.exercise.findMany({
+    where: { userId: null },
+  });
+
+  const exerciseMap = Object.fromEntries(
+    allExercises.map((ex) => [ex.name, ex]),
+  );
+
+  function isNotNull<T>(value: T | null): value is T {
+    return value !== null;
+  }
+  // --- Seed Global Template ---
+  for (const templateWorkout of fakeTemplateWorkouts) {
+    const templateExercises = templateWorkout.exercises
+      .map((ex, index) => {
+        const found = exerciseMap[ex.name];
+        if (!found) {
+          console.warn(`⚠️ Exercise "${ex.name}" not found — skipping.`);
+          return null;
+        }
+
+        return {
+          position: index,
+          exercise: { connect: { id: found.id } },
+          sets: {
+            create: ex.sets.map((set, i) => ({
+              position: i,
+              reps: set.reps,
+              weight: set.weight,
+            })),
+          },
+        };
+      })
+      .filter(isNotNull); // remove nulls
+    await prisma.templateWorkout.create({
+      data: {
+        name: templateWorkout.name,
+        userId: templateWorkout.isGlobal ? undefined : testUser?.id,
+        templateExercises: {
+          create: templateExercises,
+        },
       },
     });
   }

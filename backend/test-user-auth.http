@@ -26,6 +26,11 @@ Content-Type: application/json
   "email": "test@example.com",
   "password": "yourpassword"
 }
+
+
+
+
+
 ### access token from successful login
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImlhdCI6MTc0OTA3MDc4NCwiZXhwIjoxNzQ5MDc0Mzg0fQ.WrnztKitw23Ua_B_C-rJ26NhnF3UhMtmDOL3tL6EwSw
 
@@ -76,12 +81,16 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "testAdmin@example.com",
-  "password": "yourAdminpassword"
+  "email": "admin@example.com",
+  "password": "adminpass"
 }
 
 ###
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QWRtaW5AZXhhbXBsZS5jb20iLCJpYXQiOjE3NDkxNDkxODUsImV4cCI6MTc0OTE1Mjc4NX0.G8Hkw0DRR8ML-aVVTiJJchKlO-ahTomAlXWtBcA3u3o
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMzLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwiaWF0IjoxNzUxMTU4NTE4LCJleHAiOjE3NTExNjIxMTh9.5x7P1AJkF_Sa73IalHq32AKPujdwNmVdJT4ZhU5UigI
+
+### GET - Template Workouts
+GET http://localhost:3000/api/v1/template-workouts
+Authorization: Bearer {{adminToken}}
 
 ###
 GET http://localhost:3000/api/v1/exercises-catalog/search?term=press

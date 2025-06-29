@@ -23,22 +23,32 @@ export class TemplateWorkoutsService {
 
   async findAll(userId: number) {
     return this.prisma.templateWorkout.findMany({
-      where: { userId },
+      where: {
+        OR: [{ userId }, { userId: null }],
+      },
+      include: {
+        templateExercises: {
+          include: { exercise: true, sets: true },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
 
   async findOne(id: string, userId: number) {
-    const workout = await this.prisma.templateWorkout.findFirst({
-      where: { id, userId },
+    const tpl = await this.prisma.templateWorkout.findFirst({
+      where: {
+        id,
+        OR: [{ userId }, { userId: null }],
+      },
       include: {
         templateExercises: {
-          include: { sets: true, exercise: true },
+          include: { exercise: true, sets: true },
         },
       },
     });
-    if (!workout) throw new NotFoundException('Template not found');
-    return workout;
+    if (!tpl) throw new NotFoundException('Template not found');
+    return tpl;
   }
 
   async update(id: string, userId: number, dto: UpdateTemplateWorkoutDto) {

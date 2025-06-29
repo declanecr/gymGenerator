@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Box, Typography, List, ListItem, ListItemText } from '@mui/material'
-import { fetchTemplateWorkout, TemplateWorkout } from '../api/templateWorkouts'
+import { getTemplateWorkout, TemplateWorkout } from '../api/templateWorkouts'
 
 export default function TemplateWorkoutPage() {
   const { id } = useParams()
@@ -9,7 +9,7 @@ export default function TemplateWorkoutPage() {
 
   useEffect(() => {
     if (id) {
-      fetchTemplateWorkout(id)
+      getTemplateWorkout(id)
         .then(setTemplate)
         .catch((err) => console.error('Failed to load template', err))
     }

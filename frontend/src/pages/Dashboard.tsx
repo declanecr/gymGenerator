@@ -3,7 +3,7 @@ import { Typography, Box, Button, List, ListItem, ListItemText } from '@mui/mate
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
-import { listTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
+import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 
 export default function Dashboard() {
@@ -23,7 +23,7 @@ export default function Dashboard() {
     fetchWorkouts()
       .then(setWorkouts)
       .catch((err) => console.error('Failed to load workouts', err))
-    listTemplateWorkouts()
+    fetchTemplateWorkouts()
       .then(setTemplates)
       .catch((err) => console.error('Failed to load templates', err))
   }, [])

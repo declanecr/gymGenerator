@@ -9,5 +9,5 @@ export class CreateTemplateSetDto {
 
   @IsOptional()
   @IsInt()
-  position?: number;
+  position: number;
 }

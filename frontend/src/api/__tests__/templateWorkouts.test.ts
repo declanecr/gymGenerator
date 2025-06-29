@@ -1,7 +1,7 @@
 //Unit tests for templateWorkouts
 
 import api from '../axios';
-import { fetchTemplateWorkout, listTemplateWorkouts } from '../templateWorkouts';
+import { getTemplateWorkout, fetchTemplateWorkouts } from '../templateWorkouts';
 
 // provide a manual mock so api.get actually exists
 jest.mock('../axios', () => ({
@@ -27,7 +27,7 @@ describe('templateWorkouts API', () => {
     mockedApi.get.mockResolvedValueOnce({ data: templateWorkout })
 
     // Act
-    const result = await fetchTemplateWorkout('XYZ')
+    const result = await getTemplateWorkout('XYZ')
 
     // Assert: that api.get was called with the correct URL…
     expect(mockedApi.get).toHaveBeenCalledWith('/template-workouts/XYZ')
@@ -42,7 +42,7 @@ describe('templateWorkouts API', () => {
     ]
     mockedApi.get.mockResolvedValueOnce({ data: templateWorkouts })
 
-    const result = await listTemplateWorkouts()
+    const result = await fetchTemplateWorkouts()
 
     expect(mockedApi.get).toHaveBeenCalledWith('/template-workouts')
     expect(result).toEqual(templateWorkouts)

@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/shared/decorators/get-user.decorator';
-import { User } from '@prisma/client';
 import { TemplateWorkoutsService } from './template-workouts.service';
 import { CreateTemplateWorkoutDto } from './dto/create-template-workout.dto';
 import { UpdateTemplateWorkoutDto } from './dto/update-template-workout.dto';
@@ -18,39 +17,49 @@ import { CreateTemplateExerciseDto } from './dto/create-template-exercise.dto';
 import { UpdateTemplateExerciseDto } from './dto/update-template-exercise.dto';
 import { CreateTemplateSetDto } from './dto/create-template-set.dto';
 import { UpdateTemplateSetDto } from './dto/update-template-set.dto';
+import { JwtPayload } from 'src/shared/guards/jwt.strategy';
+import { TemplateWorkoutResponseDto } from './dto/template-workout-reponse.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('template-workouts')
 export class TemplateWorkoutsController {
-  constructor(private readonly svc: TemplateWorkoutsService) {}
+  constructor(
+    private readonly templateWorkoutsService: TemplateWorkoutsService,
+  ) {}
 
   @Post()
-  create(@Body() dto: CreateTemplateWorkoutDto, @GetUser() user: User) {
-    return this.svc.create(user.id, dto);
+  create(@Body() dto: CreateTemplateWorkoutDto, @GetUser() user: JwtPayload) {
+    return this.templateWorkoutsService.create(user.id, dto);
   }
 
   @Get()
-  findAll(@GetUser() user: User) {
-    return this.svc.findAll(user.id);
+  async findAll(
+    @GetUser() user: JwtPayload,
+  ): Promise<TemplateWorkoutResponseDto[]> {
+    console.log('controller:');
+    const templateWorkouts = await this.templateWorkoutsService.findAll(
+      user.id,
+    );
+    return templateWorkouts.map((w) => new TemplateWorkoutResponseDto(w));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @GetUser() user: User) {
-    return this.svc.findOne(id, user.id);
+  findOne(@Param('id') id: string, @GetUser() user: JwtPayload) {
+    return this.templateWorkoutsService.findOne(id, user.id);
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() dto: UpdateTemplateWorkoutDto,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
   ) {
-    return this.svc.update(id, user.id, dto);
+    return this.templateWorkoutsService.update(id, user.id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @GetUser() user: User) {
-    return this.svc.remove(id, user.id);
+  remove(@Param('id') id: string, @GetUser() user: JwtPayload) {
+    return this.templateWorkoutsService.remove(id, user.id);
   }
 
   // ----- Template Exercise -----
@@ -58,9 +67,9 @@ export class TemplateWorkoutsController {
   addExercise(
     @Param('id') id: string,
     @Body() dto: CreateTemplateExerciseDto,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
   ) {
-    return this.svc.addExercise(id, user.id, dto);
+    return this.templateWorkoutsService.addExercise(id, user.id, dto);
   }
 
   @Patch(':id/exercises/:eid')
@@ -68,18 +77,18 @@ export class TemplateWorkoutsController {
     @Param('id') id: string,
     @Param('eid') eid: string,
     @Body() dto: UpdateTemplateExerciseDto,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
   ) {
-    return this.svc.updateExercise(id, eid, user.id, dto);
+    return this.templateWorkoutsService.updateExercise(id, eid, user.id, dto);
   }
 
   @Delete(':id/exercises/:eid')
   removeExercise(
     @Param('id') id: string,
     @Param('eid') eid: string,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
   ) {
-    return this.svc.removeExercise(id, eid, user.id);
+    return this.templateWorkoutsService.removeExercise(id, eid, user.id);
   }
 
   // ----- Template Set -----
@@ -87,22 +96,22 @@ export class TemplateWorkoutsController {
   addSet(
     @Param('eid') eid: string,
     @Body() dto: CreateTemplateSetDto,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
   ) {
-    return this.svc.addSet(eid, user.id, dto);
+    return this.templateWorkoutsService.addSet(eid, user.id, dto);
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')
   updateSet(
     @Param('sid') sid: string,
-    @GetUser() user: User,
+    @GetUser() user: JwtPayload,
     @Body() dto: UpdateTemplateSetDto,
   ) {
-    return this.svc.updateSet(sid, user.id, dto);
+    return this.templateWorkoutsService.updateSet(sid, user.id, dto);
   }
 
   @Delete(':id/exercises/:eid/sets/:sid')
-  removeSet(@Param('sid') sid: string, @GetUser() user: User) {
-    return this.svc.removeSet(sid, user.id);
+  removeSet(@Param('sid') sid: string, @GetUser() user: JwtPayload) {
+    return this.templateWorkoutsService.removeSet(sid, user.id);
   }
 }
