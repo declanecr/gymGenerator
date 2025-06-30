@@ -74,6 +74,13 @@ export class TemplateWorkoutsService {
   }
 
   // --- Exercises ---
+  async getExercises(templateId: string, userId: number) {
+    await this.ensureOwnership(templateId, userId);
+    return this.prisma.templateExercise.findMany({
+      where: { workoutTemplateId: templateId },
+    });
+  }
+
   async addExercise(
     templateId: string,
     userId: number,
@@ -115,6 +122,13 @@ export class TemplateWorkoutsService {
   }
 
   // --- Sets ---
+  async getSets(exerciseId: string, templateId: string, userId: number) {
+    await this.ensureOwnership(templateId, userId);
+    return this.prisma.templateSet.findMany({
+      where: { templateExerciseId: exerciseId },
+    });
+  }
+
   async addSet(exerciseId: string, userId: number, dto: CreateTemplateSetDto) {
     const exercise = await this.prisma.templateExercise.findUnique({
       where: { id: exerciseId },

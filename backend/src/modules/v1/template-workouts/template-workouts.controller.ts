@@ -72,6 +72,11 @@ export class TemplateWorkoutsController {
     return this.templateWorkoutsService.addExercise(id, user.id, dto);
   }
 
+  @Get(':id/exercises')
+  getExercises(@Param('id') id: string, @GetUser() user: JwtPayload) {
+    return this.templateWorkoutsService.getExercises(id, user.id);
+  }
+
   @Patch(':id/exercises/:eid')
   updateExercise(
     @Param('id') id: string,
@@ -99,6 +104,15 @@ export class TemplateWorkoutsController {
     @GetUser() user: JwtPayload,
   ) {
     return this.templateWorkoutsService.addSet(eid, user.id, dto);
+  }
+
+  @Get(':id/exercises/:eid/sets')
+  getSets(
+    @Param('id') id: string,
+    @Param('eid') eid: string,
+    @GetUser() user: JwtPayload,
+  ) {
+    return this.templateWorkoutsService.getSets(eid, id, user.id);
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')

@@ -4,19 +4,19 @@ import { useGetWorkout } from '../hooks/workouts/useGetWorkout';
 import { WorkoutContainer } from '../components/workouts/WorkoutContainer';
 import { WorkoutFormValues } from '../components/forms/types';
 import { useCreateExercise } from '../hooks/workoutExercises/useCreateExercise';
-import { useCreateSet } from '../hooks/sets/useCreateSet';
+import { useCreateSet } from '../hooks/workoutSets/useCreateSet';
 import { WorkoutExercise } from '../api/exercises';
 import { ExerciseFormValues } from '../components/forms/types';
 import { SetFormValues } from '../components/forms/types';
 import { WorkoutSet } from '../api/sets';
 import { fetchWorkoutSets } from '../api/sets';
-import { useWorkoutExercises } from '../hooks/useExercises';
+import { useWorkoutExercises } from '../hooks/workoutExercises/useExercises';
 import { useQueries } from '@tanstack/react-query';
 
 import { useUpdateExercise } from '../hooks/workoutExercises/useUpdateExercise';
-import { useUpdateSet } from '../hooks/sets/useUpdateSet';
+import { useUpdateSet } from '../hooks/workoutSets/useUpdateSet';
 import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
-import { useDeleteSet } from '../hooks/sets/useDeleteSet';
+import { useDeleteSet } from '../hooks/workoutSets/useDeleteSet';
 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
@@ -81,7 +81,7 @@ export default function WorkoutPage() {
 
  // build initial form data
   const initialExercises: ExerciseFormValues[] =
-    (workoutExercises || []).map((ex, idx) => ({
+    (workoutExercises || []).map((ex:WorkoutExercise, idx: number) => ({
       id: ex.id,
       exerciseId: String(ex.exerciseId),
       position: ex.position,

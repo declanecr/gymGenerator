@@ -1,7 +1,7 @@
 // src/hooks/useFilteredExercises.ts
 import { useMemo } from "react"
 import { useExercisesCatalog } from "./useExercisesCatalog";
-import type { ExerciseCatalogItem } from "../api/exerciseCatalog";
+import type { ExerciseCatalogItem } from "../../api/exerciseCatalog";
 
 // reusable hook for filter exercises
 

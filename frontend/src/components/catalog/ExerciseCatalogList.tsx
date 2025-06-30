@@ -11,7 +11,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import { ExerciseCatalogItem } from "../../api/exerciseCatalog";
 import { useState } from "react";
-import { useFilteredExercises } from "../../hooks/useFilteredExercise";
+import { useFilteredExercises } from "../../hooks/catalog/useFilteredExercise";
 import { useDebounce } from "../../hooks/useDebounce";
 
 export interface ExerciseCatalogListProps {

@@ -1,5 +1,5 @@
 import { StartNamedModal } from '../shared-workouts/StartNamedModal';
-import { useCreateTemplateWorkout } from '../../hooks/templates/useCreateTemplateWorkout';
+import { useCreateTemplateWorkout } from '../../hooks/templateWorkouts/useCreateTemplateWorkout';
 import { useNavigate } from 'react-router-dom';
 
 export default function StartTemplateModal(props: { open: boolean; onClose(): void }) {
