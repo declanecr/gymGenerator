@@ -5,7 +5,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Dashboard from '../pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
-import TemplateWorkoutPage from '../pages/TemplateWorkout'
+import TemplateWorkoutPage from '../pages/TemplateWorkoutPage'
 import WorkoutPage from '../pages/WorkoutPage'
 
 export default function AppRoutes() {

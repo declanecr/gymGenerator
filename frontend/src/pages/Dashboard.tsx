@@ -5,6 +5,7 @@ import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
 import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
+import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
 
 export default function Dashboard() {
   const { logout, token } = useAuth()
@@ -12,7 +13,8 @@ export default function Dashboard() {
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [templates, setTemplates] = useState<TemplateWorkout[]>([])
 
-  const [showModal, setShowModal] =useState(false);
+  const [showWorkoutModal, setShowWorkoutModal] =useState(false);
+  const [showTemplateModal,setShowTemplateModal] = useState(false);
 
   const handleLogout = () => {
     logout()    // clear token + state
@@ -33,13 +35,14 @@ export default function Dashboard() {
       <Box>
         {token}
       </Box>
-      <button onClick={() => setShowModal(true)}>Start New Workout</button>
-      {showModal && (
+      <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
+      {showWorkoutModal && (
         <StartWorkoutModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
+          open={showWorkoutModal}
+          onClose={() => setShowWorkoutModal(false)}
         />
       )}
+
 
       
       <Typography variant="h5" mt={4} mb={1}>Your Workouts</Typography>
@@ -53,6 +56,13 @@ export default function Dashboard() {
         ))}
       </List>
 
+      <button onClick={() => setShowTemplateModal(true)}>Create new Template</button>
+      {showTemplateModal && (
+        <StartTemplateModal
+          open={showTemplateModal}
+          onClose={() => setShowTemplateModal(false)}
+        />
+      )}
       <Typography variant="h5" mt={4} mb={1}>Template Workouts</Typography>
       <List>
         {templates.map((t) => (
