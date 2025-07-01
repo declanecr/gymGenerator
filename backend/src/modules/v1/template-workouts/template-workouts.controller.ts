@@ -36,7 +36,6 @@ export class TemplateWorkoutsController {
   async findAll(
     @GetUser() user: JwtPayload,
   ): Promise<TemplateWorkoutResponseDto[]> {
-    console.log('controller:');
     const templateWorkouts = await this.templateWorkoutsService.findAll(
       user.id,
     );
