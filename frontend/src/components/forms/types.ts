@@ -10,10 +10,10 @@ export interface SetFormValues {
 
 export interface ExerciseFormValues {
   id?: string;                       // for tracking existing records
-  exerciseId: string;                // exercise-catalog ID
+  exerciseId: number;                // exercise-catalog ID
   position: number;                  // ordering under the workout
   // if you want to nest sets here:
-  sets?: SetFormValues[];
+  sets: SetFormValues[];
 }
 
 export interface WorkoutFormValues {

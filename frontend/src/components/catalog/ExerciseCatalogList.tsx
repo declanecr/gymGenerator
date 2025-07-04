@@ -23,7 +23,7 @@ export interface ExerciseCatalogListProps {
 export function ExerciseCatalogList({ showCustom =true, onSelect, onAdd, }: ExerciseCatalogListProps){
   const [query, setQuery] = useState(""); // state for the search term
   const debouncedQuery = useDebounce(query, 300);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
   const {filtered: exercises, isLoading, error}=useFilteredExercises(debouncedQuery, showCustom)
 
   if (isLoading) return <div>Loading...</div>;

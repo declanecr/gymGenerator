@@ -47,11 +47,9 @@ export function LoginForm() {
             const { accessToken } =await loginUser(data)
             login(accessToken)      // Store in context + localStorage
             console.log ('Token', accessToken)
-            // TODO: after dashboard creation, implement dashboard
             navigate('/dashboard')    //redirect to main app view
         }catch (err) {
             console.error('Login failed', err)
-            // TODO: display error message
         }
     }
 

@@ -62,7 +62,7 @@ export default function TemplateWorkoutPage() {
 
   const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex, idx) => ({
     id: ex.id,
-    exerciseId: String(ex.exerciseId),
+    exerciseId: ex.exerciseId,
     position: ex.position,
     sets: ((setsQueries[idx].data as TemplateSet[]) || []).map(toSetFormValues),
   }));

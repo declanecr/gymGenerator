@@ -6,7 +6,7 @@ export interface WorkoutExercise {
     id: string
     createdAt: string
     updatedAt: string
-    exerciseId: string // the id of the exercise from the exercise catalog used for this
+    exerciseId: number // the id of the exercise from the exercise catalog used for this
     templateExerciseId?: string | null // the id of the exercise within a template that is optionally used to create this exercise instance
     workoutId: string
     position: number
@@ -15,7 +15,7 @@ export interface WorkoutExercise {
 
 /*********** DTOs ***************/
 export interface CreateWorkoutExerciseDto {
-    exerciseId: string
+    exerciseId: number
     templateExerciseId?: string
     position: number
 } 

@@ -83,7 +83,7 @@ export default function WorkoutPage() {
   const initialExercises: ExerciseFormValues[] =
     (workoutExercises || []).map((ex:WorkoutExercise, idx: number) => ({
       id: ex.id,
-      exerciseId: String(ex.exerciseId),
+      exerciseId: ex.exerciseId,
       position: ex.position,
       sets:
         ((setsQueries[idx].data as WorkoutSet[]) || [])
@@ -99,6 +99,7 @@ export default function WorkoutPage() {
 
    // handle create vs update calls
   async function handleSubmit(data: WorkoutFormValues) {
+    console.log('WP submit payload: ', data)
     // DELETE removed exercises
     const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
     const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];

@@ -3,7 +3,7 @@ import { WorkoutExercise } from "./exercises";
 import { TemplateExercise } from "./templateWorkouts";
 
 export interface ExerciseCatalogItem {
-    id: string
+    id: number
     name: string
     description?: string | null
     primaryMuscle: string

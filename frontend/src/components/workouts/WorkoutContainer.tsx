@@ -1,13 +1,15 @@
 
 // --- src/components/workout/WorkoutContainer.tsx ---
 import React, {useState} from 'react';
-import { useForm, FormProvider, useFieldArray } from 'react-hook-form'
+import { useForm, FormProvider, useFieldArray,  } from 'react-hook-form'
 import { WorkoutForm } from './WorkoutForm';
 import { WorkoutFormValues } from '../forms/types';
 import { Dialog } from '@mui/material';
 import { ExerciseCatalogList } from '../catalog/ExerciseCatalogList';
 import { ExerciseCatalogItem } from '../../api/exerciseCatalog';
 import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { workoutSchema } from '../../schemas/workout';
 
 interface WorkoutContainerProps {
   initialValues: WorkoutFormValues
@@ -17,12 +19,23 @@ interface WorkoutContainerProps {
 }
 
 export function WorkoutContainer({ initialValues, onSubmit, isLoading }: WorkoutContainerProps) {
-  const methods = useForm<WorkoutFormValues>({ defaultValues: initialValues })
+  const methods = useForm<WorkoutFormValues>({ 
+    resolver: zodResolver(workoutSchema),
+    defaultValues: initialValues,
+    mode: 'onSubmit',            // only validate on submit
+    reValidateMode: 'onSubmit',  // only re-validate on submit, not onChange
+    shouldUnregister: false      // prevents RHF unregistering the field
+   })
+
   const { control, handleSubmit } = methods;
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: 'exercises',
+    shouldUnregister: false,
   });
+
+  
+
 
   const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
 
@@ -52,7 +65,7 @@ export function WorkoutContainer({ initialValues, onSubmit, isLoading }: Workout
               append({
                 exerciseId: exercise.id,
                 position: fields.length + 1,
-                sets: [],
+                sets: [{reps: 0, weight: 0, position: 1}],
               });
               setShowSelector(false);
             }}

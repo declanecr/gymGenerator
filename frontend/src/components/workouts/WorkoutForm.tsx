@@ -7,6 +7,7 @@ import { WorkoutInfoEditable } from './WorkoutInfoEditable';
 
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Box, FormHelperText } from '@mui/material';
 
 export interface WorkoutFormProps {
     onSubmit: React.FormEventHandler<HTMLFormElement>;
@@ -27,8 +28,12 @@ export function WorkoutForm({ onSubmit,
   openSelector,
 }: WorkoutFormProps) {
   
-  const { register, watch, setValue } = useFormContext<WorkoutFormValues>()
+  const { register, watch, setValue, formState: {errors, submitCount}, } = useFormContext<WorkoutFormValues>()
   const sensors =useSensors(useSensor(PointerSensor)); //just says to use mouse as the tracked sensor for moving exercises
+
+  // live array of exercises
+  const exercises = watch(`exercises`) ?? []
+  const noExercises = exercises.length === 0
 
   // Make sure name & notes are registered in RHF
   useEffect(() => {
@@ -63,6 +68,7 @@ export function WorkoutForm({ onSubmit,
   return (
 
     <form onSubmit={onSubmit}>
+      
       <WorkoutInfoEditable
         name={nameValue}
         notes={notesValue}
@@ -76,15 +82,22 @@ export function WorkoutForm({ onSubmit,
         >
           {/* exercises */}
           {fields.map((field, idx) => (
-            <ExerciseFields
-              key={field.id}
-              id={field.id}   // for useSortable
-              index={idx}   // for RHF
-              onRemove={() => removeExercise(idx)}
-          />
-      ))}
-      </SortableContext>
+            <Box key={field.id} mb={2}>
+              <ExerciseFields
+                id={field.id}   // for useSortable
+                index={idx}   // for RHF
+                onRemove={() => removeExercise(idx)}
+                />
+            </Box>
+          ))}
+          
+        </SortableContext>
       </DndContext>
+      {submitCount > 0 && noExercises && (
+        <FormHelperText error sx={{ mt: 1, mb: 2 }}>
+          {errors.exercises?.message ?? 'Add at least one exercise'} {/** the additional message is crucial, it prevents the error from being lost by Zod*/}
+        </FormHelperText>
+      )}
 
       <button type="button" onClick={openSelector}>
         Add Exercise
