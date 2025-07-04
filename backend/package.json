@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "seed": "npx prisma db seed",           
+    "seed": "npx prisma db seed",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -22,8 +22,7 @@
     "test:e2e": "jest --runInBand --config=backend/test/jest-e2e.json"
   },
   "prisma": {
-     "seed": "node -r ts-node/register ./prisma/seed.dev.ts"
-
+    "seed": "node -r ts-node/register ./prisma/seed.dev.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -37,7 +36,7 @@
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

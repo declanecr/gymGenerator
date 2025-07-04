@@ -12,9 +12,10 @@ interface ExerciseFieldsProps {
   id: string;
   index: number;
   onRemove: () => void;
+  requireSets?: boolean;
 }
 
-export function ExerciseFields({ id, index, onRemove }: ExerciseFieldsProps) {
+export function ExerciseFields({ id, index, onRemove, requireSets = true }: ExerciseFieldsProps) {
   const { register, control, clearErrors, formState: { errors, submitCount }, watch } = useFormContext<WorkoutFormValues>();
   const { data: catalog = [], isLoading, error } = useExercisesCatalog();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -118,7 +119,7 @@ export function ExerciseFields({ id, index, onRemove }: ExerciseFieldsProps) {
           </Box>
         ))}
         {/* only show this once a “Finish” has been clicked and there are no sets */}
-        {submitCount > 0 && noSets && (
+        {submitCount > 0 && noSets && requireSets && (
           <FormHelperText error>
             Each exercise needs at least one set
           </FormHelperText>

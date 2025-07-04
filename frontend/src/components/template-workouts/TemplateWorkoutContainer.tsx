@@ -6,6 +6,8 @@ import { Dialog } from '@mui/material';
 import { ExerciseCatalogList } from '../catalog/ExerciseCatalogList';
 import { ExerciseCatalogItem } from '../../api/exerciseCatalog';
 import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { templateWorkoutSchema } from '../../schemas/templateWorkout';
 
 interface TemplateWorkoutContainerProps {
   initialValues: WorkoutFormValues;
@@ -14,7 +16,13 @@ interface TemplateWorkoutContainerProps {
 }
 
 export function TemplateWorkoutContainer({ initialValues, onSubmit, isLoading }: TemplateWorkoutContainerProps) {
-  const methods = useForm<WorkoutFormValues>({ defaultValues: initialValues });
+  const methods = useForm<WorkoutFormValues>({ 
+    resolver: zodResolver(templateWorkoutSchema),
+    defaultValues: initialValues,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
+    shouldUnregister: false,
+  });
   const { control, handleSubmit } = methods;
   const { fields, append, remove, move } = useFieldArray({ control, name: 'exercises' });
 

@@ -5,6 +5,7 @@ import { ExerciseFields } from '../exercises/ExerciseFields';
 import { TemplateWorkoutInfoEditable } from './TemplateWorkoutInfoEditable';
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { FormHelperText } from '@mui/material';
 
 export interface TemplateWorkoutFormProps {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
@@ -16,7 +17,7 @@ export interface TemplateWorkoutFormProps {
 }
 
 export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercise, moveExercise, openSelector }: TemplateWorkoutFormProps) {
-  const { register, watch, setValue } = useFormContext<WorkoutFormValues>();
+  const { register, watch, setValue, formState: { errors, submitCount, }, } = useFormContext<WorkoutFormValues>();
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
@@ -26,6 +27,9 @@ export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercis
 
   const nameValue = watch('name');
   const notesValue = watch('notes');
+
+  const exercises = watch('exercises') ?? [];
+  const noExercises = exercises.length === 0;
 
   function handleInfoPatch(update: Partial<{ name: string; notes: string | null | undefined }>) {
     if (update.name !== undefined) setValue('name', update.name);
@@ -49,10 +53,21 @@ export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercis
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
           {fields.map((field, idx) => (
-            <ExerciseFields key={field.id} id={field.id} index={idx} onRemove={() => removeExercise(idx)} />
+            <ExerciseFields 
+              key={field.id} 
+              id={field.id} 
+              index={idx} 
+              onRemove={() => removeExercise(idx)} 
+              requireSets={false}
+            />
           ))}
         </SortableContext>
       </DndContext>
+      {submitCount > 0 && noExercises && (
+        <FormHelperText error sx={{ mt: 1, mb: 2 }}>
+          {errors.exercises?.message ?? 'Add at least one exercise'}
+        </FormHelperText>
+      )}
       <button type="button" onClick={openSelector}>
         Add Exercise
       </button>
