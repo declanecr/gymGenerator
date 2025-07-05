@@ -8,6 +8,7 @@ import { CreateWorkoutExerciseDto } from 'src/modules/v1/workouts/dto/create-wor
 import { CreateWorkoutSetDto } from 'src/modules/v1/workouts/dto/create-workout-set.dto';
 import { UpdateWorkoutSetDto } from 'src/modules/v1/workouts/dto/update-workout-set.dto';
 import { WorkoutResponseDto } from 'src/modules/v1/workouts/dto/workout-response.dto';
+import { ExerciseResponseDto } from 'src/modules/v1/exercises-catalog/dto/exercise-response.dto';
 
 interface LoginResponse {
   accessToken: string;
@@ -49,7 +50,13 @@ describe('Workouts (e2e)', () => {
     token = (loginRes.body as LoginResponse).accessToken;
 
     const exercise = await prisma.exercise.create({
-      data: { name: 'Push Up', primaryMuscle: 'Chest', default: true },
+      data: {
+        name: 'Push Up',
+        primaryMuscle: 'Chest',
+        default: true,
+        description: 'Do a push up',
+        equipment: 'Bodyweight',
+      },
     });
     exerciseId = exercise.id;
   });
@@ -96,6 +103,21 @@ describe('Workouts (e2e)', () => {
     expect(res.status).toBe(201);
     workoutExerciseId = (res.body as { id: string }).id;
     expect(workoutExerciseId).toBeDefined();
+  });
+
+  it('GET /workouts/:id/exercises fetches exercises', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/api/v1/workouts/${workoutId}/exercises`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const body = res.body as ExerciseResponseDto[];
+    expect(body.length).toBe(1);
+    expect(body[0].name).toBe('Push Up');
+    expect(body[0].isDefault).toBe(true);
+    expect(body[0].description).toBe('Do a push up');
+    expect(body[0].equipment).toBe('Bodyweight');
+    expect(body[0]).not.toHaveProperty('userId'); // DTO shields this
   });
 
   it('POST /workouts/:id/exercises/:eid/sets adds set', async () => {

@@ -5,6 +5,7 @@ export class ExerciseResponseDto {
   primaryMuscle: string;
   equipment?: string | null;
   isDefault: boolean;
+  description?: string | null;
 
   constructor(exercise: Exercise) {
     this.id = exercise.id;
@@ -12,5 +13,6 @@ export class ExerciseResponseDto {
     this.primaryMuscle = exercise.primaryMuscle;
     this.equipment = exercise.equipment;
     this.isDefault = exercise.default;
+    this.description = exercise.description;
   }
 }

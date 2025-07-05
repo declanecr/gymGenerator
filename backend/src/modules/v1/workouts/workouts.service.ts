@@ -80,6 +80,18 @@ export class WorkoutsService {
     await this.ensureExerciseOwner(workoutId, userId);
     return this.prisma.workoutExercise.findMany({
       where: { workoutId: workoutId },
+      include: {
+        exercise: {
+          select: {
+            id: true,
+            name: true,
+            primaryMuscle: true,
+            equipment: true,
+            default: true,
+            description: true,
+          },
+        },
+      },
     });
   }
 

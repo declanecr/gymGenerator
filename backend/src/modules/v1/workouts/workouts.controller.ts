@@ -19,6 +19,7 @@ import { CreateWorkoutExerciseDto } from './dto/create-workout-exercise.dto';
 import { UpdateWorkoutExerciseDto } from './dto/update-workout-exercise.dto';
 import { CreateWorkoutSetDto } from './dto/create-workout-set.dto';
 import { UpdateWorkoutSetDto } from './dto/update-workout-set.dto';
+import { ExerciseResponseDto } from '../exercises-catalog/dto/exercise-response.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('workouts')
@@ -80,8 +81,16 @@ export class WorkoutsController {
   async fetchExercises(
     @GetUser() user: JwtPayload,
     @Param('id') workoutId: string,
-  ) {
-    return this.workoutsService.getExercises(workoutId, user.id);
+  ): Promise<ExerciseResponseDto[]> {
+    const res = this.workoutsService.getExercises(workoutId, user.id);
+    return (await res).map((ex) => ({
+      id: ex.exercise.id,
+      name: ex.exercise.name,
+      primaryMuscle: ex.exercise.primaryMuscle,
+      equipment: ex.exercise.equipment,
+      isDefault: ex.exercise.default,
+      description: ex.exercise.description,
+    }));
   }
 
   @Patch(':id/exercises/:eid')
