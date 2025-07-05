@@ -75,6 +75,17 @@ describe('Workouts (e2e)', () => {
     workoutId = body.id;
   });
 
+  it('GET /workouts lists user workouts', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/v1/workouts')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const body = res.body as unknown as WorkoutResponseDto[];
+    expect(body.length).toBe(1);
+    expect(body[0].id).toBe(workoutId);
+  });
+
   it('POST /workouts/:id/exercises adds exercise', async () => {
     const dto: CreateWorkoutExerciseDto = { exerciseId, position: 1 };
     const res = await request(app.getHttpServer())
@@ -110,17 +121,6 @@ describe('Workouts (e2e)', () => {
 
     expect(res.status).toBe(200);
     expect((res.body as { reps: number }).reps).toBe(12);
-  });
-
-  it('GET /workouts lists user workouts', async () => {
-    const res = await request(app.getHttpServer())
-      .get('/api/v1/workouts')
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(res.status).toBe(200);
-    const body = res.body as unknown as WorkoutResponseDto[];
-    expect(body.length).toBe(1);
-    expect(body[0].id).toBe(workoutId);
   });
 
   it('GET /workouts/:id returns the created workout', async () => {

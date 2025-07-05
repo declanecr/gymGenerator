@@ -5,6 +5,7 @@ import { Exercise, User } from '@prisma/client';
 import { CreateCustomExerciseDto } from './dto/create-custom-exercise.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
 import { ExerciseResponseDto } from './dto/exercise-response.dto';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
 
 @Injectable()
 export class ExercisesCatalogService {
@@ -155,7 +156,7 @@ export class ExercisesCatalogService {
     });
   }
 
-  async createDefaultExercise(dto: CreateCustomExerciseDto): Promise<Exercise> {
+  async createDefaultExercise(dto: CreateExerciseDto): Promise<Exercise> {
     // 1) Check name collision among existing default exercises
     if (await this.isNameTakenByDefault(dto.name)) {
       throw new ConflictException(
