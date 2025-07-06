@@ -9,6 +9,7 @@ import { CreateWorkoutSetDto } from 'src/modules/v1/workouts/dto/create-workout-
 import { UpdateWorkoutSetDto } from 'src/modules/v1/workouts/dto/update-workout-set.dto';
 import { WorkoutResponseDto } from 'src/modules/v1/workouts/dto/workout-response.dto';
 import { ExerciseResponseDto } from 'src/modules/v1/exercises-catalog/dto/exercise-response.dto';
+import { UpdateWorkoutExerciseDto } from 'src/modules/v1/workouts/dto/update-workout-exercise.dto';
 
 interface LoginResponse {
   accessToken: string;
@@ -103,6 +104,16 @@ describe('Workouts (e2e)', () => {
     expect(res.status).toBe(201);
     workoutExerciseId = (res.body as { id: string }).id;
     expect(workoutExerciseId).toBeDefined();
+  });
+
+  it('PATCH /workouts/:id/exercises/:eid updates exercise', async () => {
+    const dto: UpdateWorkoutExerciseDto = { position: 2 };
+    const res = await request(app.getHttpServer())
+      .patch(`/api/v1/workouts/${workoutId}/exercises/${workoutExerciseId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(dto);
+    console.log(res.body, res.headers, res.status);
+    expect(res.status).toBe(200);
   });
 
   it('GET /workouts/:id/exercises fetches exercises', async () => {
