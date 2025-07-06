@@ -26,6 +26,42 @@ export class WorkoutsService {
     });
   }
 
+  async copyFromTemplate(templateId: string, userId: number) {
+    const template = await this.prisma.templateWorkout.findFirst({
+      where: {
+        id: templateId,
+        OR: [{ userId }, { userId: null }],
+      },
+      include: {
+        templateExercises: { include: { sets: true } },
+      },
+    });
+    if (!template) throw new NotFoundException('Template not found');
+
+    return this.prisma.workout.create({
+      data: {
+        userId,
+        workoutTemplateId: template.id,
+        name: template.name,
+        notes: template.notes,
+        workoutExercises: {
+          create: template.templateExercises.map((ex) => ({
+            exerciseId: ex.exerciseId,
+            templateExerciseId: ex.id,
+            position: ex.position,
+            workoutSets: {
+              create: ex.sets.map((set) => ({
+                reps: set.reps,
+                weight: set.weight,
+                position: set.position,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
+
   async findAll(userId: number) {
     return this.prisma.workout.findMany({
       where: { userId },

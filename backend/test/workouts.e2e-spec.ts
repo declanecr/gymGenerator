@@ -10,6 +10,8 @@ import { UpdateWorkoutSetDto } from 'src/modules/v1/workouts/dto/update-workout-
 import { WorkoutResponseDto } from 'src/modules/v1/workouts/dto/workout-response.dto';
 import { ExerciseResponseDto } from 'src/modules/v1/exercises-catalog/dto/exercise-response.dto';
 import { UpdateWorkoutExerciseDto } from 'src/modules/v1/workouts/dto/update-workout-exercise.dto';
+import { JwtPayload } from 'src/shared/guards/jwt.strategy';
+import * as jwt from 'jsonwebtoken';
 
 interface LoginResponse {
   accessToken: string;
@@ -23,6 +25,8 @@ describe('Workouts (e2e)', () => {
   let workoutId: string;
   let workoutExerciseId: string;
   let workoutSetId: string;
+  let templateId: string;
+  let copiedWorkoutId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -60,6 +64,21 @@ describe('Workouts (e2e)', () => {
       },
     });
     exerciseId = exercise.id;
+
+    const secret = process.env.JWT_SECRET || 'myDefaultSecret';
+    const decoded = jwt.verify(token, secret) as JwtPayload;
+    const userId = decoded.id;
+
+    const tpl = await prisma.templateWorkout.create({
+      data: { name: 'Tpl', notes: 'N', userId },
+    });
+    const tplEx = await prisma.templateExercise.create({
+      data: { workoutTemplateId: tpl.id, exerciseId, position: 1 },
+    });
+    await prisma.templateSet.create({
+      data: { templateExerciseId: tplEx.id, reps: 5, weight: 50, position: 1 },
+    });
+    templateId = tpl.id;
   });
 
   afterAll(async () => {
@@ -106,13 +125,30 @@ describe('Workouts (e2e)', () => {
     expect(workoutExerciseId).toBeDefined();
   });
 
+  it('POST /workouts/from-template/:id copies template', async () => {
+    const res = await request(app.getHttpServer())
+      .post(`/api/v1/workouts/from-template/${templateId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(201);
+    copiedWorkoutId = (res.body as { id: string }).id;
+
+    const exs = await prisma.workoutExercise.findMany({
+      where: { workoutId: copiedWorkoutId },
+    });
+    expect(exs.length).toBe(1);
+    const sets = await prisma.workoutSet.findMany({
+      where: { workoutExerciseId: exs[0].id },
+    });
+    expect(sets.length).toBe(1);
+  });
+
   it('PATCH /workouts/:id/exercises/:eid updates exercise', async () => {
     const dto: UpdateWorkoutExerciseDto = { position: 2 };
     const res = await request(app.getHttpServer())
       .patch(`/api/v1/workouts/${workoutId}/exercises/${workoutExerciseId}`)
       .set('Authorization', `Bearer ${token}`)
       .send(dto);
-    console.log(res.body, res.headers, res.status);
     expect(res.status).toBe(200);
   });
 
@@ -210,6 +246,13 @@ describe('Workouts (e2e)', () => {
       .delete(`/api/v1/workouts/${workoutId}`)
       .set('Authorization', `Bearer ${token}`);
 
+    expect(res.status).toBe(200);
+  });
+
+  it('DELETE copied workout', async () => {
+    const res = await request(app.getHttpServer())
+      .delete(`/api/v1/workouts/${copiedWorkoutId}`)
+      .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
   });
 

@@ -35,6 +35,15 @@ export class WorkoutsController {
     return new WorkoutResponseDto(workout);
   }
 
+  @Post('from-template/:tid')
+  async createFromTemplate(
+    @GetUser() user: JwtPayload,
+    @Param('tid') id: string,
+  ): Promise<WorkoutResponseDto> {
+    const workout = await this.workoutsService.copyFromTemplate(id, user.id);
+    return new WorkoutResponseDto(workout);
+  }
+
   @Get()
   async findAll(@GetUser() user: JwtPayload): Promise<WorkoutResponseDto[]> {
     const workouts = await this.workoutsService.findAll(user.id);
