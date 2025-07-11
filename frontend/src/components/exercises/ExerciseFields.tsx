@@ -9,7 +9,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Box, Select, MenuItem, Button, FormHelperText } from '@mui/material';
 
 interface ExerciseFieldsProps {
-  id: string;
+  id: number;
   index: number;
   onRemove: () => void;
   requireSets?: boolean;

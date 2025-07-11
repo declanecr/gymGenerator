@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { TemplateWorkoutContainer } from '../components/template-workouts/TemplateWorkoutContainer';
+import { TemplateWorkoutContainer, TemplateWorkoutContainerHandle } from '../components/template-workouts/TemplateWorkoutContainer';
 import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../components/forms/types';
 import { fetchTemplateSets } from '../api/templateWorkouts';
 import { useTemplateExercises } from '../hooks/templateExercises/useTemplateExercises';
@@ -13,6 +13,9 @@ import { useCreateTemplateSet } from '../hooks/templateSets/useCreateTemplateSet
 import { useUpdateTemplateSet } from '../hooks/templateSets/useUpdateTemplateSet';
 import { useDeleteTemplateSet } from '../hooks/templateSets/useDeleteTemplateSet';
 import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateWorkout';
+import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
+import { Button } from '@mui/material';
+//import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
   return { id: apiSet.id, reps: apiSet.reps ?? 0, weight: apiSet.weight ?? 0, position: apiSet.position };
@@ -29,6 +32,9 @@ export default function TemplateWorkoutPage() {
   const { mutateAsync: createSet } = useCreateTemplateSet();
   const { mutateAsync: updateSet } = useUpdateTemplateSet();
   const { mutateAsync: deleteSet } = useDeleteTemplateSet();
+  const { mutateAsync: createFromTemplate } =useCreateWorkoutFromTemplate();
+  
+  
 
   const {
     data: workout,
@@ -50,6 +56,8 @@ export default function TemplateWorkoutPage() {
       })) || [],
   });
 
+  const formRef = useRef<TemplateWorkoutContainerHandle>(null);
+
   const isSetsLoading = setsQueries.some(q => q.isLoading);
   const hasSetsError = setsQueries.some(q => q.error);
 
@@ -62,7 +70,7 @@ export default function TemplateWorkoutPage() {
 
   const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex, idx) => ({
     id: ex.id,
-    exerciseId: ex.exerciseId,
+    exerciseId: Number(ex.exerciseId),
     position: ex.position,
     sets: ((setsQueries[idx].data as TemplateSet[]) || []).map(toSetFormValues),
   }));
@@ -73,8 +81,10 @@ export default function TemplateWorkoutPage() {
     notes: workout.notes ?? '',
     exercises: initialExercises,
   };
-
-  async function handleSubmit(data: WorkoutFormValues) {
+  
+  
+  
+  async function handleSave(data: WorkoutFormValues) {
     const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
     const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
     await Promise.all(originalIds.filter(id => !currentIds.includes(id)).map(id => deleteExercise({ workoutId, id })));
@@ -103,13 +113,29 @@ export default function TemplateWorkoutPage() {
         }
       }
     }
+  }
+
+  async function handleSubmit(data: WorkoutFormValues) {
+    await handleSave(data);
     navigate('/dashboard');
+  }
+
+  async function handleStart() {
+    if (formRef.current?.isDirty) {
+      await formRef.current.submit(handleSave);
+    }
+    const workout = await createFromTemplate({tid: workoutId});
+    navigate(`/workouts/${workout.id}`);
   }
   return (
     <div>
       <Link to="/dashboard">back to dashboard</Link>
+      <Button onClick={handleStart}
+        
+      > Start this workout </Button>
       <h1>Template Workout Details</h1>
-      <TemplateWorkoutContainer initialValues={initialValues} onSubmit={handleSubmit} />
+      
+      <TemplateWorkoutContainer ref={formRef} initialValues={initialValues} onSubmit={handleSubmit} />
     </div>
   );
 }

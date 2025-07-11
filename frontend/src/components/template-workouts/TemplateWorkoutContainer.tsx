@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { TemplateWorkoutForm } from './TemplateWorkoutForm';
 import { WorkoutFormValues } from '../forms/types';
@@ -9,13 +9,21 @@ import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { templateWorkoutSchema } from '../../schemas/templateWorkout';
 
-interface TemplateWorkoutContainerProps {
+export interface TemplateWorkoutContainerProps {
   initialValues: WorkoutFormValues;
   onSubmit: (data: WorkoutFormValues) => void | Promise<void>;
   isLoading?: boolean;
 }
 
-export function TemplateWorkoutContainer({ initialValues, onSubmit, isLoading }: TemplateWorkoutContainerProps) {
+export interface TemplateWorkoutContainerHandle {
+  submit: (cb?: (data: WorkoutFormValues)=> void | Promise<void>)=> Promise<void>;
+  isDirty?: boolean;
+}
+
+export const TemplateWorkoutContainer = forwardRef<
+  TemplateWorkoutContainerHandle,
+  TemplateWorkoutContainerProps>(
+  ({ initialValues, onSubmit, isLoading }, ref)=> {
   const methods = useForm<WorkoutFormValues>({ 
     resolver: zodResolver(templateWorkoutSchema),
     defaultValues: initialValues,
@@ -23,33 +31,39 @@ export function TemplateWorkoutContainer({ initialValues, onSubmit, isLoading }:
     reValidateMode: 'onSubmit',
     shouldUnregister: false,
   });
-  const { control, handleSubmit } = methods;
+  const { control, handleSubmit: handleSave, formState } = methods;
+  useImperativeHandle(ref, () => ({
+    submit: (cb?: (data: WorkoutFormValues)=>void |Promise<void>)=>
+      handleSave(cb ?? onSubmit)(),
+    isDirty: formState.isDirty,
+  }))
   const { fields, append, remove, move } = useFieldArray({ control, name: 'exercises' });
 
   const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
   const [showSelector, setShowSelector] = useState(false);
 
-  return (
-    <FormProvider {...methods}>
-      <TemplateWorkoutForm
-        onSubmit={handleSubmit(onSubmit)}
-        isLoading={isLoading}
-        fields={fields}
-        removeExercise={remove}
-        moveExercise={move}
-        openSelector={() => setShowSelector(true)}
-      />
-      <Dialog open={showSelector} onClose={() => setShowSelector(false)}>
-        <ExerciseCatalogList
-          showCustom
-          onSelect={exercise => setDetailEx(exercise)}
-          onAdd={exercise => {
-            append({ exerciseId: exercise.id, position: fields.length + 1, sets: [] });
-            setShowSelector(false);
-          }}
+
+    return (
+      <FormProvider {...methods}>
+        <TemplateWorkoutForm
+          onSubmit={handleSave(onSubmit)}
+          isLoading={isLoading}
+          fields={fields}
+          removeExercise={remove}
+          moveExercise={move}
+          openSelector={() => setShowSelector(true)}
         />
-      </Dialog>
+        <Dialog open={showSelector} onClose={() => setShowSelector(false)}>
+          <ExerciseCatalogList
+            showCustom
+            onSelect={exercise => setDetailEx(exercise)}
+            onAdd={exercise => {
+              append({ exerciseId: exercise.id, position: fields.length + 1, sets: [] });
+              setShowSelector(false);
+            }}
+          />
+        </Dialog>
       <ExerciseInfoModal open={!!detailEx} exercise={detailEx} onClose={() => setDetailEx(null)} />
     </FormProvider>
   );
-}
+},);
