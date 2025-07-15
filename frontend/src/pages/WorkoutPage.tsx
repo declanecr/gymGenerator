@@ -17,6 +17,8 @@ import { useUpdateExercise } from '../hooks/workoutExercises/useUpdateExercise';
 import { useUpdateSet } from '../hooks/workoutSets/useUpdateSet';
 import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
 import { useDeleteSet } from '../hooks/workoutSets/useDeleteSet';
+import { useDeleteWorkout } from '../hooks/workouts/useDeleteWorkout';
+import { Button } from '@mui/material';
 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
@@ -41,6 +43,7 @@ export default function WorkoutPage() {
   const { mutateAsync: createSet } = useCreateSet();
   const { mutateAsync: updateSet } = useUpdateSet();
   const { mutateAsync: deleteSet } = useDeleteSet();
+  const { mutateAsync: deleteWorkout } = useDeleteWorkout();
 
 
   // fetch workout
@@ -149,12 +152,20 @@ export default function WorkoutPage() {
     navigate('/dashboard');
   }
 
+  async function handleDelete() {
+    await deleteWorkout({ id: workoutId });
+    navigate('/dashboard');
+  }
+
   return (
     <div>
       <Link to="/dashboard">
         back to dashboard
       </Link>
       <h1>Workout Details</h1>    
+      <Button onClick={handleDelete} color="error" variant="outlined">
+        Delete Workout
+      </Button>
 
       {/* Exercises/sets are always editable */}
       <WorkoutContainer

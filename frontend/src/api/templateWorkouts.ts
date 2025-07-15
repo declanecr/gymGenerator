@@ -21,6 +21,7 @@ export interface TemplateWorkout {
   notes?: string | null
   createdAt: string
   updatedAt: string
+  userId?: number | null
   templateExercises?: TemplateExercise[]
 }
 

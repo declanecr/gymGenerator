@@ -15,6 +15,7 @@ import { useDeleteTemplateSet } from '../hooks/templateSets/useDeleteTemplateSet
 import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateWorkout';
 import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
 import { Button } from '@mui/material';
+import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
 //import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
@@ -33,6 +34,7 @@ export default function TemplateWorkoutPage() {
   const { mutateAsync: updateSet } = useUpdateTemplateSet();
   const { mutateAsync: deleteSet } = useDeleteTemplateSet();
   const { mutateAsync: createFromTemplate } =useCreateWorkoutFromTemplate();
+  const { mutateAsync: deleteTemplateWorkout } = useDeleteTemplateWorkout();
   
   
 
@@ -122,6 +124,11 @@ export default function TemplateWorkoutPage() {
     navigate('/dashboard');
   }
 
+  async function handleDelete() {
+    await deleteTemplateWorkout({ id: workoutId });
+    navigate('/dashboard');
+  }
+
   async function handleStart() {
     if (formRef.current?.isDirty) {
       await formRef.current.submit(handleSave);
@@ -129,6 +136,8 @@ export default function TemplateWorkoutPage() {
     const workout = await createFromTemplate({tid: workoutId});
     navigate(`/workouts/${workout.id}`);
   }
+  const canDelete = workout.userId !== null && workout.userId !== undefined;
+
   return (
     <div>
       <Link to="/dashboard">back to dashboard</Link>
@@ -136,7 +145,10 @@ export default function TemplateWorkoutPage() {
         
       > Start this workout </Button>
       <h1>Template Workout Details</h1>
-      
+      {canDelete && (<Button onClick={handleDelete} color="error" variant="outlined">
+        Delete Template
+      </Button>
+      )}
       <TemplateWorkoutContainer ref={formRef} initialValues={initialValues} onSubmit={handleSubmit} />
     </div>
   );
