@@ -68,7 +68,10 @@ export class TemplateWorkoutsService {
     const workout = await this.prisma.templateWorkout.findUnique({
       where: { id },
     });
-    if (!workout || workout.userId !== userId) {
+    if (!workout) {
+      throw new NotFoundException('No workout found');
+    }
+    if (workout.userId !== null && workout.userId !== userId) {
       throw new ForbiddenException('Not allowed');
     }
   }

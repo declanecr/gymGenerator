@@ -1,0 +1,9 @@
+- [ ] copyFromTemplate
+	- [ ] create a new template. 
+	- [ ] save it blank, should produce error message
+	- [ ] add exercise with no sets, save it, should save
+	- [ ] open again, add blank set, attempt save, should produce error message
+	- [ ] make reps negative, attempt save should produce error message
+	- [ ] update set to be valid, save, should save
+	- [ ] open again, add second exercise with its own 2 sets, save it, should save
+	- [ ] add third exercise, remove 1 set from second exercise, press 'start this workout'. should save template then duplicate to a new copied workout on workoutPage

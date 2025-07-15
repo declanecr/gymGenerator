@@ -8,7 +8,7 @@ import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
 
 export default function Dashboard() {
-  const { logout, token } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [templates, setTemplates] = useState<TemplateWorkout[]>([])
@@ -32,9 +32,6 @@ export default function Dashboard() {
 
   return (
     <Box p={4}>
-      <Box>
-        {token}
-      </Box>
       <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
       {showWorkoutModal && (
         <StartWorkoutModal
