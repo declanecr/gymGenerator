@@ -16,6 +16,7 @@ import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateW
 import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
 import { Button } from '@mui/material';
 import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
+import { useGetMe } from '../hooks/users/useGetMe';
 //import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
@@ -35,6 +36,7 @@ export default function TemplateWorkoutPage() {
   const { mutateAsync: deleteSet } = useDeleteTemplateSet();
   const { mutateAsync: createFromTemplate } =useCreateWorkoutFromTemplate();
   const { mutateAsync: deleteTemplateWorkout } = useDeleteTemplateWorkout();
+  const { data: me } = useGetMe();
   
   
 
@@ -136,7 +138,9 @@ export default function TemplateWorkoutPage() {
     const workout = await createFromTemplate({tid: workoutId});
     navigate(`/workouts/${workout.id}`);
   }
-  const canDelete = workout.userId !== null && workout.userId !== undefined;
+  
+  const isAdmin = me?.role === 'ADMIN';
+  const canDelete = (workout.userId !== null && workout.userId !== undefined) || isAdmin;
 
   return (
     <div>

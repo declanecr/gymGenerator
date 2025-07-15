@@ -51,27 +51,36 @@ export class TemplateWorkoutsService {
     return tpl;
   }
 
-  async update(id: string, userId: number, dto: UpdateTemplateWorkoutDto) {
-    await this.ensureOwnership(id, userId);
+  async update(
+    id: string,
+    userId: number,
+    dto: UpdateTemplateWorkoutDto,
+    role?: string,
+  ) {
+    await this.ensureOwnership(id, userId, role);
     return this.prisma.templateWorkout.update({
       where: { id },
       data: dto,
     });
   }
 
-  async remove(id: string, userId: number) {
-    await this.ensureOwnership(id, userId);
+  async remove(id: string, userId: number, role?: string) {
+    await this.ensureOwnership(id, userId, role);
     await this.prisma.templateWorkout.delete({ where: { id } });
   }
 
-  private async ensureOwnership(id: string, userId: number) {
+  private async ensureOwnership(id: string, userId: number, role?: string) {
     const workout = await this.prisma.templateWorkout.findUnique({
       where: { id },
     });
     if (!workout) {
       throw new NotFoundException('No workout found');
     }
-    if (workout.userId !== null && workout.userId !== userId) {
+    if (
+      workout.userId !== null &&
+      workout.userId !== userId &&
+      role !== 'ADMIN'
+    ) {
       throw new ForbiddenException('Not allowed');
     }
   }

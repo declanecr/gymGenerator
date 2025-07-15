@@ -13,4 +13,5 @@
 - [ ] delete the original template, the workout created from it, should no longer be connected to it.
 
 ### copyFromTemplate - ADMIN
-- [ ] 
+- [ ] add new global template and save, should be able to delete it
+- [ ] create new global template, log out, then log in as user, shouldn't be able to delete

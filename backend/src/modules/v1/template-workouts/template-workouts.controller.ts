@@ -54,12 +54,12 @@ export class TemplateWorkoutsController {
     @Body() dto: UpdateTemplateWorkoutDto,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.update(id, user.id, dto);
+    return this.templateWorkoutsService.update(id, user.id, dto, user.role);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() user: JwtPayload) {
-    return this.templateWorkoutsService.remove(id, user.id);
+    return this.templateWorkoutsService.remove(id, user.id, user.role);
   }
 
   // ----- Template Exercise -----

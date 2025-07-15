@@ -6,8 +6,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 //Define the expected payload shape
 export interface JwtPayload {
-  id: number; //userId
+  id: number; // userId
   email: string;
+  role?: string;
 }
 
 @Injectable()

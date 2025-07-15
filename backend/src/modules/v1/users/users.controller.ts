@@ -17,6 +17,7 @@ type JwtUser = {
   email: string;
   name?: string | null;
   createdAt: Date;
+  role: string;
 };
 
 @UseGuards(AuthGuard('jwt'))
@@ -25,8 +26,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me') // GET users/me
-  getMe(@GetUser() user: JwtUser): UserResponseDto {
-    return new UserResponseDto(user);
+  async getMe(@GetUser() user: JwtUser): Promise<UserResponseDto> {
+    const full = await this.usersService.findById(user.id);
+    return new UserResponseDto(full!);
   }
 
   @Patch('me') // PATCH users/me

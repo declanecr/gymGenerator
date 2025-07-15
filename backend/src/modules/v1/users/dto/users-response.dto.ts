@@ -7,16 +7,19 @@ export class UserResponseDto {
   email: string;
   name?: string | null;
   createdAt: Date;
+  role: string;
 
   constructor(user: {
     id: number;
     email: string;
     name?: string | null;
     createdAt: Date;
+    role: string;
   }) {
     this.id = user.id;
     this.email = user.email;
     this.name = user.name;
     this.createdAt = user.createdAt;
+    this.role = user.role;
   }
 }
