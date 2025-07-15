@@ -19,6 +19,7 @@ import { CreateTemplateSetDto } from './dto/create-template-set.dto';
 import { UpdateTemplateSetDto } from './dto/update-template-set.dto';
 import { JwtPayload } from 'src/shared/guards/jwt.strategy';
 import { TemplateWorkoutResponseDto } from './dto/template-workout-reponse.dto';
+import { TemplateExerciseResponseDto } from './dto/template-exercise-response.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('template-workouts')
@@ -72,8 +73,26 @@ export class TemplateWorkoutsController {
   }
 
   @Get(':id/exercises')
-  getExercises(@Param('id') id: string, @GetUser() user: JwtPayload) {
-    return this.templateWorkoutsService.getExercises(id, user.id);
+  async getExercises(
+    @GetUser() user: JwtPayload,
+    @Param('id') templateWorkoutId: string,
+  ): Promise<TemplateExerciseResponseDto[]> {
+    const res = await this.templateWorkoutsService.getExercises(
+      templateWorkoutId,
+      user.id,
+    );
+    console.log('fetchTemplateExercises: ', res);
+    return res.map((ex) => ({
+      templateExerciseId: ex.id,
+      exerciseId: ex.exerciseId,
+      position: ex.position,
+      name: ex.exercise.name,
+      primaryMuscle: ex.exercise.primaryMuscle,
+      equipment: ex.exercise.equipment,
+      isDefault: ex.exercise.default,
+      description: ex.exercise.description,
+      workoutTemplateId: ex.workoutTemplateId,
+    }));
   }
 
   @Patch(':id/exercises/:eid')

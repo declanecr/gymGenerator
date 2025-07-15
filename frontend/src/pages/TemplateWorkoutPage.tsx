@@ -51,8 +51,8 @@ export default function TemplateWorkoutPage() {
   const setsQueries = useQueries({
     queries:
       workoutExercises?.map((ex: TemplateExercise) => ({
-        queryKey: ['template-sets', workoutId, ex.id],
-        queryFn: () => fetchTemplateSets(workoutId, ex.id),
+        queryKey: ['template-sets', workoutId, ex.templateExerciseId],
+        queryFn: () => fetchTemplateSets(workoutId, ex.templateExerciseId),
       })) || [],
   });
 
@@ -68,8 +68,8 @@ export default function TemplateWorkoutPage() {
     return <div>Error loading template</div>;
   }
 
-  const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex, idx) => ({
-    id: ex.id,
+  const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex:TemplateExercise, idx) => ({
+    id: ex.templateExerciseId,
     exerciseId: Number(ex.exerciseId),
     position: ex.position,
     sets: ((setsQueries[idx].data as TemplateSet[]) || []).map(toSetFormValues),
@@ -96,7 +96,9 @@ export default function TemplateWorkoutPage() {
         await updateExercise({ workoutId, id: exId, dto: dtoEx });
       } else {
         const newEx = await createExercise({ workoutId, dto: dtoEx });
-        exId = newEx.id;
+        console.log('newEx: ', newEx);
+        exId = newEx.templateExerciseId;
+        console.log('eid: ', exId);
       }
       const origSets = (initialValues.exercises.find(e => e.id === ex.id)?.sets || [])
         .map(s => s.id)

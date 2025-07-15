@@ -3,10 +3,10 @@ import api from "./axios";
 import { WorkoutSet } from "./sets";
 
 export interface WorkoutExercise {
-    id: string
+    workoutExerciseId: string
+    exerciseId: number // the id of the exercise from the exercise catalog used for this
     createdAt: string
     updatedAt: string
-    exerciseId: number // the id of the exercise from the exercise catalog used for this
     templateExerciseId?: string | null // the id of the exercise within a template that is optionally used to create this exercise instance
     workoutId: string
     position: number

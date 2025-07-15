@@ -58,7 +58,7 @@ export const TemplateWorkoutContainer = forwardRef<
             showCustom
             onSelect={exercise => setDetailEx(exercise)}
             onAdd={exercise => {
-              append({ exerciseId: exercise.id, position: fields.length + 1, sets: [] });
+              append({ exerciseId: exercise.exerciseId, position: fields.length + 1, sets: [] });
               setShowSelector(false);
             }}
           />

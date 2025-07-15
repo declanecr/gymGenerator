@@ -57,15 +57,17 @@ export default function WorkoutPage() {
     error: exercisesError,
   } = useWorkoutExercises(workoutId);
 
+  console.log('fetch exercises: ', workoutExercises);
 
   // fetch sets for each exercise
   const setsQueries = useQueries({
     queries:
       workoutExercises?.map((ex: WorkoutExercise) => ({
-        queryKey: ['sets', workoutId, ex.id],
-        queryFn: () => fetchWorkoutSets(workoutId, ex.id),
+        queryKey: ['sets', workoutId, ex.workoutExerciseId],
+        queryFn: () => fetchWorkoutSets(workoutId, ex.workoutExerciseId),
       })) || [],
   });
+
 
 
   const isSetsLoading = setsQueries.some(q => q.isLoading);
@@ -82,7 +84,7 @@ export default function WorkoutPage() {
  // build initial form data
   const initialExercises: ExerciseFormValues[] =
     (workoutExercises || []).map((ex:WorkoutExercise, idx: number) => ({
-      id: ex.id,
+      id: ex.workoutExerciseId,
       exerciseId: ex.exerciseId,
       position: ex.position,
       sets:
@@ -117,7 +119,7 @@ export default function WorkoutPage() {
         await updateExercise({ workoutId, id: exId, dto: dtoEx });
       } else {
         const newEx = await createExercise({ workoutId, dto: dtoEx });
-        exId = newEx.id;
+        exId = newEx.workoutExerciseId;
       }
 
       // DELETE removed sets

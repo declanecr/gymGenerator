@@ -1,6 +1,6 @@
 import { Exercise } from '@prisma/client';
 export class ExerciseResponseDto {
-  id: number;
+  exerciseId: number;
   name: string;
   primaryMuscle: string;
   equipment?: string | null;
@@ -8,7 +8,7 @@ export class ExerciseResponseDto {
   description?: string | null;
 
   constructor(exercise: Exercise) {
-    this.id = exercise.id;
+    this.exerciseId = exercise.id;
     this.name = exercise.name;
     this.primaryMuscle = exercise.primaryMuscle;
     this.equipment = exercise.equipment;

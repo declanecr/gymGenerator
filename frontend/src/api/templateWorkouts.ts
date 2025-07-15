@@ -8,7 +8,7 @@ export interface TemplateSet {
 }
 
 export interface TemplateExercise {
-  id: string
+  templateExerciseId: string
   exerciseId: number
   position: number
   sets: TemplateSet[]
@@ -75,8 +75,15 @@ export async function deleteTemplateWorkout(id: string): Promise<void> {
 /************  EXERCISE API CALLS **************/
 
 export async function createTemplateExercise(dto: CreateTemplateExerciseDto, workoutId: string): Promise<TemplateExercise> {
-    const res = await api.post<TemplateExercise>(`/template-workouts/${workoutId}/exercises`, dto)
-    return res.data
+    const raw = (await api.post<TemplateExercise>(`/template-workouts/${workoutId}/exercises`, dto)).data
+
+    return {
+      templateExerciseId: raw.id,
+      exerciseId: raw.exerciseId,
+      position: raw.position,
+      sets: raw.sets || [],
+      exercise: raw.exercise,
+    };
 }
 
 export async function fetchTemplateExercises(workoutId: string): Promise<TemplateExercise[]> {
@@ -116,9 +123,12 @@ export async function fetchTemplateSets(
   workoutId: string,
   exerciseId: string
 ): Promise< TemplateSet[]> {
+  console.log('templateWorkoutId: ', workoutId, '\ntemplateExerciseId: ', exerciseId)
+
   const res = await api.get<TemplateSet[]>(
     `/template-workouts/${workoutId}/exercises/${exerciseId}/sets`
   );
+  console.log('fetchTemplateSets: ', res.data)
   return res.data;
 }
 

@@ -19,7 +19,7 @@ import { CreateWorkoutExerciseDto } from './dto/create-workout-exercise.dto';
 import { UpdateWorkoutExerciseDto } from './dto/update-workout-exercise.dto';
 import { CreateWorkoutSetDto } from './dto/create-workout-set.dto';
 import { UpdateWorkoutSetDto } from './dto/update-workout-set.dto';
-import { ExerciseResponseDto } from '../exercises-catalog/dto/exercise-response.dto';
+import { WorkoutExerciseResponseDto } from './dto/workout-exercise-response.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('workouts')
@@ -90,10 +90,13 @@ export class WorkoutsController {
   async fetchExercises(
     @GetUser() user: JwtPayload,
     @Param('id') workoutId: string,
-  ): Promise<ExerciseResponseDto[]> {
-    const res = this.workoutsService.getExercises(workoutId, user.id);
-    return (await res).map((ex) => ({
-      id: ex.exercise.id,
+  ): Promise<WorkoutExerciseResponseDto[]> {
+    const res = await this.workoutsService.getExercises(workoutId, user.id);
+    console.log('fetchExercises: ', res);
+    return res.map((ex) => ({
+      workoutExerciseId: ex.id,
+      exerciseId: ex.exerciseId,
+      position: ex.position,
       name: ex.exercise.name,
       primaryMuscle: ex.exercise.primaryMuscle,
       equipment: ex.exercise.equipment,
@@ -141,7 +144,14 @@ export class WorkoutsController {
     @Param('eid') exerciseId: string,
     @Param('id') workoutId: string,
   ) {
-    return this.workoutsService.getSets(exerciseId, workoutId, user.id);
+    console.log(exerciseId, workoutId);
+    const res = await this.workoutsService.getSets(
+      exerciseId,
+      workoutId,
+      user.id,
+    );
+    console.log('getSets: ', res);
+    return res;
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')

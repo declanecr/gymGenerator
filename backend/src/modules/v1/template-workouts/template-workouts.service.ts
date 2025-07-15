@@ -78,6 +78,18 @@ export class TemplateWorkoutsService {
     await this.ensureOwnership(templateId, userId);
     return this.prisma.templateExercise.findMany({
       where: { workoutTemplateId: templateId },
+      include: {
+        exercise: {
+          select: {
+            id: true,
+            name: true,
+            primaryMuscle: true,
+            equipment: true,
+            default: true,
+            description: true,
+          },
+        },
+      },
     });
   }
 

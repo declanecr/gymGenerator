@@ -5,7 +5,7 @@ import { WorkoutFormValues } from '../forms/types';
 
 jest.mock('../../hooks/catalog/useExercisesCatalog', () => ({
   useExercisesCatalog: () => ({
-    data: [{ id: 1, name: 'Mock', primaryMuscle: 'Chest' }],
+    data: [{ exerciseId: 1, name: 'Mock', primaryMuscle: 'Chest' }],
     isLoading: false,
     error: null,
   }),

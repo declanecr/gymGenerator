@@ -114,3 +114,6 @@ Content-Type: application/json
 
 
 
+###
+GET http://localhost:3000/api/v1/workouts/<wid>/exercises/<workoutExerciseId>/sets
+Authorization: Bearer {{adminToken}}

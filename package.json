@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "test": "jest --watchAll --runInBand",
+    "test": "jest --runInBand --watchAll=false",
     "test:e2e": "jest --config=backend/test/jest-e2e.json --runInBand"
   },
   "devDependencies": {

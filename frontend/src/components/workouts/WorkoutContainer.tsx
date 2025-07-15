@@ -63,7 +63,7 @@ export function WorkoutContainer({ initialValues, onSubmit, isLoading }: Workout
             onSelect={(exercise)=>setDetailEx(exercise)}  //opens details
             onAdd={(exercise)=> {
               append({
-                exerciseId: exercise.id,
+                exerciseId: exercise.exerciseId,
                 position: fields.length + 1,
                 sets: [{reps: 0, weight: 0, position: 1}],
               });

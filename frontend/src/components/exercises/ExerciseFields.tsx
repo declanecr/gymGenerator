@@ -70,7 +70,7 @@ export function ExerciseFields({ id, index, onRemove, requireSets = true }: Exer
               Select exercise…
             </MenuItem>
             {catalog.map(ex => (
-              <MenuItem key={ex.id} value={ex.id}>
+              <MenuItem key={ex.exerciseId} value={ex.exerciseId}>
                 {ex.name} ({ex.primaryMuscle})
               </MenuItem>
             ))}

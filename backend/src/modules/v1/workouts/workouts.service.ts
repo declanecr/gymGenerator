@@ -174,11 +174,11 @@ export class WorkoutsService {
     });
   }
 
-  async getSets(exerciseId: string, workoutId: string, userId: number) {
+  async getSets(workoutExerciseId: string, workoutId: string, userId: number) {
     await this.ensureExerciseOwner(workoutId, userId);
     return this.prisma.workoutSet.findMany({
       //should be confined to only sets withing this workout, under the specified exercise
-      where: { workoutExerciseId: exerciseId },
+      where: { workoutExerciseId: workoutExerciseId },
     });
   }
 
