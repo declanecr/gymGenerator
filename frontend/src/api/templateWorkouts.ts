@@ -24,6 +24,25 @@ export interface TemplateWorkout {
   templateExercises?: TemplateExercise[]
 }
 
+// shape returned by the backend
+interface RawTemplateExercise {
+  id: string
+  exerciseId: number
+  position: number
+  sets: TemplateSet[]
+  exercise?: { id: number; name: string }
+}
+
+function mapTemplateExercise(raw: RawTemplateExercise): TemplateExercise {
+  return {
+    templateExerciseId: raw.id,
+    exerciseId: raw.exerciseId,
+    position: raw.position,
+    sets: raw.sets || [],
+    exercise: raw.exercise,
+  }
+}
+
 /*********** DTOs ***************/
 /** Matches CreateWorkoutDto on the server */
 export interface CreateTemplateWorkoutDto {
@@ -75,15 +94,9 @@ export async function deleteTemplateWorkout(id: string): Promise<void> {
 /************  EXERCISE API CALLS **************/
 
 export async function createTemplateExercise(dto: CreateTemplateExerciseDto, workoutId: string): Promise<TemplateExercise> {
-    const raw = (await api.post<TemplateExercise>(`/template-workouts/${workoutId}/exercises`, dto)).data
+    const res = (await api.post<RawTemplateExercise>(`/template-workouts/${workoutId}/exercises`, dto)).data
 
-    return {
-      templateExerciseId: raw.id,
-      exerciseId: raw.exerciseId,
-      position: raw.position,
-      sets: raw.sets || [],
-      exercise: raw.exercise,
-    };
+    return mapTemplateExercise(res)
 }
 
 export async function fetchTemplateExercises(workoutId: string): Promise<TemplateExercise[]> {
