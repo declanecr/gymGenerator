@@ -1,14 +1,30 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, TemplateSet } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import {
+  TemplateExerciseWithSets,
+  TemplateWorkoutWithExtras,
+} from 'src/modules/v1/template-workouts/dto/template-workout-reponse.dto';
 
 const prisma = new PrismaClient();
 
 // --- Fake users ---
 const fakeUsers = [
   {
-    email: 'testuser1@example.com',
+    email: 'user1@example.com',
     password: 'password123',
-    name: 'Alice Example',
+    name: 'User One',
+    role: Role.USER,
+  },
+  {
+    email: 'user2@example.com',
+    password: 'password123',
+    name: 'User Two',
+    role: Role.USER,
+  },
+  {
+    email: 'user3@example.com',
+    password: 'password123',
+    name: 'User Three',
     role: Role.USER,
   },
   {
@@ -51,7 +67,13 @@ const fakeExercises = [
     equipment: 'Barbell',
     default: true,
   },
-  // Add as many as you want...
+  ...Array.from({ length: 46 }, (_, i) => ({
+    name: `Exercise ${i + 1}`,
+    description: `Generic exercise ${i + 1}`,
+    primaryMuscle: 'Various',
+    equipment: 'Bodyweight',
+    default: true,
+  })),
 ];
 
 // --- Fake template workouts---
@@ -74,8 +96,8 @@ const fakeTemplateWorkouts = [
     ],
   },
   {
-    name: 'User Leg Day',
-    isGlobal: false,
+    name: 'Leg Day',
+    isGlobal: true,
     exercises: [
       {
         name: 'Squat',
@@ -83,6 +105,52 @@ const fakeTemplateWorkouts = [
           { reps: 5, weight: 185 },
           { reps: 5, weight: 195 },
         ],
+      },
+      {
+        name: 'Deadlift',
+        sets: [{ reps: 5, weight: 225 }],
+      },
+    ],
+  },
+  {
+    name: 'Pull Day',
+    isGlobal: true,
+    exercises: [
+      {
+        name: 'Deadlift',
+        sets: [{ reps: 5, weight: 225 }],
+      },
+      {
+        name: 'Bench Press',
+        sets: [{ reps: 8, weight: 135 }],
+      },
+    ],
+  },
+  {
+    name: 'Cardio Burst',
+    isGlobal: true,
+    exercises: [
+      {
+        name: 'Exercise 1',
+        sets: [{ reps: 20, weight: 0 }],
+      },
+    ],
+  },
+  {
+    name: 'Full Body Blast',
+    isGlobal: true,
+    exercises: [
+      {
+        name: 'Squat',
+        sets: [{ reps: 5, weight: 185 }],
+      },
+      {
+        name: 'Bench Press',
+        sets: [{ reps: 8, weight: 135 }],
+      },
+      {
+        name: 'Deadlift',
+        sets: [{ reps: 5, weight: 225 }],
       },
     ],
   },
@@ -115,30 +183,6 @@ async function main() {
     }
   }
 
-  // --- Seed User-specific exercises ---
-  const testUser = await prisma.user.findUnique({
-    where: { email: 'testuser1@example.com' },
-  });
-  if (testUser) {
-    await prisma.exercise.upsert({
-      where: {
-        name_userId: {
-          name: 'Single-arm Row',
-          userId: testUser.id,
-        },
-      },
-      update: {},
-      create: {
-        name: 'Single-arm Row',
-        description: 'Back exercise for lats, user-specific.',
-        primaryMuscle: 'Back',
-        equipment: 'Dumbbell',
-        default: false,
-        userId: testUser.id,
-      },
-    });
-  }
-
   const allExercises = await prisma.exercise.findMany({
     where: { userId: null },
   });
@@ -151,6 +195,7 @@ async function main() {
     return value !== null;
   }
   // --- Seed Global Template ---
+  const createdGlobalTemplates = [] as TemplateWorkoutWithExtras[];
   for (const templateWorkout of fakeTemplateWorkouts) {
     const templateExercises = templateWorkout.exercises
       .map((ex, index) => {
@@ -173,15 +218,85 @@ async function main() {
         };
       })
       .filter(isNotNull); // remove nulls
-    await prisma.templateWorkout.create({
+    const tpl = await prisma.templateWorkout.create({
       data: {
         name: templateWorkout.name,
-        userId: templateWorkout.isGlobal ? undefined : testUser?.id,
+        userId: undefined,
         templateExercises: {
           create: templateExercises,
         },
       },
+      include: { templateExercises: { include: { sets: true } } },
     });
+    createdGlobalTemplates.push(tpl);
+  }
+
+  const users = await prisma.user.findMany({ where: { role: Role.USER } });
+
+  for (const user of users) {
+    const userTemplate = await prisma.templateWorkout.create({
+      data: {
+        name: `${user.name}'s Template`,
+        userId: user.id,
+        templateExercises: {
+          create: [
+            {
+              position: 0,
+              exercise: { connect: { id: exerciseMap['Bench Press'].id } },
+              sets: {
+                create: [
+                  { position: 0, reps: 8, weight: 135 },
+                  { position: 1, reps: 8, weight: 135 },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      include: { templateExercises: { include: { sets: true } } },
+    });
+    // 3 manual workouts
+    for (let i = 0; i < 3; i++) {
+      await prisma.workout.create({
+        data: {
+          userId: user.id,
+          name: `Manual Workout ${i + 1} - ${user.name}`,
+        },
+      });
+    }
+
+    const copyTemplate = async (template: TemplateWorkoutWithExtras) => {
+      if (!template.templateExercises) {
+        throw new Error('No exercises on template ' + template.id);
+      }
+      await prisma.workout.create({
+        data: {
+          userId: user.id,
+          workoutTemplateId: template.id,
+          name: template.name,
+          notes: template.notes,
+          workoutExercises: {
+            create: template.templateExercises.map(
+              (ex: TemplateExerciseWithSets) => ({
+                exerciseId: ex.exerciseId,
+                templateExerciseId: ex.id,
+                position: ex.position,
+                workoutSets: {
+                  create: ex.sets.map((set: TemplateSet) => ({
+                    reps: set.reps,
+                    weight: set.weight,
+                    position: set.position,
+                  })),
+                },
+              }),
+            ),
+          },
+        },
+      });
+    };
+
+    await copyTemplate(createdGlobalTemplates[0]);
+    await copyTemplate(userTemplate);
   }
 }
 
