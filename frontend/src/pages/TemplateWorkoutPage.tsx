@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { TemplateWorkoutContainer, TemplateWorkoutContainerHandle } from '../components/template-workouts/TemplateWorkoutContainer';
 import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../components/forms/types';
-import { fetchTemplateSets } from '../api/templateWorkouts';
+import { createTemplateExercise, createTemplateSet, createTemplateWorkout, fetchTemplateSets } from '../api/templateWorkouts';
 import { useTemplateExercises } from '../hooks/templateExercises/useTemplateExercises';
 import { useQueries } from '@tanstack/react-query';
 import { TemplateExercise, TemplateSet } from '../api/templateWorkouts';
@@ -17,6 +17,9 @@ import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTem
 import { Button } from '@mui/material';
 import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
 import { useGetMe } from '../hooks/users/useGetMe';
+import { createWorkout } from '../api/workouts';
+import { createWorkoutExercise } from '../api/exercises';
+import { createWorkoutSet } from '../api/sets';
 //import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
@@ -40,6 +43,7 @@ export default function TemplateWorkoutPage() {
   
   
 
+
   const {
     data: workout,
     isLoading: isWorkoutLoading,
@@ -51,6 +55,8 @@ export default function TemplateWorkoutPage() {
     isLoading: isExercisesLoading,
     error: exercisesError,
   } = useTemplateExercises(workoutId);
+  
+  
 
   const setsQueries = useQueries({
     queries:
@@ -72,7 +78,7 @@ export default function TemplateWorkoutPage() {
     return <div>Error loading template</div>;
   }
 
-  const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex:TemplateExercise, idx) => ({
+  const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex:TemplateExercise, idx: number) => ({
     id: ex.templateExerciseId,
     exerciseId: Number(ex.exerciseId),
     position: ex.position,
@@ -85,37 +91,86 @@ export default function TemplateWorkoutPage() {
     notes: workout.notes ?? '',
     exercises: initialExercises,
   };
+
+  async function createTemplateFromData(data:WorkoutFormValues) {
+    const tpl = await createTemplateWorkout({ name: data.name, notes: data.notes});
+    for ( const ex of data.exercises){
+      const newEx = await createTemplateExercise({exerciseId: Number(ex.exerciseId), position: ex.position }, tpl.id);
+      for (const s of ex.sets || []) {
+        await createTemplateSet({ reps: s.reps, weight: s.weight, position: s.position}, tpl.id, newEx.templateExerciseId);
+      }
+    }
+    return tpl;
+  }
+  async function createWorkoutFromData(data: WorkoutFormValues) {
+    const w = await createWorkout({
+      name: data.name,
+      notes: data.notes,
+      workoutTemplateId: workoutId,
+    });
+    for (const ex of data.exercises) {
+      const newEx = await createWorkoutExercise(
+        {
+          exerciseId: Number(ex.exerciseId),
+          position: ex.position,
+          templateExerciseId: ex.id,
+        },
+        w.id,
+      );
+      console.log(newEx);
+      const exId = newEx.workoutExerciseId;
+      for (const s of ex.sets || []) {
+        await createWorkoutSet(
+          { reps: s.reps, weight: s.weight, position: s.position },
+          w.id,
+          exId,
+        );
+      }
+    }
+    return w;
+  }
+  
   
   
   
   async function handleSave(data: WorkoutFormValues) {
-    const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
-    const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
-    await Promise.all(originalIds.filter(id => !currentIds.includes(id)).map(id => deleteExercise({ workoutId, id })));
+    if (workout!.userId === null && me?.role !== 'ADMIN') {
+      await createTemplateFromData(data);
+    } else {
+      const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
+      const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
+      await Promise.all(
+        originalIds
+          .filter(id => !currentIds.includes(id))
+          .map(id => deleteExercise({ workoutId, id }))
+      );
 
-    for (const ex of data.exercises) {
-      const dtoEx = { exerciseId: Number(ex.exerciseId), position: ex.position };
-      let exId = ex.id;
-      if (exId) {
-        await updateExercise({ workoutId, id: exId, dto: dtoEx });
-      } else {
-        const newEx = await createExercise({ workoutId, dto: dtoEx });
-        console.log('newEx: ', newEx);
-        exId = newEx.templateExerciseId;
-        console.log('eid: ', exId);
-      }
-      const origSets = (initialValues.exercises.find(e => e.id === ex.id)?.sets || [])
-        .map(s => s.id)
-        .filter(Boolean) as string[];
-      const curSets = (ex.sets || []).map(s => s.id).filter(Boolean) as string[];
-      await Promise.all(origSets.filter(id => !curSets.includes(id)).map(setId => deleteSet({ workoutId, exerciseId: exId!, setId })));
-
-      for (const s of ex.sets || []) {
-        const dtoSet = { reps: s.reps, weight: s.weight, position: s.position };
-        if (s.id) {
-          await updateSet({ workoutId, exerciseId: exId!, setId: s.id, dto: dtoSet });
+      for (const ex of data.exercises) {
+        const dtoEx = { exerciseId: Number(ex.exerciseId), position: ex.position };
+        let exId = ex.id;
+        if (exId) {
+          await updateExercise({ workoutId, id: exId, dto: dtoEx });
         } else {
-          await createSet({ workoutId, exerciseId: exId!, dto: dtoSet });
+          const newEx = await createExercise({ workoutId, dto: dtoEx });
+          exId = newEx.templateExerciseId;
+        }
+        const origSets = (initialValues.exercises.find(e => e.id === ex.id)?.sets || [])
+          .map(s => s.id)
+          .filter(Boolean) as string[];
+        const curSets = (ex.sets || []).map(s => s.id).filter(Boolean) as string[];
+        await Promise.all(
+          origSets
+            .filter(id => !curSets.includes(id))
+            .map(setId => deleteSet({ workoutId, exerciseId: exId!, setId }))
+        );
+
+        for (const s of ex.sets || []) {
+          const dtoSet = { reps: s.reps, weight: s.weight, position: s.position };
+          if (s.id) {
+            await updateSet({ workoutId, exerciseId: exId!, setId: s.id, dto: dtoSet });
+          } else {
+            await createSet({ workoutId, exerciseId: exId!, dto: dtoSet });
+          }
         }
       }
     }
@@ -132,11 +187,38 @@ export default function TemplateWorkoutPage() {
   }
 
   async function handleStart() {
-    if (formRef.current?.isDirty) {
-      await formRef.current.submit(handleSave);
+    let formData: WorkoutFormValues | undefined;
+    if (formRef.current) {
+      await formRef.current.submit(d => { formData = d; });
     }
-    const workout = await createFromTemplate({tid: workoutId});
-    navigate(`/workouts/${workout.id}`);
+    if (!formData) return;
+
+    const isGlobal = workout!.userId === null && me?.role !== 'ADMIN';
+
+    if (isGlobal && formRef.current?.isDirty) {
+      const save = window.confirm('Do you want to save this as a template?');
+      if (save) {
+        const tpl = await createTemplateFromData(formData);
+        const w = await createFromTemplate({ tid: tpl.id });
+        navigate(`/workouts/${w.id}`);
+      } else {
+        const w = await createWorkoutFromData(formData);
+        navigate(`/workouts/${w.id}`);
+      }
+      return;
+    }
+
+    if (isGlobal) {
+      const w = await createFromTemplate({ tid: workoutId });
+      navigate(`/workouts/${w.id}`);
+      return;
+    }
+
+    if (formRef.current?.isDirty) {
+      await handleSave(formData);
+    }
+    const workoutRes = await createFromTemplate({ tid: workoutId });
+    navigate(`/workouts/${workoutRes.id}`);
   }
   
   const isAdmin = me?.role === 'ADMIN';

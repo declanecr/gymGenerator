@@ -81,7 +81,7 @@ export class TemplateWorkoutsController {
       templateWorkoutId,
       user.id,
     );
-    console.log('fetchTemplateExercises: ', res);
+    //console.log('fetchTemplateExercises: ', res);
     return res.map((ex) => ({
       templateExerciseId: ex.id,
       exerciseId: ex.exerciseId,

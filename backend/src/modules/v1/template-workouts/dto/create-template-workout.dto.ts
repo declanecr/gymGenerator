@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Length } from 'class-validator';
+import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
 export class CreateTemplateWorkoutDto {
   @IsString()
@@ -7,6 +7,6 @@ export class CreateTemplateWorkoutDto {
 
   @IsOptional()
   @IsString()
-  @Length(1, 500)
+  @MaxLength(500)
   notes?: string;
 }

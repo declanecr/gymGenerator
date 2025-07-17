@@ -39,8 +39,8 @@ export function WorkoutInfoEditable({
         {editingField === 'name' ? (
           <>
             <input value={editValue} onChange={e => setEditValue(e.target.value)} />
-            <button onClick={saveEdit}>Save</button>
-            <button onClick={cancelEdit}>Cancel</button>
+            <button type="button" onClick={saveEdit}>Save</button>
+            <button type="button" onClick={cancelEdit}>Cancel</button>
           </>
         ) : (
           <>
@@ -55,8 +55,8 @@ export function WorkoutInfoEditable({
         {editingField === 'notes' ? (
           <>
             <input value={editValue} onChange={e => setEditValue(e.target.value)} />
-            <button onClick={saveEdit}>Save</button>
-            <button onClick={cancelEdit}>Cancel</button>
+            <button type="button" onClick={saveEdit}>Save</button>
+            <button type="button" onClick={cancelEdit}>Cancel</button>
           </>
         ) : (
           <>

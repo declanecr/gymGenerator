@@ -57,7 +57,7 @@ export class TemplateWorkoutsService {
     dto: UpdateTemplateWorkoutDto,
     role?: string,
   ) {
-    await this.ensureOwnership(id, userId, role);
+    await this.ensureEditableOwnership(id, userId, role);
     return this.prisma.templateWorkout.update({
       where: { id },
       data: dto,
@@ -65,7 +65,7 @@ export class TemplateWorkoutsService {
   }
 
   async remove(id: string, userId: number, role?: string) {
-    await this.ensureOwnership(id, userId, role);
+    await this.ensureEditableOwnership(id, userId, role);
     await this.prisma.templateWorkout.delete({ where: { id } });
   }
 
@@ -76,6 +76,31 @@ export class TemplateWorkoutsService {
     if (!workout) {
       throw new NotFoundException('No workout found');
     }
+    if (
+      workout.userId !== null &&
+      workout.userId !== userId &&
+      role !== 'ADMIN'
+    ) {
+      throw new ForbiddenException('Not allowed');
+    }
+  }
+
+  private async ensureEditableOwnership(
+    id: string,
+    userId: number,
+    role?: string,
+  ) {
+    const workout = await this.prisma.templateWorkout.findUnique({
+      where: { id },
+    });
+    if (!workout) {
+      throw new NotFoundException('No workout found');
+    }
+    // if global but not ADMIN
+    if (workout.userId === null && role !== 'ADMIN') {
+      throw new ForbiddenException('Not allowed');
+    }
+    // if NOT global, BUT (wrong user OR NOT admin)
     if (
       workout.userId !== null &&
       workout.userId !== userId &&
@@ -126,7 +151,7 @@ export class TemplateWorkoutsService {
     userId: number,
     dto: UpdateTemplateExerciseDto,
   ) {
-    await this.ensureOwnership(id, userId);
+    await this.ensureEditableOwnership(id, userId);
     return this.prisma.templateExercise.update({
       where: { id: exerciseId },
       data: dto,
@@ -134,7 +159,7 @@ export class TemplateWorkoutsService {
   }
 
   async removeExercise(id: string, exerciseId: string, userId: number) {
-    await this.ensureOwnership(id, userId);
+    await this.ensureEditableOwnership(id, userId);
     await this.prisma.templateExercise.delete({ where: { id: exerciseId } });
   }
 
@@ -158,7 +183,7 @@ export class TemplateWorkoutsService {
       where: { id: exerciseId },
     });
     if (!exercise) throw new NotFoundException('Exercise not found');
-    await this.ensureOwnership(exercise.workoutTemplateId, userId);
+    await this.ensureEditableOwnership(exercise.workoutTemplateId, userId);
     return this.prisma.templateSet.create({
       data: {
         templateExerciseId: exerciseId,
@@ -175,7 +200,10 @@ export class TemplateWorkoutsService {
       include: { templateExercise: true },
     });
     if (!set) throw new NotFoundException('Set not found');
-    await this.ensureOwnership(set.templateExercise.workoutTemplateId, userId);
+    await this.ensureEditableOwnership(
+      set.templateExercise.workoutTemplateId,
+      userId,
+    );
     return this.prisma.templateSet.update({ where: { id: setId }, data: dto });
   }
 
@@ -185,7 +213,10 @@ export class TemplateWorkoutsService {
       include: { templateExercise: true },
     });
     if (!set) throw new NotFoundException('Set not found');
-    await this.ensureOwnership(set.templateExercise.workoutTemplateId, userId);
+    await this.ensureEditableOwnership(
+      set.templateExercise.workoutTemplateId,
+      userId,
+    );
     await this.prisma.templateSet.delete({ where: { id: setId } });
   }
 

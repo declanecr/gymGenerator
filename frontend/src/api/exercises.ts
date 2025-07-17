@@ -13,6 +13,30 @@ export interface WorkoutExercise {
     workoutSets: WorkoutSet[]
 }
 
+interface RawWorkoutExercise {
+    id: string
+    exerciseId: number
+    createdAt: string
+    updatedAt: string
+    templateExerciseId?: string | null
+    workoutId: string
+    position: number
+    workoutSets: WorkoutSet[]
+}
+
+function mapTemplateExercise(raw: RawWorkoutExercise): WorkoutExercise {
+    return{
+        workoutExerciseId: raw.id,
+        exerciseId: raw.exerciseId,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+        templateExerciseId: raw.templateExerciseId || null,
+        workoutId: raw.workoutId,
+        position: raw.position,
+        workoutSets: raw.workoutSets,
+    }
+}
+
 /*********** DTOs ***************/
 export interface CreateWorkoutExerciseDto {
     exerciseId: number
@@ -25,8 +49,8 @@ export type UpdateWorkoutExerciseDto = Partial<CreateWorkoutExerciseDto>
 /************ API CALLS **************/
 
 export async function createWorkoutExercise(dto: CreateWorkoutExerciseDto, workoutId: string): Promise<WorkoutExercise> {
-    const res = await api.post<WorkoutExercise>(`/workouts/${workoutId}/exercises`, dto)
-    return res.data
+    const raw = (await api.post<RawWorkoutExercise>(`/workouts/${workoutId}/exercises`, dto)).data
+    return mapTemplateExercise(raw);
 }
 
 export async function fetchWorkoutExercises(workoutId: string): Promise<WorkoutExercise[]> {
