@@ -35,6 +35,11 @@ export async function fetchWorkouts(): Promise<Workout[]> {
   return res.data
 }
 
+export async function fetchAllWorkouts(): Promise<Workout[]> {
+  const res = await api.get<Workout[]>(`/workouts/admin`)
+  return res.data
+}
+
 export async function createWorkout(dto: CreateWorkoutDto): Promise<Workout> {
   const res = await api.post<Workout>(`/workouts`, dto);
   return res.data;

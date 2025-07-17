@@ -69,6 +69,12 @@ export class WorkoutsService {
     });
   }
 
+  async findAllAdmin() {
+    return this.prisma.workout.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   async findOne(id: string, userId: number) {
     const workout = await this.prisma.workout.findUnique({ where: { id } });
     if (!workout || workout.userId !== userId) {

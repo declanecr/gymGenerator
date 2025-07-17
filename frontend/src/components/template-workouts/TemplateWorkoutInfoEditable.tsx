@@ -42,7 +42,7 @@ export function TemplateWorkoutInfoEditable({
         ) : (
           <>
             <span>{name}</span>
-            <button onClick={() => startEditing('name')}>Edit</button>
+            <button type= "button" onClick={() => startEditing('name')}>Edit</button>
           </>
         )}
       </div>
@@ -57,7 +57,7 @@ export function TemplateWorkoutInfoEditable({
         ) : (
           <>
             <span>{notes}</span>
-            <button onClick={() => startEditing('notes')}>Edit</button>
+            <button type="button" onClick={() => startEditing('notes')}>Edit</button>
           </>
         )}
       </div>

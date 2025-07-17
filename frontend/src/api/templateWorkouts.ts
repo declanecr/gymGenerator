@@ -83,6 +83,11 @@ export async function createTemplateWorkout(dto: CreateTemplateWorkoutDto): Prom
   return res.data
 }
 
+export async function createGlobalTemplateWorkout(dto: CreateTemplateWorkoutDto): Promise<TemplateWorkout> {
+  const res = await api.post<TemplateWorkout>(`/template-workouts/global`, dto)
+  return res.data
+}
+
 export async function updateTemplateWorkout(id: string, dto: UpdateTemplateWorkoutDto): Promise<TemplateWorkout> {
   const res = await api.patch<TemplateWorkout>(`/template-workouts/${id}`, dto);
   return res.data

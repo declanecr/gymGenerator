@@ -21,6 +21,12 @@ export class TemplateWorkoutsService {
     });
   }
 
+  async createGlobal(dto: CreateTemplateWorkoutDto) {
+    return this.prisma.templateWorkout.create({
+      data: { ...dto, userId: null },
+    });
+  }
+
   async findAll(userId: number) {
     return this.prisma.templateWorkout.findMany({
       where: {
@@ -134,8 +140,9 @@ export class TemplateWorkoutsService {
     templateId: string,
     userId: number,
     dto: CreateTemplateExerciseDto,
+    role?: string,
   ) {
-    await this.ensureOwnership(templateId, userId);
+    await this.ensureEditableOwnership(templateId, userId, role);
     return this.prisma.templateExercise.create({
       data: {
         workoutTemplateId: templateId,
@@ -150,16 +157,22 @@ export class TemplateWorkoutsService {
     exerciseId: string,
     userId: number,
     dto: UpdateTemplateExerciseDto,
+    role?: string,
   ) {
-    await this.ensureEditableOwnership(id, userId);
+    await this.ensureEditableOwnership(id, userId, role);
     return this.prisma.templateExercise.update({
       where: { id: exerciseId },
       data: dto,
     });
   }
 
-  async removeExercise(id: string, exerciseId: string, userId: number) {
-    await this.ensureEditableOwnership(id, userId);
+  async removeExercise(
+    id: string,
+    exerciseId: string,
+    userId: number,
+    role?: string,
+  ) {
+    await this.ensureEditableOwnership(id, userId, role);
     await this.prisma.templateExercise.delete({ where: { id: exerciseId } });
   }
 
@@ -178,12 +191,21 @@ export class TemplateWorkoutsService {
     });
   }
 
-  async addSet(exerciseId: string, userId: number, dto: CreateTemplateSetDto) {
+  async addSet(
+    exerciseId: string,
+    userId: number,
+    dto: CreateTemplateSetDto,
+    role?: string,
+  ) {
     const exercise = await this.prisma.templateExercise.findUnique({
       where: { id: exerciseId },
     });
     if (!exercise) throw new NotFoundException('Exercise not found');
-    await this.ensureEditableOwnership(exercise.workoutTemplateId, userId);
+    await this.ensureEditableOwnership(
+      exercise.workoutTemplateId,
+      userId,
+      role,
+    );
     return this.prisma.templateSet.create({
       data: {
         templateExerciseId: exerciseId,
@@ -194,7 +216,12 @@ export class TemplateWorkoutsService {
     });
   }
 
-  async updateSet(setId: string, userId: number, dto: UpdateTemplateSetDto) {
+  async updateSet(
+    setId: string,
+    userId: number,
+    dto: UpdateTemplateSetDto,
+    role?: string,
+  ) {
     const set = await this.prisma.templateSet.findUnique({
       where: { id: setId },
       include: { templateExercise: true },
@@ -203,11 +230,12 @@ export class TemplateWorkoutsService {
     await this.ensureEditableOwnership(
       set.templateExercise.workoutTemplateId,
       userId,
+      role,
     );
     return this.prisma.templateSet.update({ where: { id: setId }, data: dto });
   }
 
-  async removeSet(setId: string, userId: number) {
+  async removeSet(setId: string, userId: number, role?: string) {
     const set = await this.prisma.templateSet.findUnique({
       where: { id: setId },
       include: { templateExercise: true },
@@ -216,6 +244,7 @@ export class TemplateWorkoutsService {
     await this.ensureEditableOwnership(
       set.templateExercise.workoutTemplateId,
       userId,
+      role,
     );
     await this.prisma.templateSet.delete({ where: { id: setId } });
   }

@@ -6,10 +6,12 @@ import { fetchWorkouts, Workout } from '../api/workouts'
 import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
+import { useGetMe } from '../hooks/users/useGetMe'
 
 export default function Dashboard() {
   const { logout } = useAuth()
   const navigate = useNavigate()
+  const {data:me} =useGetMe()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [templates, setTemplates] = useState<TemplateWorkout[]>([])
 
@@ -70,6 +72,11 @@ export default function Dashboard() {
           </ListItem>
         ))}
       </List>
+      {me?.role === 'ADMIN' && (
+        <Box mb={2}>
+          <Link to="/admin">Go to Admin Page</Link>
+        </Box>
+      )}
       <Button variant="outlined" onClick={handleLogout}>
         Logout
       </Button>

@@ -20,8 +20,10 @@ import { UpdateTemplateSetDto } from './dto/update-template-set.dto';
 import { JwtPayload } from 'src/shared/guards/jwt.strategy';
 import { TemplateWorkoutResponseDto } from './dto/template-workout-reponse.dto';
 import { TemplateExerciseResponseDto } from './dto/template-exercise-response.dto';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('template-workouts')
 export class TemplateWorkoutsController {
   constructor(
@@ -33,6 +35,11 @@ export class TemplateWorkoutsController {
     return this.templateWorkoutsService.create(user.id, dto);
   }
 
+  @Post('global')
+  @Roles('ADMIN')
+  createGlobal(@Body() dto: CreateTemplateWorkoutDto) {
+    return this.templateWorkoutsService.createGlobal(dto);
+  }
   @Get()
   async findAll(
     @GetUser() user: JwtPayload,
@@ -69,7 +76,12 @@ export class TemplateWorkoutsController {
     @Body() dto: CreateTemplateExerciseDto,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.addExercise(id, user.id, dto);
+    return this.templateWorkoutsService.addExercise(
+      id,
+      user.id,
+      dto,
+      user.role,
+    );
   }
 
   @Get(':id/exercises')
@@ -102,7 +114,13 @@ export class TemplateWorkoutsController {
     @Body() dto: UpdateTemplateExerciseDto,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.updateExercise(id, eid, user.id, dto);
+    return this.templateWorkoutsService.updateExercise(
+      id,
+      eid,
+      user.id,
+      dto,
+      user.role,
+    );
   }
 
   @Delete(':id/exercises/:eid')
@@ -111,7 +129,12 @@ export class TemplateWorkoutsController {
     @Param('eid') eid: string,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.removeExercise(id, eid, user.id);
+    return this.templateWorkoutsService.removeExercise(
+      id,
+      eid,
+      user.id,
+      user.role,
+    );
   }
 
   // ----- Template Set -----
@@ -121,7 +144,7 @@ export class TemplateWorkoutsController {
     @Body() dto: CreateTemplateSetDto,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.addSet(eid, user.id, dto);
+    return this.templateWorkoutsService.addSet(eid, user.id, dto, user.role);
   }
 
   @Get(':id/exercises/:eid/sets')
@@ -139,11 +162,11 @@ export class TemplateWorkoutsController {
     @GetUser() user: JwtPayload,
     @Body() dto: UpdateTemplateSetDto,
   ) {
-    return this.templateWorkoutsService.updateSet(sid, user.id, dto);
+    return this.templateWorkoutsService.updateSet(sid, user.id, dto, user.role);
   }
 
   @Delete(':id/exercises/:eid/sets/:sid')
   removeSet(@Param('sid') sid: string, @GetUser() user: JwtPayload) {
-    return this.templateWorkoutsService.removeSet(sid, user.id);
+    return this.templateWorkoutsService.removeSet(sid, user.id, user.role);
   }
 }

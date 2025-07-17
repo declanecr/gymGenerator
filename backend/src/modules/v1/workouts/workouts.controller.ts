@@ -20,8 +20,10 @@ import { UpdateWorkoutExerciseDto } from './dto/update-workout-exercise.dto';
 import { CreateWorkoutSetDto } from './dto/create-workout-set.dto';
 import { UpdateWorkoutSetDto } from './dto/update-workout-set.dto';
 import { WorkoutExerciseResponseDto } from './dto/workout-exercise-response.dto';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('workouts')
 export class WorkoutsController {
   constructor(private readonly workoutsService: WorkoutsService) {}
@@ -47,6 +49,13 @@ export class WorkoutsController {
   @Get()
   async findAll(@GetUser() user: JwtPayload): Promise<WorkoutResponseDto[]> {
     const workouts = await this.workoutsService.findAll(user.id);
+    return workouts.map((w) => new WorkoutResponseDto(w));
+  }
+
+  @Get('admin')
+  @Roles('ADMIN')
+  async findAllAdmin(): Promise<WorkoutResponseDto[]> {
+    const workouts = await this.workoutsService.findAllAdmin();
     return workouts.map((w) => new WorkoutResponseDto(w));
   }
 
