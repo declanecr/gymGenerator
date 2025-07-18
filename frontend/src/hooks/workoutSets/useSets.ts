@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchWorkoutSets } from "../api/sets";
+import { fetchWorkoutSets } from "../../api/sets";
 
 export function useWorkoutSets(workoutId: string, exerciseId: string) {
     return useQuery({
