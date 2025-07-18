@@ -3,7 +3,7 @@ import {
   createWorkoutExercise,
   updateWorkoutExercise,
   deleteWorkoutExercise,
-  WorkoutExercise,
+  mapTemplateExercise,
 } from '../exercises';
 
 jest.mock('../axios', () => ({
@@ -20,7 +20,7 @@ describe('exercises API', () => {
   it('createWorkoutExercise calls POST /workouts/:workoutId/exercises and returns data', async () => {
     const dto = { exerciseId: 1, templateExerciseId: 'T1', position: 2 };
     const workoutId = 'WID';
-    const raw = {
+    const rawExercise = {
       id: 'EID',
       createdAt: '2025-06-10T00:00:00.000Z',
       updatedAt: '2025-06-10T00:00:00.000Z',
@@ -30,7 +30,7 @@ describe('exercises API', () => {
       position: 2,
       workoutSets: [],
     };
-    mockedApi.post.mockResolvedValueOnce({ data: raw });
+    mockedApi.post.mockResolvedValueOnce({ data: rawExercise });
 
     const result = await createWorkoutExercise(dto, workoutId);
 
@@ -39,16 +39,8 @@ describe('exercises API', () => {
       dto
     );
 
-    const expected: WorkoutExercise = {
-      workoutExerciseId: raw.id,
-      exerciseId: raw.exerciseId,
-      createdAt: raw.createdAt,
-      updatedAt: raw.updatedAt,
-      templateExerciseId: raw.templateExerciseId!,
-      workoutId: raw.workoutId,
-      position: raw.position,
-      workoutSets: raw.workoutSets,
-    };
+    const expected = mapTemplateExercise(rawExercise);
+
     expect(result).toEqual(expected);
   });
 

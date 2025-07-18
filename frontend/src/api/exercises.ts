@@ -24,7 +24,7 @@ interface RawWorkoutExercise {
     workoutSets: WorkoutSet[]
 }
 
-function mapTemplateExercise(raw: RawWorkoutExercise): WorkoutExercise {
+export function mapTemplateExercise(raw: RawWorkoutExercise): WorkoutExercise {
     return{
         workoutExerciseId: raw.id,
         exerciseId: raw.exerciseId,
