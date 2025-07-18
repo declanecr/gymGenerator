@@ -18,6 +18,10 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }));
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 
 describe('LoginForm', () => {
   test('shows validation error on invalid input then submits successfully', async () => {
@@ -45,5 +49,21 @@ describe('LoginForm', () => {
         password: 'password123',
       })
     );
+  });
+
+  test('shows password length error', async () => {
+    render(<LoginForm />);
+    const user = userEvent.setup();
+
+    await act(async () => {
+      await user.type(screen.getByLabelText(/email/i), 'user@example.com');
+      await user.type(screen.getByLabelText(/password/i), 'short');
+      await user.click(screen.getByRole('button', { name: /login/i }));
+    });
+
+    expect(
+      await screen.findByText(/password must be at least 8 characters/i)
+    ).toBeInTheDocument();
+    expect(loginUser).not.toHaveBeenCalled();
   });
 });

@@ -101,4 +101,22 @@ describe('TemplateWorkoutContainer', () => {
     fireEvent.click(screen.getByText(/finish/i));
     await waitFor(() => expect(onSubmit).toHaveBeenCalled());
   });
+
+  it('prevents submit when name is blank', async () => {
+    const initial: WorkoutFormValues = {
+      name: 'temp',
+      notes: '',
+      exercises: [
+        { exerciseId: 1, position: 1, sets: [] },
+      ],
+    };
+    const onSubmit = renderWithClient(initial);
+    fireEvent.click(screen.getAllByRole('button', { name: /edit/i })[0]);
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: /save/i }));
+
+    fireEvent.click(screen.getByText(/finish/i));
+    await waitFor(() => expect(onSubmit).not.toHaveBeenCalled());
+  });
 });

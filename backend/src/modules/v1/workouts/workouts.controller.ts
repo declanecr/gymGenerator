@@ -101,7 +101,7 @@ export class WorkoutsController {
     @Param('id') workoutId: string,
   ): Promise<WorkoutExerciseResponseDto[]> {
     const res = await this.workoutsService.getExercises(workoutId, user.id);
-    console.log('fetchExercises: ', res);
+    //console.log('fetchExercises: ', res);
     return res.map((ex) => ({
       workoutExerciseId: ex.id,
       exerciseId: ex.exerciseId,
