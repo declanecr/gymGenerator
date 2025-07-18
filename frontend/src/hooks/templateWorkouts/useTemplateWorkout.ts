@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchTemplateWorkouts } from "../api/templateWorkouts";
+import { fetchTemplateWorkouts } from "../../api/templateWorkouts";
 
-export function useWorkout() {
+export function useTemplateWorkouts() {
     return useQuery({
         queryKey: ['template-workouts'],
         queryFn: ()=>fetchTemplateWorkouts(),
