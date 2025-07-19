@@ -5,6 +5,7 @@ import { server } from '../../mocks/server';
 import { useCreateExercise } from './useCreateExercise';
 import { mapTemplateExercise } from '../../api/exercises';
 
+
 function wrapper({ children }: { children: React.ReactNode }) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
@@ -19,5 +20,6 @@ describe('useCreateExercise', () => {
     await act(() => result.current.mutateAsync({ workoutId: 'abc', dto: { exerciseId: 2, position: 1 } }));
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual(mapTemplateExercise(raw));
+
   });
 });

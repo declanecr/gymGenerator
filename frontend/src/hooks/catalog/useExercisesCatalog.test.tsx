@@ -16,5 +16,5 @@ describe('useExercisesCatalog', () => {
     server.use(http.get(url, () => HttpResponse.json(data)));
     const { result } = renderHook(() => useExercisesCatalog(true), { wrapper });
     await waitFor(() => expect(result.current.data).toEqual(data));
-  });
+
 });

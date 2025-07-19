@@ -24,5 +24,6 @@ describe('useCreateTemplateExercise', () => {
       sets: [],
       exercise: undefined,
     });
+
   });
 });

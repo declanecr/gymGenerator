@@ -7,6 +7,7 @@ describe('useAuth', () => {
     expect(() => renderHook(() => useAuth())).toThrow(
       'useAuth must be used within an AuthProvider'
     );
+
   });
 
   it('returns context value', () => {

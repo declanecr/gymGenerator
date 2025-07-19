@@ -1,4 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../mocks/server';
@@ -19,5 +20,6 @@ describe('useFilteredExercises', () => {
     server.use(http.get(url, () => HttpResponse.json(data)));
     const { result } = renderHook(() => useFilteredExercises('ben'), { wrapper });
     await waitFor(() => expect(result.current.filtered).toEqual([data[0]]));
+
   });
 });
