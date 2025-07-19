@@ -55,9 +55,9 @@ export async function deleteWorkout(id:string): Promise<void> {
 }
 
 export async function createWorkoutFromTemplate(tid:string):Promise<Workout> {
-  console.log('calling axios with', tid);
+  //console.log('calling axios with', tid);
   const res = await api.post<Workout>(`/workouts/from-template/${tid}`);
   
-  console.log('res.data: ', res.data);
+  //console.log('res.data: ', res.data);
   return res.data
 }

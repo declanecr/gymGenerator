@@ -25,7 +25,7 @@ jest.mock('@tanstack/react-query', () => {
   const actual = jest.requireActual('@tanstack/react-query');
   return {
     ...actual,
-    useQueries: (arg: unknown) =>
+    useQueries: (arg: { queries: unknown[] } | unknown[]) =>
       (Array.isArray(arg) ? arg : arg.queries).map(() => ({
         data: [],
         isLoading: false,
@@ -85,11 +85,11 @@ export const createWorkoutExerciseSpy = jest
   .fn()
   .mockResolvedValue({ workoutExerciseId: 'we1' });
 jest.mock('../api/exercises', () => ({
-  createWorkoutExercise: (...args: any[]) => createWorkoutExerciseSpy(...args),
+  createWorkoutExercise: (...args: unknown[]) => createWorkoutExerciseSpy(...args),
 }));
 export const createWorkoutSetSpy = jest.fn().mockResolvedValue({ id: 'ws1' });
 jest.mock('../api/sets', () => ({
-  createWorkoutSet: (...args: any[]) => createWorkoutSetSpy(...args),
+  createWorkoutSet: (...args: unknown[]) => createWorkoutSetSpy(...args),
 }));
 
 /* ------------------------------------------------------------------ */

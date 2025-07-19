@@ -4,9 +4,9 @@ import { useAuth } from './useAuth';
 
 describe('useAuth', () => {
   it('throws if no provider', () => {
-    expect(() => renderHook(() => useAuth())).toThrow(
-      'useAuth must be used within an AuthProvider'
-    );
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => renderHook(() => useAuth())).toThrow('useAuth must be used within an AuthProvider');
+    consoleError.mockRestore();
 
   });
 

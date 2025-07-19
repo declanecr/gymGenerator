@@ -10,11 +10,15 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 
 describe('useExercisesCatalog', () => {
-  const url = 'http://localhost:3000/api/v1/exercises-catalog?custom=true';
+  const url = 'http://localhost:3000/api/v1/exercises-catalog';
   it('fetches catalog', async () => {
     const data = [{ exerciseId: 1, name: 'Bench', primaryMuscle: 'Chest', default: true, templateExercises: [], workoutExercises: [] }];
-    server.use(http.get(url, () => HttpResponse.json(data)));
+    server.use(http.get(url, ({request}) => {
+      expect(request.url).toContain('custom=true'); 
+      return HttpResponse.json(data);
+    }),
+  );
     const { result } = renderHook(() => useExercisesCatalog(true), { wrapper });
     await waitFor(() => expect(result.current.data).toEqual(data));
-
+  });
 });

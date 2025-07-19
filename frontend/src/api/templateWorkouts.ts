@@ -142,12 +142,12 @@ export async function fetchTemplateSets(
   workoutId: string,
   exerciseId: string
 ): Promise< TemplateSet[]> {
-  console.log('templateWorkoutId: ', workoutId, '\ntemplateExerciseId: ', exerciseId)
+  //console.log('templateWorkoutId: ', workoutId, '\ntemplateExerciseId: ', exerciseId)
 
   const res = await api.get<TemplateSet[]>(
     `/template-workouts/${workoutId}/exercises/${exerciseId}/sets`
   );
-  console.log('fetchTemplateSets: ', res.data)
+  //console.log('fetchTemplateSets: ', res.data)
   return res.data;
 }
 

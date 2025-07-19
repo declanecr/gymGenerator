@@ -7,10 +7,10 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../users/dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
-import { Prisma } from '@prisma/client';
 import { UserResponseDto } from '../users/dto/users-response.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +63,7 @@ export class AuthService {
     } catch (e: unknown) {
       // 5. Handle unique-constraint violations cleanly
       if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e instanceof PrismaClientKnownRequestError &&
         e.code === 'P2002' &&
         (e.meta?.target as string[])?.includes('email')
       ) {
