@@ -28,6 +28,9 @@ describe('Workouts (e2e)', () => {
   let templateId: string;
   let copiedWorkoutId: string;
 
+  let globalTplId: string;
+  let userTplId: string;
+
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -79,6 +82,57 @@ describe('Workouts (e2e)', () => {
       data: { templateExerciseId: tplEx.id, reps: 5, weight: 50, position: 1 },
     });
     templateId = tpl.id;
+
+    // 1️⃣ Global template
+    const globalTpl = await prisma.templateWorkout.create({
+      data: {
+        name: 'Global Template',
+        userId: null,
+        templateExercises: {
+          create: [
+            {
+              exerciseId, // instead of `exercise: { connect: ... }`
+              position: 1,
+              sets: {
+                // instead of `templateSets`
+                create: [{ reps: 5, weight: 100, position: 1 }],
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        templateExercises: {
+          include: { sets: true },
+        },
+      },
+    });
+    globalTplId = globalTpl.id;
+
+    // 2️⃣ User-owned template (reuse the same shape, but with `userId`)
+    const userTpl = await prisma.templateWorkout.create({
+      data: {
+        name: 'My Template',
+        userId, // from your decoded token
+        templateExercises: {
+          create: [
+            {
+              exerciseId,
+              position: 1,
+              sets: {
+                create: [{ reps: 8, weight: 80, position: 1 }],
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        templateExercises: {
+          include: { sets: true },
+        },
+      },
+    });
+    userTplId = userTpl.id;
   });
 
   afterAll(async () => {
@@ -264,5 +318,79 @@ describe('Workouts (e2e)', () => {
     expect(res.status).toBe(200);
     const body = res.body as unknown as WorkoutResponseDto[];
     expect(body.length).toBe(0);
+  });
+
+  it('POST /workouts/from-template/:id copies template with nested data', async () => {
+    // Arrange: you've already created `templateId` in beforeAll
+    // Act:
+    const res = await request(app.getHttpServer())
+      .post(`/api/v1/workouts/from-template/${templateId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    // Assert basic shape:
+    expect(res.status).toBe(201);
+    const body = res.body as WorkoutResponseDto;
+    expect(body).toHaveProperty('id');
+    expect(body.workoutTemplateId).toBe(templateId);
+
+    // Assert nested creations:
+    const exercises = await prisma.workoutExercise.findMany({
+      where: { workoutId: body.id },
+    });
+    expect(exercises).toHaveLength(1); // you seeded 1 ex
+    const sets = await prisma.workoutSet.findMany({
+      where: { workoutExerciseId: exercises[0].id },
+    });
+    expect(sets).toHaveLength(1); // you seeded 1 set
+  });
+
+  it('POST /workouts/from-template/:id copies a global template', async () => {
+    const res = await request(app.getHttpServer())
+      .post(`/api/v1/workouts/from-template/${globalTplId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(201);
+    const body = res.body as WorkoutResponseDto;
+    expect(body.workoutTemplateId).toBe(globalTplId);
+    expect(body).toHaveProperty('id');
+
+    // 🔍 Verify nested workoutExercises + workoutSets got created:
+    const wEx = await prisma.workoutExercise.findMany({
+      where: { workoutId: body.id },
+    });
+    expect(wEx).toHaveLength(1);
+    const wSets = await prisma.workoutSet.findMany({
+      where: { workoutExerciseId: wEx[0].id },
+    });
+    expect(wSets).toHaveLength(1);
+  });
+
+  it('POST /workouts/from-template/:id copies a user-owned template', async () => {
+    const res = await request(app.getHttpServer())
+      .post(`/api/v1/workouts/from-template/${userTplId}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(201);
+    const body = res.body as WorkoutResponseDto;
+    expect(body.workoutTemplateId).toBe(userTplId);
+
+    // Again, check nested creations:
+    const wEx = await prisma.workoutExercise.findMany({
+      where: { workoutId: body.id },
+    });
+    expect(wEx).toHaveLength(1);
+    const wSets = await prisma.workoutSet.findMany({
+      where: { workoutExerciseId: wEx[0].id },
+    });
+    expect(wSets).toHaveLength(1);
+  });
+
+  it('returns 404 when the template does not exist', async () => {
+    const fakeId = 'no-such-tpl';
+    const res = await request(app.getHttpServer())
+      .post(`/api/v1/workouts/from-template/${fakeId}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(404);
+    expect(res.body); //.toMatch(/Template not found/);
   });
 });

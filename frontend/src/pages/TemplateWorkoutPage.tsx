@@ -2,21 +2,22 @@ import React, {useRef} from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { TemplateWorkoutContainer, TemplateWorkoutContainerHandle } from '../components/template-workouts/TemplateWorkoutContainer';
 import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../components/forms/types';
-import { createTemplateExercise, createTemplateSet, createTemplateWorkout, fetchTemplateSets } from '../api/templateWorkouts';
-import { useTemplateExercises } from '../hooks/templateExercises/useTemplateExercises';
+import { createTemplateExercise, createTemplateSet,  fetchTemplateSets } from '../api/templateWorkouts';
 import { useQueries } from '@tanstack/react-query';
 import { TemplateExercise, TemplateSet } from '../api/templateWorkouts';
+import { useTemplateExercises } from '../hooks/templateExercises/useTemplateExercises';
 import { useCreateTemplateExercise } from '../hooks/templateExercises/useCreateTemplateExercise';
 import { useUpdateTemplateExercise } from '../hooks/templateExercises/useUpdateTemplateExercise';
 import { useDeleteTemplateExercise } from '../hooks/templateExercises/useDeleteTemplateExercise';
 import { useCreateTemplateSet } from '../hooks/templateSets/useCreateTemplateSet';
 import { useUpdateTemplateSet } from '../hooks/templateSets/useUpdateTemplateSet';
 import { useDeleteTemplateSet } from '../hooks/templateSets/useDeleteTemplateSet';
+import { useCreateTemplateWorkout } from '../hooks/templateWorkouts/useCreateTemplateWorkout';
 import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateWorkout';
 import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
-import { Button } from '@mui/material';
 import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
 import { useGetMe } from '../hooks/users/useGetMe';
+import { Button } from '@mui/material';
 import { createWorkout } from '../api/workouts';
 import { createWorkoutExercise } from '../api/exercises';
 import { createWorkoutSet } from '../api/sets';
@@ -39,6 +40,7 @@ export default function TemplateWorkoutPage() {
   const { mutateAsync: deleteSet } = useDeleteTemplateSet();
   const { mutateAsync: createFromTemplate } =useCreateWorkoutFromTemplate();
   const { mutateAsync: deleteTemplateWorkout } = useDeleteTemplateWorkout();
+  const {mutateAsync: createTemplateWorkout } =useCreateTemplateWorkout();
   const { data: me } = useGetMe();
   
   
@@ -93,7 +95,7 @@ export default function TemplateWorkoutPage() {
   };
 
   async function createTemplateFromData(data:WorkoutFormValues) {
-    const tpl = await createTemplateWorkout({ name: data.name, notes: data.notes});
+    const tpl = await createTemplateWorkout({dto: { name: data.name, notes: data.notes}});
     for ( const ex of data.exercises){
       const newEx = await createTemplateExercise({exerciseId: Number(ex.exerciseId), position: ex.position }, tpl.id);
       for (const s of ex.sets || []) {
