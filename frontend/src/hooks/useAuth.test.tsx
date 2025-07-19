@@ -4,8 +4,10 @@ import { useAuth } from './useAuth';
 
 describe('useAuth', () => {
   it('throws if no provider', () => {
-    const { result } = renderHook(() => useAuth());
-    expect(result.error).toEqual(Error('useAuth must be used within an AuthProvider'));
+    expect(() => renderHook(() => useAuth())).toThrow(
+      'useAuth must be used within an AuthProvider'
+    );
+
   });
 
   it('returns context value', () => {

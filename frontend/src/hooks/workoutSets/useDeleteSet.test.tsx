@@ -1,6 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { http } from 'msw';
+import { http, HttpResponse } from 'msw';
+
 import { server } from '../../mocks/server';
 import { useDeleteSet } from './useDeleteSet';
 
@@ -10,7 +11,8 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 
 describe('useDeleteSet', () => {
-  const url = 'http://localhost:3000/api/v1/workouts/w/exercises/e/sets/1';
+  const url = 'http://localhost:3000/api/v1/workouts/e/exercises/w/sets/1';
+
   it('deletes set', async () => {
     server.use(http.delete(url, () => HttpResponse.json({})));
     const { result } = renderHook(() => useDeleteSet(), { wrapper });

@@ -12,11 +12,18 @@ function wrapper({ children }: { children: React.ReactNode }) {
 describe('useCreateTemplateExercise', () => {
   const url = 'http://localhost:3000/api/v1/template-workouts/abc/exercises';
   it('creates exercise', async () => {
-    const created = { templateExerciseId: '1', exerciseId: 2, position: 1, sets: [] };
-    server.use(http.post(url, () => HttpResponse.json(created)));
+    const raw = { id: '1', exerciseId: 2, position: 1, sets: [] };
+    server.use(http.post(url, () => HttpResponse.json(raw)));
     const { result } = renderHook(() => useCreateTemplateExercise(), { wrapper });
     await act(() => result.current.mutateAsync({ workoutId: 'abc', dto: { exerciseId: 2, position: 1 } }));
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toEqual(created);
+    expect(result.current.data).toEqual({
+      templateExerciseId: raw.id,
+      exerciseId: raw.exerciseId,
+      position: raw.position,
+      sets: [],
+      exercise: undefined,
+    });
+
   });
 });

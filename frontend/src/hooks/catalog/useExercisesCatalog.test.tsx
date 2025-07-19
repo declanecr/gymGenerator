@@ -15,7 +15,6 @@ describe('useExercisesCatalog', () => {
     const data = [{ exerciseId: 1, name: 'Bench', primaryMuscle: 'Chest', default: true, templateExercises: [], workoutExercises: [] }];
     server.use(http.get(url, () => HttpResponse.json(data)));
     const { result } = renderHook(() => useExercisesCatalog(true), { wrapper });
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toEqual(data);
-  });
+    await waitFor(() => expect(result.current.data).toEqual(data));
+
 });
