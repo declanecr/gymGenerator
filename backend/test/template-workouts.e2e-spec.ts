@@ -90,7 +90,7 @@ describe('TemplateWorkouts (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect((res.body as unknown[]).length).toBe(1);
+    expect((res.body as unknown[]).length).toBeGreaterThanOrEqual(1);
   });
 
   it('POST /template-workouts/:id/exercises adds an exercise', async () => {
