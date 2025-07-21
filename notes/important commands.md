@@ -7,3 +7,5 @@ npm test
 ### prisma
 npx prisma studio
 npx prisma db seed
+
+
