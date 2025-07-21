@@ -18,7 +18,8 @@
     "test": "dotenv -e .env.test -- prisma migrate reset --force --skip-seed && npm run test:seed && dotenv -e .env.test -- jest",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --runInBand --config=backend/test/jest-e2e.json"
+    "test:e2e": "jest --runInBand --config=backend/test/jest-e2e.json",
+    "postinstall": "npx prisma generate"
   },
   "prisma": {
     "seed": "node -r ts-node/register ./prisma/seed.dev.ts"

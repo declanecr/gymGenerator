@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 console.log('Starting backend via main.ts...');
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api/v1');
@@ -25,8 +25,9 @@ async function bootstrap() {
   ); // Enable validation for DTOs (Data Transfer Objects)
   await app.listen(3000);
 }
-void bootstrap();
-
+if (require.main === module) {
+  void bootstrap();
+}
 /* 
 bootstrap().catch((err) => {
   console.error('Bootstrap error:', err);
