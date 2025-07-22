@@ -51,6 +51,17 @@ describe('Auth and Users (e2e)', () => {
     token = body.accessToken;
   });
 
+  it('POST /auth/register with duplicate email returns 409', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/v1/auth/register')
+      .send({
+        email: 'auth@example.com',
+        password: 'anotherpass',
+        name: 'Duplicate',
+      });
+    expect(res.status).toBe(409);
+  });
+
   it('POST /auth/login returns a token for valid credentials', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
@@ -60,6 +71,14 @@ describe('Auth and Users (e2e)', () => {
     const body = res.body as LoginResponse;
     expect(body.accessToken).toBeDefined();
     token = body.accessToken;
+  });
+
+  it('POST /auth/login with invalid credentials returns 401', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({ email: 'auth@example.com', password: 'wrongpass' });
+
+    expect(res.status).toBe(401);
   });
 
   it('GET /users/me returns profile data', async () => {
