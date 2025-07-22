@@ -3,7 +3,11 @@ import { TemplateWorkoutsController } from './template-workouts.controller';
 import { TemplateWorkoutsService } from './template-workouts.service';
 import { AuthGuard } from '@nestjs/passport';
 
-class MockAuthGuard { canActivate() { return true; } }
+class MockAuthGuard {
+  canActivate() {
+    return true;
+  }
+}
 
 describe('TemplateWorkoutsController', () => {
   let controller: TemplateWorkoutsController;
@@ -17,7 +21,9 @@ describe('TemplateWorkoutsController', () => {
       .useClass(MockAuthGuard)
       .compile();
 
-    controller = module.get<TemplateWorkoutsController>(TemplateWorkoutsController);
+    controller = module.get<TemplateWorkoutsController>(
+      TemplateWorkoutsController,
+    );
   });
 
   it('should be defined', () => {

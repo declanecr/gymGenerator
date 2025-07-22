@@ -41,20 +41,16 @@ export class TemplateWorkoutsService {
     });
   }
 
-  async findOne(id: string, userId: number) {
-    const tpl = await this.prisma.templateWorkout.findFirst({
-      where: {
-        id,
-        OR: [{ userId }, { userId: null }],
-      },
+  async findOne(id: string, userId: number, role?: string) {
+    await this.ensureOwnership(id, userId, role);
+    return this.prisma.templateWorkout.findUnique({
+      where: { id },
       include: {
         templateExercises: {
           include: { exercise: true, sets: true },
         },
       },
     });
-    if (!tpl) throw new NotFoundException('Template not found');
-    return tpl;
   }
 
   async update(
@@ -117,8 +113,8 @@ export class TemplateWorkoutsService {
   }
 
   // --- Exercises ---
-  async getExercises(templateId: string, userId: number) {
-    await this.ensureOwnership(templateId, userId);
+  async getExercises(templateId: string, userId: number, role?: string) {
+    await this.ensureOwnership(templateId, userId, role);
     return this.prisma.templateExercise.findMany({
       where: { workoutTemplateId: templateId },
       include: {
@@ -184,8 +180,13 @@ export class TemplateWorkoutsService {
   }
 
   // --- Sets ---
-  async getSets(exerciseId: string, templateId: string, userId: number) {
-    await this.ensureOwnership(templateId, userId);
+  async getSets(
+    exerciseId: string,
+    templateId: string,
+    userId: number,
+    role?: string,
+  ) {
+    await this.ensureOwnership(templateId, userId, role);
     return this.prisma.templateSet.findMany({
       where: { templateExerciseId: exerciseId },
     });

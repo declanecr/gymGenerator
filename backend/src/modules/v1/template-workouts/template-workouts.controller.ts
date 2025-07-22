@@ -52,7 +52,7 @@ export class TemplateWorkoutsController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @GetUser() user: JwtPayload) {
-    return this.templateWorkoutsService.findOne(id, user.id);
+    return this.templateWorkoutsService.findOne(id, user.id, user.role);
   }
 
   @Patch(':id')
@@ -92,6 +92,7 @@ export class TemplateWorkoutsController {
     const res = await this.templateWorkoutsService.getExercises(
       templateWorkoutId,
       user.id,
+      user.role,
     );
     //console.log('fetchTemplateExercises: ', res);
     return res.map((ex) => ({
@@ -153,7 +154,7 @@ export class TemplateWorkoutsController {
     @Param('eid') eid: string,
     @GetUser() user: JwtPayload,
   ) {
-    return this.templateWorkoutsService.getSets(eid, id, user.id);
+    return this.templateWorkoutsService.getSets(eid, id, user.id, user.role);
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')
