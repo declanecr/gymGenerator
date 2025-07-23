@@ -13,8 +13,14 @@ const config: Config = {
     '^src/(.*)$': '<rootDir>/src/$1',
   },
   setupFiles: ['<rootDir>/setup-env.ts'],
-  collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: '../coverage',
+  collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.module.ts', // skip NestJS modules
+    '!src/main.ts', // skip bootstrap
+  ],
+  coverageDirectory: './coverage/backend',
+  coverageReporters: ['lcov', 'text', 'html'],
   testEnvironment: 'node',
   maxWorkers: 1,
 };

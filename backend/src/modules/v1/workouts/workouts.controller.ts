@@ -153,13 +153,13 @@ export class WorkoutsController {
     @Param('eid') exerciseId: string,
     @Param('id') workoutId: string,
   ) {
-    console.log(exerciseId, workoutId);
+    //console.log(exerciseId, workoutId);
     const res = await this.workoutsService.getSets(
       exerciseId,
       workoutId,
       user.id,
     );
-    console.log('getSets: ', res);
+    //console.log('getSets: ', res);
     return res;
   }
 

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTemplateWorkoutDto } from './dto/create-template-workout.dto';
@@ -10,6 +11,7 @@ import { CreateTemplateExerciseDto } from './dto/create-template-exercise.dto';
 import { UpdateTemplateExerciseDto } from './dto/update-template-exercise.dto';
 import { CreateTemplateSetDto } from './dto/create-template-set.dto';
 import { UpdateTemplateSetDto } from './dto/update-template-set.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class TemplateWorkoutsService {
@@ -139,13 +141,22 @@ export class TemplateWorkoutsService {
     role?: string,
   ) {
     await this.ensureEditableOwnership(templateId, userId, role);
-    return this.prisma.templateExercise.create({
-      data: {
-        workoutTemplateId: templateId,
-        exerciseId: dto.exerciseId,
-        position: dto.position ?? (await this.nextExercisePosition()),
-      },
-    });
+    try {
+      return await this.prisma.templateExercise.create({
+        data: {
+          workoutTemplateId: templateId,
+          exerciseId: dto.exerciseId,
+          position: dto.position ?? (await this.nextExercisePosition()),
+        },
+      });
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException(
+          'An exercise already exists at that position',
+        );
+      }
+      throw e;
+    }
   }
 
   async updateExercise(
@@ -156,10 +167,22 @@ export class TemplateWorkoutsService {
     role?: string,
   ) {
     await this.ensureEditableOwnership(id, userId, role);
-    return this.prisma.templateExercise.update({
-      where: { id: exerciseId },
-      data: dto,
-    });
+    try {
+      return await this.prisma.templateExercise.update({
+        where: { id: exerciseId },
+        data: dto,
+      });
+    } catch (e) {
+      //only handle Prisma known errors
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+        //no record found -> 404
+        throw new NotFoundException(
+          `Template exercise ${exerciseId} does not exist`,
+        );
+      }
+      //rethrow anything else
+      throw e;
+    }
   }
 
   async removeExercise(
@@ -207,14 +230,23 @@ export class TemplateWorkoutsService {
       userId,
       role,
     );
-    return this.prisma.templateSet.create({
-      data: {
-        templateExerciseId: exerciseId,
-        reps: dto.reps,
-        weight: dto.weight,
-        position: dto.position ?? (await this.nextSetPosition()),
-      },
-    });
+    try {
+      return await this.prisma.templateSet.create({
+        data: {
+          templateExerciseId: exerciseId,
+          reps: dto.reps,
+          weight: dto.weight,
+          position: dto.position ?? (await this.nextSetPosition()),
+        },
+      });
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException(
+          'An exercise already exists at that position',
+        );
+      }
+      throw e;
+    }
   }
 
   async updateSet(
