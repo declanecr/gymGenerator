@@ -28,8 +28,12 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>
 
 
-export function LoginForm() {
-    const { login } = useAuth()
+export interface LoginFormProps {
+  onLoadingChange?: (loading: boolean) => void
+  onError?: (message: string) => void
+}
+
+export function LoginForm({ onLoadingChange, onError }: LoginFormProps = {}) {    const { login } = useAuth()
     const navigate = useNavigate()
 
     // Set up useForm() hook
@@ -43,13 +47,18 @@ export function LoginForm() {
 
     //Define submit handler
     const onSubmit = async (data: LoginFormInputs) => {
+        onLoadingChange?.(true)
         try {
-            const { accessToken } =await loginUser(data)
+            const { accessToken } = await loginUser(data)
             login(accessToken)      // Store in context + localStorage
             console.log ('Token', accessToken)
             navigate('/dashboard')    //redirect to main app view
-        }catch (err) {
+        } catch (err) {
             console.error('Login failed', err)
+            onError?.('Login failed')
+        } finally {
+            onLoadingChange?.(false)
+        
         }
     }
 

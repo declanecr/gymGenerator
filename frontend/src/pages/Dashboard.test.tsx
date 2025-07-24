@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
+import { fetchWorkouts } from '../api/workouts';
+import { fetchTemplateWorkouts } from '../api/templateWorkouts';
 
 const mockLogout = jest.fn();
 jest.mock('../hooks/useAuth', () => ({
@@ -9,16 +11,11 @@ jest.mock('../hooks/useAuth', () => ({
 }));
 
 jest.mock('../api/workouts', () => ({
-  fetchWorkouts: jest.fn().mockResolvedValue([
-    { id: '1', name: 'w1', createdAt: '', updatedAt: '', workoutTemplateId: null, workoutExercises: [] },
-  ]),
-  fetchTemplateWorkouts: jest.fn().mockResolvedValue([]),
+  fetchWorkouts: jest.fn(),
 }));
 
 jest.mock('../api/templateWorkouts', () => ({
-  fetchTemplateWorkouts: jest.fn().mockResolvedValue([
-    { id: 't1', name: 'tpl', createdAt: '', updatedAt: '', userId: null },
-  ]),
+  fetchTemplateWorkouts: jest.fn(),
 }));
 
 jest.mock('../hooks/users/useGetMe', () => ({
@@ -29,6 +26,16 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
   return { ...actual, useNavigate: () => mockNavigate };
+});
+
+beforeEach(() => {
+  jest.resetAllMocks();
+  (fetchWorkouts as jest.Mock).mockResolvedValue([
+    { id: '1', name: 'w1', createdAt: '', updatedAt: '', workoutTemplateId: null, workoutExercises: [] },
+  ]);
+  (fetchTemplateWorkouts as jest.Mock).mockResolvedValue([
+    { id: 't1', name: 'tpl', createdAt: '', updatedAt: '', userId: null },
+  ]);
 });
 
 function renderPage() {
@@ -43,8 +50,21 @@ function renderPage() {
 }
 
 test('renders workouts and admin link', async () => {
-  renderPage();
+  await act(async () => { renderPage(); });
   await screen.findByText('Workout w1');
   expect(screen.getByText('tpl')).toBeInTheDocument();
   expect(screen.getByText(/go to admin page/i)).toBeInTheDocument();
+});
+
+test('shows loading indicator while fetching', async () => {
+  (fetchWorkouts as jest.Mock).mockImplementation(() => new Promise(() => {}));
+  await act(async () => { renderPage(); });
+  expect(screen.getByTestId('loading')).toBeInTheDocument();
+});
+
+test('shows error message if fetch fails', async () => {
+  (fetchWorkouts as jest.Mock).mockRejectedValue(new Error('err'));
+  (fetchTemplateWorkouts as jest.Mock).mockRejectedValue(new Error('err'));
+  await act(async () => { renderPage(); });
+  expect(await screen.findByText(/failed to load data/i)).toBeInTheDocument();
 });

@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, List, ListItem, ListItemText } from '@mui/material'
+import { Typography, Box, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
@@ -14,6 +14,8 @@ export default function Dashboard() {
   const {data:me} =useGetMe()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [templates, setTemplates] = useState<TemplateWorkout[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const [showWorkoutModal, setShowWorkoutModal] =useState(false);
   const [showTemplateModal,setShowTemplateModal] = useState(false);
@@ -24,13 +26,29 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    fetchWorkouts()
-      .then(setWorkouts)
-      .catch((err) => console.error('Failed to load workouts', err))
-    fetchTemplateWorkouts()
-      .then(setTemplates)
-      .catch((err) => console.error('Failed to load templates', err))
+    Promise.all([
+      fetchWorkouts().then(setWorkouts),
+      fetchTemplateWorkouts().then(setTemplates),
+    ])
+      .catch(() => setError('Failed to load data'))
+      .finally(() => setLoading(false))
   }, [])
+
+  if (loading) {
+    return (
+      <Box p={4}>
+        <CircularProgress data-testid="loading" />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Box p={4}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    )
+  }
 
   return (
     <Box p={4}>

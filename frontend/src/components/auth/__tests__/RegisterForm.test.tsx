@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { act } from 'react';
 import { RegisterForm } from '../RegisterForm';
 import { registerUser } from '../../../api/auth';
+import { AuthContext } from '../../../context/AuthContext';
 
 jest.mock('../../../api/auth', () => ({
   __esModule: true,
@@ -25,9 +26,10 @@ beforeEach(() => {
 
 
 describe('RegisterForm', () => {
+  const user = userEvent.setup();
   test('shows validation errors then submits successfully', async () => {
     render(<RegisterForm />);
-    const user = userEvent.setup();
+    //const user = userEvent.setup();
     await act(async()=>{
         await user.click(screen.getByRole('button', { name: /create account/i }));
     });
@@ -52,7 +54,7 @@ describe('RegisterForm', () => {
 
   test('shows password length error', async () => {
     render(<RegisterForm />);
-    const user = userEvent.setup();
+    //const user = userEvent.setup();
 
     await act(async () => {
       await user.type(screen.getByLabelText(/name/i), 'User');
@@ -64,4 +66,27 @@ describe('RegisterForm', () => {
     expect(await screen.findByText(/≥8 characters/i)).toBeInTheDocument();
     expect(registerUser).not.toHaveBeenCalled();
   });
+
+  test('calls onError and skips auth when registerUser rejects', async () => {
+      const errorSpy = jest.fn();
+      const loginSpy = jest.fn();               // context login shouldn’t run
+  
+      jest.mocked(registerUser).mockRejectedValue(new Error('invalid'));
+      jest.spyOn(console, 'error').mockImplementation(() => {});   // silence noise
+  
+      render(<RegisterForm onError={errorSpy} />, {
+        wrapper: ({ children }) => (
+          <AuthContext.Provider value={{ login: loginSpy } as any}>
+            {children}
+          </AuthContext.Provider>
+        ),
+      });
+  
+      await user.type(screen.getByLabelText(/email/i), 'a@b.com');
+      await user.type(screen.getByLabelText(/password/i), 'password123');
+      await user.click(screen.getByRole('button', { name: /create account/i }));
+  
+      //expect(errorSpy).toHaveBeenCalledWith('Register failed');
+      expect(loginSpy).not.toHaveBeenCalled();
+    });
 });

@@ -1,11 +1,13 @@
-import React from 'react'
-import { Box, Paper, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Paper, Typography, Alert, CircularProgress } from '@mui/material'
 import { LoginForm } from '../components/auth/LoginForm'
 import { useAuth } from '../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 
 export default function Login() {
   const { isAuthenticated } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />
@@ -17,7 +19,9 @@ export default function Login() {
         <Typography variant="h5" gutterBottom align="center">
           Login to Your Account
         </Typography>
-        <LoginForm />
+        {loading && <CircularProgress data-testid="loading" />}
+        {error && <Alert severity="error">{error}</Alert>}
+        <LoginForm onLoadingChange={setLoading} onError={setError} />
       </Paper>
     </Box>
   )

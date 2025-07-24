@@ -1,11 +1,13 @@
-import React from 'react'
-import { Box, Paper, Typography } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Paper, Typography, CircularProgress, Alert } from '@mui/material'
 import { RegisterForm } from '../components/auth/RegisterForm'
 import { useAuth } from '../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 
 export default function Register() {
   const { isAuthenticated } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   if (isAuthenticated) return <Navigate to="/dashboard" replace />
 
   return (
@@ -14,7 +16,9 @@ export default function Register() {
         <Typography variant="h5" gutterBottom align="center">
           Create an Account
         </Typography>
-        <RegisterForm />
+        {loading && <CircularProgress data-testid="loading" />}
+        {error && <Alert severity="error">{error}</Alert>}
+        <RegisterForm onLoadingChange={setLoading} onError={setError} />
       </Paper>
     </Box>
   )
