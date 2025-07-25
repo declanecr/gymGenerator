@@ -43,9 +43,11 @@ export async function fetchWorkoutSets(
   workoutId: string,
   exerciseId: string
 ): Promise< WorkoutSet[]> {
+  //console.log('workoutId: ', workoutId, '\nexerciseId: ', exerciseId)
   const res = await api.get<WorkoutSet[]>(
     `/workouts/${workoutId}/exercises/${exerciseId}/sets`
   );
+  //console.log('fetchWorkoutSets: ', res.data)
   return res.data;
 }
 

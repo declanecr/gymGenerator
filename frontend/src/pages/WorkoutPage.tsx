@@ -1,22 +1,24 @@
 import React from 'react';
 import { useParams, Link,  useNavigate } from 'react-router-dom';
 import { useGetWorkout } from '../hooks/workouts/useGetWorkout';
-import { WorkoutContainer } from '../components/forms/workouts/WorkoutContainer';
+import { WorkoutContainer } from '../components/workouts/WorkoutContainer';
 import { WorkoutFormValues } from '../components/forms/types';
 import { useCreateExercise } from '../hooks/workoutExercises/useCreateExercise';
-import { useCreateSet } from '../hooks/sets/useCreateSet';
+import { useCreateSet } from '../hooks/workoutSets/useCreateSet';
 import { WorkoutExercise } from '../api/exercises';
 import { ExerciseFormValues } from '../components/forms/types';
 import { SetFormValues } from '../components/forms/types';
 import { WorkoutSet } from '../api/sets';
 import { fetchWorkoutSets } from '../api/sets';
-import { useWorkoutExercises } from '../hooks/useExercises';
+import { useWorkoutExercises } from '../hooks/workoutExercises/useExercises';
 import { useQueries } from '@tanstack/react-query';
 
 import { useUpdateExercise } from '../hooks/workoutExercises/useUpdateExercise';
-import { useUpdateSet } from '../hooks/sets/useUpdateSet';
+import { useUpdateSet } from '../hooks/workoutSets/useUpdateSet';
 import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
-import { useDeleteSet } from '../hooks/sets/useDeleteSet';
+import { useDeleteSet } from '../hooks/workoutSets/useDeleteSet';
+import { useDeleteWorkout } from '../hooks/workouts/useDeleteWorkout';
+import { Button } from '@mui/material';
 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
@@ -41,6 +43,7 @@ export default function WorkoutPage() {
   const { mutateAsync: createSet } = useCreateSet();
   const { mutateAsync: updateSet } = useUpdateSet();
   const { mutateAsync: deleteSet } = useDeleteSet();
+  const { mutateAsync: deleteWorkout } = useDeleteWorkout();
 
 
   // fetch workout
@@ -57,15 +60,17 @@ export default function WorkoutPage() {
     error: exercisesError,
   } = useWorkoutExercises(workoutId);
 
+  console.log('fetch exercises: ', workoutExercises);
 
   // fetch sets for each exercise
   const setsQueries = useQueries({
     queries:
       workoutExercises?.map((ex: WorkoutExercise) => ({
-        queryKey: ['sets', workoutId, ex.id],
-        queryFn: () => fetchWorkoutSets(workoutId, ex.id),
+        queryKey: ['sets', workoutId, ex.workoutExerciseId],
+        queryFn: () => fetchWorkoutSets(workoutId, ex.workoutExerciseId),
       })) || [],
   });
+
 
 
   const isSetsLoading = setsQueries.some(q => q.isLoading);
@@ -81,9 +86,9 @@ export default function WorkoutPage() {
 
  // build initial form data
   const initialExercises: ExerciseFormValues[] =
-    (workoutExercises || []).map((ex, idx) => ({
-      id: ex.id,
-      exerciseId: Number(ex.exerciseId),
+    (workoutExercises || []).map((ex:WorkoutExercise, idx: number) => ({
+      id: ex.workoutExerciseId,
+      exerciseId: ex.exerciseId,
       position: ex.position,
       sets:
         ((setsQueries[idx].data as WorkoutSet[]) || [])
@@ -99,6 +104,7 @@ export default function WorkoutPage() {
 
    // handle create vs update calls
   async function handleSubmit(data: WorkoutFormValues) {
+    console.log('WP submit payload: ', data)
     // DELETE removed exercises
     const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
     const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
@@ -116,7 +122,7 @@ export default function WorkoutPage() {
         await updateExercise({ workoutId, id: exId, dto: dtoEx });
       } else {
         const newEx = await createExercise({ workoutId, dto: dtoEx });
-        exId = newEx.id;
+        exId = newEx.workoutExerciseId;
       }
 
       // DELETE removed sets
@@ -146,12 +152,20 @@ export default function WorkoutPage() {
     navigate('/dashboard');
   }
 
+  async function handleDelete() {
+    await deleteWorkout({ id: workoutId });
+    navigate('/dashboard');
+  }
+
   return (
     <div>
       <Link to="/dashboard">
         back to dashboard
       </Link>
       <h1>Workout Details</h1>    
+      <Button onClick={handleDelete} color="error" variant="outlined">
+        Delete Workout
+      </Button>
 
       {/* Exercises/sets are always editable */}
       <WorkoutContainer

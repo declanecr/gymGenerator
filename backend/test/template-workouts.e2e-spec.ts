@@ -90,11 +90,11 @@ describe('TemplateWorkouts (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    expect((res.body as unknown[]).length).toBe(1);
+    expect((res.body as unknown[]).length).toBeGreaterThanOrEqual(1);
   });
 
   it('POST /template-workouts/:id/exercises adds an exercise', async () => {
-    const dto: CreateTemplateExerciseDto = { exerciseId };
+    const dto: CreateTemplateExerciseDto = { exerciseId, position: 1 };
     const res = await request(app.getHttpServer())
       .post(`/api/v1/template-workouts/${templateId}/exercises`)
       .set('Authorization', `Bearer ${accessToken}`)
@@ -104,7 +104,7 @@ describe('TemplateWorkouts (e2e)', () => {
   });
 
   it('POST /template-workouts/:id/exercises/:eid/sets adds a set', async () => {
-    const dto: CreateTemplateSetDto = { reps: 10, weight: 100 };
+    const dto: CreateTemplateSetDto = { reps: 10, weight: 100, position: 1 };
     const res = await request(app.getHttpServer())
       .post(
         `/api/v1/template-workouts/${templateId}/exercises/${templateExerciseId}/sets`,

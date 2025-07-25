@@ -1,18 +1,24 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, List, ListItem, ListItemText } from '@mui/material'
+import { Typography, Box, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
-import { listTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
-import StartWorkoutModal from '../components/StartWorkoutModal'
+import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
+import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
+import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
+import { useGetMe } from '../hooks/users/useGetMe'
 
 export default function Dashboard() {
-  const { logout, token } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
+  const {data:me} =useGetMe()
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [templates, setTemplates] = useState<TemplateWorkout[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const [showModal, setShowModal] =useState(false);
+  const [showWorkoutModal, setShowWorkoutModal] =useState(false);
+  const [showTemplateModal,setShowTemplateModal] = useState(false);
 
   const handleLogout = () => {
     logout()    // clear token + state
@@ -20,26 +26,40 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    fetchWorkouts()
-      .then(setWorkouts)
-      .catch((err) => console.error('Failed to load workouts', err))
-    listTemplateWorkouts()
-      .then(setTemplates)
-      .catch((err) => console.error('Failed to load templates', err))
+    Promise.all([
+      fetchWorkouts().then(setWorkouts),
+      fetchTemplateWorkouts().then(setTemplates),
+    ])
+      .catch(() => setError('Failed to load data'))
+      .finally(() => setLoading(false))
   }, [])
+
+  if (loading) {
+    return (
+      <Box p={4}>
+        <CircularProgress data-testid="loading" />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Box p={4}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    )
+  }
 
   return (
     <Box p={4}>
-      <Box>
-        {token}
-      </Box>
-      <button onClick={() => setShowModal(true)}>Start New Workout</button>
-      {showModal && (
+      <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
+      {showWorkoutModal && (
         <StartWorkoutModal
-          open={showModal}
-          onClose={() => setShowModal(false)}
+          open={showWorkoutModal}
+          onClose={() => setShowWorkoutModal(false)}
         />
       )}
+
 
       
       <Typography variant="h5" mt={4} mb={1}>Your Workouts</Typography>
@@ -53,6 +73,13 @@ export default function Dashboard() {
         ))}
       </List>
 
+      <button onClick={() => setShowTemplateModal(true)}>Create new Template</button>
+      {showTemplateModal && (
+        <StartTemplateModal
+          open={showTemplateModal}
+          onClose={() => setShowTemplateModal(false)}
+        />
+      )}
       <Typography variant="h5" mt={4} mb={1}>Template Workouts</Typography>
       <List>
         {templates.map((t) => (
@@ -63,6 +90,11 @@ export default function Dashboard() {
           </ListItem>
         ))}
       </List>
+      {me?.role === 'ADMIN' && (
+        <Box mb={2}>
+          <Link to="/admin">Go to Admin Page</Link>
+        </Box>
+      )}
       <Button variant="outlined" onClick={handleLogout}>
         Logout
       </Button>

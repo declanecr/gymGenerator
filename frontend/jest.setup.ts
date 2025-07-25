@@ -4,6 +4,8 @@
 import '@testing-library/jest-dom';
 import { server } from './src/mocks/server';
 
+process.env.NODE_ENV='test';
+
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
 

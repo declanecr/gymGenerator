@@ -18,7 +18,12 @@ const schema = z.object({
 
 type RegisterInputs = z.infer<typeof schema>
 
-export function RegisterForm() {
+export interface RegisterFormProps {
+  onLoadingChange?: (loading: boolean) => void
+  onError?: (message: string) => void
+}
+
+export function RegisterForm({ onLoadingChange, onError }: RegisterFormProps = {}) {
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -29,13 +34,16 @@ export function RegisterForm() {
   } = useForm<RegisterInputs>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: RegisterInputs) => {
+    onLoadingChange?.(true)
     try {
       const { accessToken } = await registerUser(data)
       login(accessToken)          // auto-login
       navigate('/dashboard')
     } catch (err) {
       console.error('Register failed:', err)
-      // TODO: show user-friendly error
+      onError?.('Register failed')
+    } finally {
+      onLoadingChange?.(false)
     }
   }
 

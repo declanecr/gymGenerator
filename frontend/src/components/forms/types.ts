@@ -13,7 +13,7 @@ export interface ExerciseFormValues {
   exerciseId: number;                // exercise-catalog ID
   position: number;                  // ordering under the workout
   // if you want to nest sets here:
-  sets?: SetFormValues[];
+  sets: SetFormValues[];
 }
 
 export interface WorkoutFormValues {

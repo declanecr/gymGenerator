@@ -43,8 +43,8 @@ model TemplateWorkout {
 
   templateExercises TemplateExercise[] //exercises within this workout template
 
-  user   User @relation(onDelete: Cascade, fields: [userId], references: [id]) //the user who this template belongs to
-  userId Int
+  user   User? @relation(onDelete: Cascade, fields: [userId], references: [id]) //the user who this template belongs to
+  userId Int?
 }
 
 model TemplateExercise {

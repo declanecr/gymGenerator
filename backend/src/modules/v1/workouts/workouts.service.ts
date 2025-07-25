@@ -26,9 +26,51 @@ export class WorkoutsService {
     });
   }
 
+  async copyFromTemplate(templateId: string, userId: number) {
+    const template = await this.prisma.templateWorkout.findFirst({
+      where: {
+        id: templateId,
+        OR: [{ userId }, { userId: null }],
+      },
+      include: {
+        templateExercises: { include: { sets: true } },
+      },
+    });
+    if (!template) throw new NotFoundException('Template not found');
+
+    return this.prisma.workout.create({
+      data: {
+        userId,
+        workoutTemplateId: template.id,
+        name: template.name,
+        notes: template.notes,
+        workoutExercises: {
+          create: template.templateExercises.map((ex) => ({
+            exerciseId: ex.exerciseId,
+            templateExerciseId: ex.id,
+            position: ex.position,
+            workoutSets: {
+              create: ex.sets.map((set) => ({
+                reps: set.reps,
+                weight: set.weight,
+                position: set.position,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
+
   async findAll(userId: number) {
     return this.prisma.workout.findMany({
       where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findAllAdmin() {
+    return this.prisma.workout.findMany({
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -80,6 +122,18 @@ export class WorkoutsService {
     await this.ensureExerciseOwner(workoutId, userId);
     return this.prisma.workoutExercise.findMany({
       where: { workoutId: workoutId },
+      include: {
+        exercise: {
+          select: {
+            id: true,
+            name: true,
+            primaryMuscle: true,
+            equipment: true,
+            default: true,
+            description: true,
+          },
+        },
+      },
     });
   }
 
@@ -126,11 +180,11 @@ export class WorkoutsService {
     });
   }
 
-  async getSets(exerciseId: string, workoutId: string, userId: number) {
+  async getSets(workoutExerciseId: string, workoutId: string, userId: number) {
     await this.ensureExerciseOwner(workoutId, userId);
     return this.prisma.workoutSet.findMany({
       //should be confined to only sets withing this workout, under the specified exercise
-      where: { workoutExerciseId: exerciseId },
+      where: { workoutExerciseId: workoutExerciseId },
     });
   }
 

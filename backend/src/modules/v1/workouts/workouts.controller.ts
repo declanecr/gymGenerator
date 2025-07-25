@@ -19,8 +19,11 @@ import { CreateWorkoutExerciseDto } from './dto/create-workout-exercise.dto';
 import { UpdateWorkoutExerciseDto } from './dto/update-workout-exercise.dto';
 import { CreateWorkoutSetDto } from './dto/create-workout-set.dto';
 import { UpdateWorkoutSetDto } from './dto/update-workout-set.dto';
+import { WorkoutExerciseResponseDto } from './dto/workout-exercise-response.dto';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('workouts')
 export class WorkoutsController {
   constructor(private readonly workoutsService: WorkoutsService) {}
@@ -34,9 +37,25 @@ export class WorkoutsController {
     return new WorkoutResponseDto(workout);
   }
 
+  @Post('from-template/:tid')
+  async createFromTemplate(
+    @GetUser() user: JwtPayload,
+    @Param('tid') id: string,
+  ): Promise<WorkoutResponseDto> {
+    const workout = await this.workoutsService.copyFromTemplate(id, user.id);
+    return new WorkoutResponseDto(workout);
+  }
+
   @Get()
   async findAll(@GetUser() user: JwtPayload): Promise<WorkoutResponseDto[]> {
     const workouts = await this.workoutsService.findAll(user.id);
+    return workouts.map((w) => new WorkoutResponseDto(w));
+  }
+
+  @Get('admin')
+  @Roles('ADMIN')
+  async findAllAdmin(): Promise<WorkoutResponseDto[]> {
+    const workouts = await this.workoutsService.findAllAdmin();
     return workouts.map((w) => new WorkoutResponseDto(w));
   }
 
@@ -80,8 +99,19 @@ export class WorkoutsController {
   async fetchExercises(
     @GetUser() user: JwtPayload,
     @Param('id') workoutId: string,
-  ) {
-    return this.workoutsService.getExercises(workoutId, user.id);
+  ): Promise<WorkoutExerciseResponseDto[]> {
+    const res = await this.workoutsService.getExercises(workoutId, user.id);
+    //console.log('fetchExercises: ', res);
+    return res.map((ex) => ({
+      workoutExerciseId: ex.id,
+      exerciseId: ex.exerciseId,
+      position: ex.position,
+      name: ex.exercise.name,
+      primaryMuscle: ex.exercise.primaryMuscle,
+      equipment: ex.exercise.equipment,
+      isDefault: ex.exercise.default,
+      description: ex.exercise.description,
+    }));
   }
 
   @Patch(':id/exercises/:eid')
@@ -123,7 +153,14 @@ export class WorkoutsController {
     @Param('eid') exerciseId: string,
     @Param('id') workoutId: string,
   ) {
-    return this.workoutsService.getSets(exerciseId, workoutId, user.id);
+    //console.log(exerciseId, workoutId);
+    const res = await this.workoutsService.getSets(
+      exerciseId,
+      workoutId,
+      user.id,
+    );
+    //console.log('getSets: ', res);
+    return res;
   }
 
   @Patch(':id/exercises/:eid/sets/:sid')

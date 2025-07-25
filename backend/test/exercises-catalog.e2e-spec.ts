@@ -21,7 +21,7 @@ describe('ExercisesCatalog (e2e)', () => {
   let seededCustomId: number;
 
   beforeAll(async () => {
-    console.log('DATABASE_URL:', process.env.DATABASE_URL);
+    //console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -148,7 +148,7 @@ describe('ExercisesCatalog (e2e)', () => {
 
     // Check that response body matches ExerciseResponse shape
     const created = postRes.body as ExerciseResponseDto;
-    expect(created).toHaveProperty('id');
+    expect(created).toHaveProperty('exerciseId');
     expect(created.name).toBe(dto.name);
     expect(created.primaryMuscle).toBe(dto.primaryMuscle);
     expect(created.equipment).toBe(dto.equipment);
@@ -199,7 +199,7 @@ describe('ExercisesCatalog (e2e)', () => {
 
     expect(patchRes.status).toBe(200);
     const updated = patchRes.body as ExerciseResponseDto;
-    expect(updated.id).toBe(seededCustomId);
+    expect(updated.exerciseId).toBe(seededCustomId);
     expect(updated.name).toBe(updateDto.name);
   });
 
@@ -222,7 +222,9 @@ describe('ExercisesCatalog (e2e)', () => {
 
     const allBeforeRes = allBefore.body as ExerciseResponseDto[];
 
-    expect(allBeforeRes.some((e) => e.id === seededCustomId)).toBe(true);
+    expect(allBeforeRes.some((e) => e.exerciseId === seededCustomId)).toBe(
+      true,
+    );
 
     // 2) Delete it
     const delRes = await request(app.getHttpServer())
@@ -236,6 +238,8 @@ describe('ExercisesCatalog (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`);
 
     const allAfterRes = allAfter.body as ExerciseResponseDto[];
-    expect(allAfterRes.some((e) => e.id === seededCustomId)).toBe(false);
+    expect(allAfterRes.some((e) => e.exerciseId === seededCustomId)).toBe(
+      false,
+    );
   });
 });

@@ -21,6 +21,7 @@ import { ExerciseResponseDto } from './dto/exercise-response.dto';
 import { UpdateCustomExerciseDto } from './dto/update-custom-exercise.dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('exercises-catalog')
@@ -31,7 +32,7 @@ export class ExercisesCatalogController {
   @Post('default')
   @Roles('ADMIN')
   async createDefaultExercise(
-    @Body() dto: CreateCustomExerciseDto, // same DTO fields but will be forced to default=true
+    @Body() dto: CreateExerciseDto, // same DTO fields but will be forced to default=true
   ): Promise<ExerciseResponseDto> {
     // Note: service logic will have to set `default: true` and userId: null
     const raw = await this.exercisesService.createDefaultExercise(dto);

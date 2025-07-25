@@ -35,6 +35,11 @@ export async function fetchWorkouts(): Promise<Workout[]> {
   return res.data
 }
 
+export async function fetchAllWorkouts(): Promise<Workout[]> {
+  const res = await api.get<Workout[]>(`/workouts/admin`)
+  return res.data
+}
+
 export async function createWorkout(dto: CreateWorkoutDto): Promise<Workout> {
   const res = await api.post<Workout>(`/workouts`, dto);
   return res.data;
@@ -47,4 +52,12 @@ export async function updateWorkout(id: string, dto: UpdateWorkoutDto): Promise<
 
 export async function deleteWorkout(id:string): Promise<void> {
   await api.delete<Workout>(`/workouts/${id}`);
+}
+
+export async function createWorkoutFromTemplate(tid:string):Promise<Workout> {
+  //console.log('calling axios with', tid);
+  const res = await api.post<Workout>(`/workouts/from-template/${tid}`);
+  
+  //console.log('res.data: ', res.data);
+  return res.data
 }

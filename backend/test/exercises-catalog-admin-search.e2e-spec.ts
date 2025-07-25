@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ExerciseResponseDto } from 'src/modules/v1/exercises-catalog/dto/exercise-response.dto';
-import { CreateCustomExerciseDto } from 'src/modules/v1/exercises-catalog/dto/create-custom-exercise.dto';
+import { CreateExerciseDto } from 'src/modules/v1/exercises-catalog/dto/create-exercise.dto';
 
 interface LoginResponse {
   accessToken: string;
@@ -143,7 +143,7 @@ describe('Catalog search and admin features (e2e)', () => {
   });
 
   it('POST /api/v1/exercises-catalog/default non-admin cannot create default exercise', async () => {
-    const dto: CreateCustomExerciseDto = {
+    const dto: CreateExerciseDto = {
       name: 'Deadlift',
       primaryMuscle: 'Back',
       description: 'test',
@@ -157,7 +157,7 @@ describe('Catalog search and admin features (e2e)', () => {
   });
 
   it('POST /api/v1/exercises-catalog/default admin can create default exercise', async () => {
-    const dto: CreateCustomExerciseDto = {
+    const dto: CreateExerciseDto = {
       name: 'Deadlift',
       primaryMuscle: 'Back',
       description: 'Heavy lift',

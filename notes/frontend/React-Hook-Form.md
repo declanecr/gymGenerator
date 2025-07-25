@@ -42,3 +42,29 @@ A bridge between `react-hook-form` and validation libraries like Zod.
  >   
 >- Easy error display and API submission handling
 
+---
+# useForm
+**Definition**  
+`useForm` initializes React Hook Form’s state and returns helpers for registration, validation, and submission, optionally wired to a Zod schema via a resolver.
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { workoutSchema, WorkoutFormValues } from '../schemas/workout';
+
+const { register, handleSubmit, formState: { errors } } = useForm<WorkoutFormValues>({
+  resolver: zodResolver(workoutSchema),
+  defaultValues: { name: '', sets: [] },
+});
+```
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as Component
+    participant RHF as useForm
+    U->>C: fill inputs
+    C->>RHF: register()
+    RHF-->>C: track value & errors
+    C->>C: handleSubmit(onSubmit)  
+```

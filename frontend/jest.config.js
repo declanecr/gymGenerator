@@ -12,4 +12,13 @@ export default {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  collectCoverage: true,
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.stories.*',
+    '!src/**/index.{ts,tsx}',
+  ],
+  coverageDirectory: './coverage/frontend',
+  coverageReporters: ['lcov', 'text', 'html'],
+
 };
