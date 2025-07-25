@@ -49,7 +49,7 @@ test('shows error message when login fails', async () => {
 
 test('shows loading indicator during login', async () => {
   (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: false, login: jest.fn() });
-  let resolve: (v: any) => void;
+  let resolve: (v: unknown) => void;
   (loginUser as jest.Mock).mockImplementation(() => new Promise(r => { resolve = r; }));
   render(
     <MemoryRouter>

@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorkoutsController } from './workouts.controller';
 import { WorkoutsService } from './workouts.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { ROLES_KEY } from 'src/shared/decorators/roles.decorator';
+import { WorkoutResponseDto } from './dto/workout-response.dto';
 
 class MockAuthGuard {
+  canActivate() {
+    return true;
+  }
+}
+class MockRolesGuard {
   canActivate() {
     return true;
   }
@@ -15,6 +24,7 @@ class MockAuthGuard {
 describe('WorkoutsController', () => {
   let controller: WorkoutsController;
   let service: DeepMockProxy<WorkoutsService>;
+  const user = { id: 1, email: 't@e.com', role: 'USER' };
 
   beforeEach(async () => {
     service = mockDeep<WorkoutsService>();
@@ -24,210 +34,212 @@ describe('WorkoutsController', () => {
     })
       .overrideGuard(AuthGuard('jwt'))
       .useClass(MockAuthGuard)
+      .overrideGuard(RolesGuard)
+      .useClass(MockRolesGuard)
       .compile();
 
     controller = module.get<WorkoutsController>(WorkoutsController);
   });
 
-  it('create calls service and returns DTO', async () => {
-    const workout = {
-      id: '1',
-      name: 'W',
-      notes: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      workoutTemplateId: null,
-      userId: 2,
-    };
-    service.create.mockResolvedValue(workout);
-    const res = await controller.create({ id: 2, email: 'a' }, { name: 'W' });
-
-    expect(service.create).toHaveBeenCalledWith(2, { name: 'W' });
-    expect(res.id).toBe('1');
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
   });
 
-  it('createFromTemplate calls service', async () => {
-    service.copyFromTemplate.mockResolvedValue({
-      id: 'w',
+  it('create calls service and returns dto', async () => {
+    const dto = { name: 'W1' };
+    const workout = {
+      id: 'w1',
+      name: 'W1',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      notes: null,
+      workoutTemplateId: null,
+      userId: 1,
+    } as any;
+    service.create.mockResolvedValue(workout);
+    const res = await controller.create(user as any, dto as any);
+    expect(service.create).toHaveBeenCalledWith(user.id, dto);
+    expect(res).toEqual(new WorkoutResponseDto(workout));
+  });
+
+  it('createFromTemplate calls copyFromTemplate', async () => {
+    const workout = {
+      id: 'w2',
+      name: 'W2',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      notes: null,
+      workoutTemplateId: 'tpl1',
+      userId: 1,
+    } as any;
+    service.copyFromTemplate.mockResolvedValue(workout);
+    const res = await controller.createFromTemplate(user as any, 'tpl1');
+    expect(service.copyFromTemplate).toHaveBeenCalledWith('tpl1', user.id);
+    expect(res).toEqual(new WorkoutResponseDto(workout));
+  });
+
+  it('findAll maps to DTOs', async () => {
+    const workout = {
+      id: 'w1',
       name: 'n',
       createdAt: new Date(),
       updatedAt: new Date(),
       notes: null,
-      workoutTemplateId: 't',
+      workoutTemplateId: null,
       userId: 1,
-    });
-    const res = await controller.createFromTemplate({ id: 1, email: 'a' }, 't');
-
-    expect(service.copyFromTemplate).toHaveBeenCalledWith('t', 1);
-    expect(res.workoutTemplateId).toBe('t');
-  });
-
-  it('findAll returns mapped DTOs', async () => {
-    service.findAll.mockResolvedValue([
-      {
-        id: '1',
-        name: 'A',
-        notes: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        workoutTemplateId: null,
-        userId: 3,
-      },
-    ]);
-    const res = await controller.findAll({ id: 3, email: 'b' });
-
-    expect(service.findAll).toHaveBeenCalledWith(3);
-    expect(res[0].id).toBe('1');
+    } as any;
+    service.findAll.mockResolvedValue([workout]);
+    const res = await controller.findAll(user as any);
+    expect(service.findAll).toHaveBeenCalledWith(user.id);
+    expect(res).toEqual([new WorkoutResponseDto(workout)]);
   });
 
   it('findAllAdmin requires ADMIN role', () => {
     const roles = Reflect.getMetadata(
       ROLES_KEY,
-      controller.findAllAdmin,
-    ) as string[];
+      WorkoutsController.prototype.findAllAdmin,
+    );
     expect(roles).toContain('ADMIN');
   });
-  it('findAllAdmin returns DTO list', async () => {
-    service.findAllAdmin.mockResolvedValue([
-      {
-        id: '2',
-        name: 'B',
-        notes: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        workoutTemplateId: null,
-        userId: 1,
-      },
-    ]);
+
+  it('findAllAdmin maps to DTOs', async () => {
+    const workout = {
+      id: 'w1',
+      name: 'n',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      notes: null,
+      workoutTemplateId: null,
+      userId: 1,
+    } as any;
+    service.findAllAdmin.mockResolvedValue([workout]);
     const res = await controller.findAllAdmin();
-
     expect(service.findAllAdmin).toHaveBeenCalled();
-    expect(res[0].id).toBe('2');
+    expect(res).toEqual([new WorkoutResponseDto(workout)]);
   });
 
-  it('findOne delegates to service', async () => {
-    service.findOne.mockResolvedValue({
-      id: '3',
-      name: 'C',
-      notes: null,
+  it('findOne returns dto', async () => {
+    const workout = {
+      id: 'w3',
+      name: 'X',
       createdAt: new Date(),
       updatedAt: new Date(),
+      notes: null,
       workoutTemplateId: null,
-      userId: 5,
-    });
-    const res = await controller.findOne({ id: 5, email: 'c' }, '3');
-
-    expect(service.findOne).toHaveBeenCalledWith('3', 5);
-    expect(res.id).toBe('3');
+      userId: 1,
+    } as any;
+    service.findOne.mockResolvedValue(workout);
+    const res = await controller.findOne(user as any, 'w3');
+    expect(service.findOne).toHaveBeenCalledWith('w3', user.id);
+    expect(res).toEqual(new WorkoutResponseDto(workout));
   });
 
-  it('update delegates to service', async () => {
-    service.update.mockResolvedValue({
-      id: '4',
-      name: 'U',
-      notes: null,
+  it('update calls service and returns dto', async () => {
+    const workout = {
+      id: 'w3',
+      name: 'Y',
       createdAt: new Date(),
       updatedAt: new Date(),
+      notes: null,
       workoutTemplateId: null,
-      userId: 6,
-    });
-    const res = await controller.update({ id: 6, email: 'd' }, '4', {});
-
-    expect(service.update).toHaveBeenCalledWith('4', {}, 6);
-    expect(res.id).toBe('4');
+      userId: 1,
+    } as any;
+    service.update.mockResolvedValue(workout);
+    const dto = { name: 'Y' };
+    const res = await controller.update(user as any, 'w3', dto as any);
+    expect(service.update).toHaveBeenCalledWith('w3', dto, user.id);
+    expect(res).toEqual(new WorkoutResponseDto(workout));
   });
 
-  it('remove delegates to service', async () => {
-    await controller.remove({ id: 7, email: 'e' }, '5');
-
-    expect(service.remove).toHaveBeenCalledWith('5', 7);
+  it('remove calls service', async () => {
+    service.remove.mockResolvedValue(undefined as any);
+    await controller.remove(user as any, 'w3');
+    expect(service.remove).toHaveBeenCalledWith('w3', user.id);
   });
 
-  it('addExercise calls service', async () => {
-    service.addExercise.mockResolvedValue({ id: 'ex' } as never);
-    await controller.addExercise({ id: 1, email: 'a' }, 'w1', {
+  it('addExercise delegates to service', async () => {
+    service.addExercise.mockResolvedValue({ id: 'ex1' } as any);
+    const dto = { exerciseId: 1, position: 1 };
+    const res = await controller.addExercise(user as any, 'w1', dto as any);
+    expect(service.addExercise).toHaveBeenCalledWith('w1', user.id, dto);
+    expect(res).toEqual({ id: 'ex1' });
+  });
+
+  it('fetchExercises maps to DTO', async () => {
+    const exercise = {
+      id: 'ex1',
+      workoutId: 'w1',
       exerciseId: 2,
       position: 1,
-    });
-
-    expect(service.addExercise).toHaveBeenCalledWith('w1', 1, {
-      exerciseId: 2,
-      position: 1,
-    });
-  });
-
-  it('fetchExercises maps service results', async () => {
-    service.getExercises.mockResolvedValue([
+      exercise: {
+        id: 2,
+        name: 'Push',
+        primaryMuscle: 'Chest',
+        equipment: null,
+        default: true,
+        description: 'desc',
+      },
+    } as any;
+    service.getExercises.mockResolvedValue([exercise]);
+    const res = await controller.fetchExercises(user as any, 'w1');
+    expect(service.getExercises).toHaveBeenCalledWith('w1', user.id);
+    expect(res).toEqual([
       {
-        id: 'e1',
+        workoutExerciseId: 'ex1',
         exerciseId: 2,
         position: 1,
-        exercise: {
-          id: 2,
-          name: 'Bench',
-          primaryMuscle: 'Chest',
-          equipment: 'None',
-          default: true,
-          description: 'desc',
-        },
+        name: 'Push',
+        primaryMuscle: 'Chest',
+        equipment: null,
+        isDefault: true,
+        description: 'desc',
       },
-    ] as never);
-    const res = await controller.fetchExercises({ id: 1, email: 'a' }, 'w1');
-
-    expect(service.getExercises).toHaveBeenCalledWith('w1', 1);
-    expect(res[0].exerciseId).toBe(2);
-    expect(res[0].name).toBe('Bench');
+    ]);
   });
 
-  it('updateExercise calls service', async () => {
-    service.updateExercise.mockResolvedValue({ id: 'e1' } as never);
-    await controller.updateExercise({ id: 1, email: 'a' }, 'w1', 'e1', {
-      position: 2,
-    });
-
-    expect(service.updateExercise).toHaveBeenCalledWith('w1', 'e1', 1, {
-      position: 2,
-    });
+  it('updateExercise delegates to service', async () => {
+    service.updateExercise.mockResolvedValue({ id: 'ex1' } as any);
+    const dto = { position: 2 };
+    await controller.updateExercise(user as any, 'w1', 'ex1', dto as any);
+    expect(service.updateExercise).toHaveBeenCalledWith(
+      'w1',
+      'ex1',
+      user.id,
+      dto,
+    );
   });
 
-  it('removeExercise calls service', async () => {
-    await controller.removeExercise({ id: 1, email: 'a' }, 'w1', 'e1');
-
-    expect(service.removeExercise).toHaveBeenCalledWith('w1', 'e1', 1);
+  it('removeExercise delegates to service', async () => {
+    service.removeExercise.mockResolvedValue(undefined as any);
+    await controller.removeExercise(user as any, 'w1', 'ex1');
+    expect(service.removeExercise).toHaveBeenCalledWith('w1', 'ex1', user.id);
   });
 
-  it('addSet calls service', async () => {
-    service.addSet.mockResolvedValue({ id: 's1' } as never);
-    await controller.addSet({ id: 1, email: 'a' }, 'ex1', {
-      reps: 5,
-      weight: 10,
-      position: 1,
-    });
-
-    expect(service.addSet).toHaveBeenCalledWith('ex1', 1, {
-      reps: 5,
-      weight: 10,
-      position: 1,
-    });
+  it('addSet delegates to service', async () => {
+    service.addSet.mockResolvedValue({ id: 's1' } as any);
+    const dto = { reps: 5, weight: 50, position: 1 };
+    const res = await controller.addSet(user as any, 'ex1', dto as any);
+    expect(service.addSet).toHaveBeenCalledWith('ex1', user.id, dto);
+    expect(res).toEqual({ id: 's1' });
   });
 
-  it('getSets calls service', async () => {
-    service.getSets.mockResolvedValue([]);
-    await controller.getSets({ id: 1, email: 'a' }, 'ex1', 'w1');
-
-    expect(service.getSets).toHaveBeenCalledWith('ex1', 'w1', 1);
+  it('getSets delegates to service', async () => {
+    service.getSets.mockResolvedValue([{ id: 's1' }] as any);
+    const res = await controller.getSets(user as any, 'ex1', 'w1');
+    expect(service.getSets).toHaveBeenCalledWith('ex1', 'w1', user.id);
+    expect(res).toEqual([{ id: 's1' }]);
   });
 
-  it('updateSet calls service', async () => {
-    service.updateSet.mockResolvedValue({ id: 's1' } as never);
-    await controller.updateSet({ id: 1, email: 'a' }, 's1', { reps: 10 });
-
-    expect(service.updateSet).toHaveBeenCalledWith('s1', 1, { reps: 10 });
+  it('updateSet delegates to service', async () => {
+    service.updateSet.mockResolvedValue({ id: 's1' } as any);
+    const dto = { reps: 10 };
+    await controller.updateSet(user as any, 's1', dto as any);
+    expect(service.updateSet).toHaveBeenCalledWith('s1', user.id, dto);
   });
 
-  it('removeSet calls service', async () => {
-    await controller.removeSet({ id: 1, email: 'a' }, 's1');
-
-    expect(service.removeSet).toHaveBeenCalledWith('s1', 1);
+  it('removeSet delegates to service', async () => {
+    service.removeSet.mockResolvedValue(undefined as any);
+    await controller.removeSet(user as any, 's1');
+    expect(service.removeSet).toHaveBeenCalledWith('s1', user.id);
   });
 });
