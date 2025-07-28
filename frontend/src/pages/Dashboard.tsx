@@ -7,6 +7,7 @@ import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
 import { useGetMe } from '../hooks/users/useGetMe'
+import DashboardLayout from '../layouts/DashboardLayout'
 
 export default function Dashboard() {
   const { logout } = useAuth()
@@ -19,6 +20,13 @@ export default function Dashboard() {
 
   const [showWorkoutModal, setShowWorkoutModal] =useState(false);
   const [showTemplateModal,setShowTemplateModal] = useState(false);
+
+
+
+  
+
+
+
 
   const handleLogout = () => {
     logout()    // clear token + state
@@ -51,53 +59,55 @@ export default function Dashboard() {
   }
 
   return (
-    <Box p={4}>
-      <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
-      {showWorkoutModal && (
-        <StartWorkoutModal
-          open={showWorkoutModal}
-          onClose={() => setShowWorkoutModal(false)}
-        />
-      )}
+    <DashboardLayout >
+      <Box p={4}>
+        <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
+        {showWorkoutModal && (
+          <StartWorkoutModal
+            open={showWorkoutModal}
+            onClose={() => setShowWorkoutModal(false)}
+          />
+        )}
 
 
-      
-      <Typography variant="h5" mt={4} mb={1}>Your Workouts</Typography>
-      <List>
-        {workouts.map((w) => (
-          <ListItem key={w.id} disablePadding>
-            <ListItemText>
-              <Link to={`/workouts/${w.id}`}>Workout {w.name}</Link>
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
+        
+        <Typography variant="h5" mt={4} mb={1}>Your Workouts</Typography>
+        <List>
+          {workouts.map((w) => (
+            <ListItem key={w.id} disablePadding>
+              <ListItemText>
+                <Link to={`/workouts/${w.id}`}>Workout {w.name}</Link>
+              </ListItemText>
+            </ListItem>
+          ))}
+        </List>
 
-      <button onClick={() => setShowTemplateModal(true)}>Create new Template</button>
-      {showTemplateModal && (
-        <StartTemplateModal
-          open={showTemplateModal}
-          onClose={() => setShowTemplateModal(false)}
-        />
-      )}
-      <Typography variant="h5" mt={4} mb={1}>Template Workouts</Typography>
-      <List>
-        {templates.map((t) => (
-          <ListItem key={t.id} disablePadding>
-            <ListItemText>
-              <Link to={`/template-workouts/${t.id}`}>{t.name}</Link>
-            </ListItemText>
-          </ListItem>
-        ))}
-      </List>
-      {me?.role === 'ADMIN' && (
-        <Box mb={2}>
-          <Link to="/admin">Go to Admin Page</Link>
-        </Box>
-      )}
-      <Button variant="outlined" onClick={handleLogout}>
-        Logout
-      </Button>
-    </Box>
+        <button onClick={() => setShowTemplateModal(true)}>Create new Template</button>
+        {showTemplateModal && (
+          <StartTemplateModal
+            open={showTemplateModal}
+            onClose={() => setShowTemplateModal(false)}
+          />
+        )}
+        <Typography variant="h5" mt={4} mb={1}>Template Workouts</Typography>
+        <List>
+          {templates.map((t) => (
+            <ListItem key={t.id} disablePadding>
+              <ListItemText>
+                <Link to={`/template-workouts/${t.id}`}>{t.name}</Link>
+              </ListItemText>
+            </ListItem>
+          ))}
+        </List>
+        {me?.role === 'ADMIN' && (
+          <Box mb={2}>
+            <Link to="/admin">Go to Admin Page</Link>
+          </Box>
+        )}
+        <Button variant="outlined" onClick={handleLogout}>
+          Logout
+        </Button>
+      </Box>
+    </DashboardLayout>
   )
 }
