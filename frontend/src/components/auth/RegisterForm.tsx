@@ -39,8 +39,8 @@ export function RegisterForm({ onLoadingChange, onError }: RegisterFormProps = {
       const { accessToken } = await registerUser(data)
       login(accessToken)          // auto-login
       navigate('/dashboard')
-    } catch (err) {
-      console.error('Register failed:', err)
+    } catch /*(err)*/ {
+      //console.error('Register failed:', err)
       onError?.('Register failed')
     } finally {
       onLoadingChange?.(false)

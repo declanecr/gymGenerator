@@ -53,8 +53,8 @@ export function LoginForm({ onLoadingChange, onError }: LoginFormProps = {}) {  
             login(accessToken)      // Store in context + localStorage
             console.log ('Token', accessToken)
             navigate('/dashboard')    //redirect to main app view
-        } catch (err) {
-            console.error('Login failed', err)
+        } catch /*(err)*/ {
+            //console.error('Login failed', err)
             onError?.('Login failed')
         } finally {
             onLoadingChange?.(false)
