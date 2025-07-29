@@ -8,6 +8,7 @@ import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkoutPage'
 import WorkoutPage from '../pages/WorkoutPage'
 import AdminPage from '../pages/AdminPage'
+import CreateExercisePage from '../pages/CreateExercisePage'
 
 export default function AppRoutes() {
   return (
@@ -48,6 +49,15 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <TemplateWorkoutPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path='/create-exercise'
+        element={
+          <PrivateRoute>
+            <CreateExercisePage />
           </PrivateRoute>
         }
       />

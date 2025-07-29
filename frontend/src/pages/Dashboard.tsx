@@ -21,13 +21,6 @@ export default function Dashboard() {
   const [showWorkoutModal, setShowWorkoutModal] =useState(false);
   const [showTemplateModal,setShowTemplateModal] = useState(false);
 
-
-
-  
-
-
-
-
   const handleLogout = () => {
     logout()    // clear token + state
     navigate('/login')   //redirect immediately
