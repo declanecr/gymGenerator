@@ -21,4 +21,31 @@ describe('exerciseCatalog API', () => {
     expect(mockedApi.get).toHaveBeenCalledWith('/exercises-catalog?custom=false');
     expect(result).toEqual(data);
   });
+
+  it('createCustomExercise calls POST /exercises-catalog/custom with dto', async () => {
+    const dto = {
+      name: 'Pull Up',
+      primaryMuscle: 'Back',
+      description: 'Bodyweight pull exercise',
+      equipment: 'Bar',
+    };
+    const response = {
+      exerciseId: 2,
+      name: 'Pull Up',
+      primaryMuscle: 'Back',
+      description: 'Bodyweight pull exercise',
+      equipment: 'Bar',
+      default: false,
+      templateExercises: [],
+      workoutExercises: [],
+    };
+    // Add mock for post
+    mockedApi.post = jest.fn().mockResolvedValueOnce({ data: response });
+
+    const { createCustomExercise } = await import('../exerciseCatalog');
+    const result = await createCustomExercise(dto);
+
+    expect(mockedApi.post).toHaveBeenCalledWith('/exercises-catalog/custom', dto);
+    expect(result).toEqual(response);
+  });
 });
