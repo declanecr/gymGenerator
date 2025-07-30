@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import WorkoutPage from './WorkoutPage';
+import { useAuth } from '../hooks/useAuth';
+
+jest.mock('../hooks/useAuth', ()=>({useAuth: jest.fn() }));
 
 jest.mock('../hooks/workouts/useGetWorkout', () => ({
   useGetWorkout: () => ({
@@ -36,6 +39,10 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
   return { ...actual, useNavigate: () => mockNavigate };
+});
+
+beforeEach(() => {
+  (useAuth as jest.Mock).mockReturnValue({ isAuthenticated: true, logout: jest.fn() });
 });
 
 function renderPage() {
