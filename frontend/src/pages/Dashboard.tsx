@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material'
+import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails, Card, CardActionArea, CardContent, Fab } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
@@ -8,6 +8,8 @@ import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
 import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
 import { useGetMe } from '../hooks/users/useGetMe'
 import DashboardLayout from '../layouts/DashboardLayout'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add'
 
 export default function Dashboard() {
   const { logout } = useAuth()
@@ -53,54 +55,89 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout >
-      <Box p={4}>
-        <button onClick={() => setShowWorkoutModal(true)}>Start New Workout</button>
-        {showWorkoutModal && (
+      <Grid container spacing={2} sx={{ p: 2}}>
+        <Grid size={{xs:12}}>
+          <Button variant='contained' onClick={() => setShowWorkoutModal(true)}>
+            Start New Workout
+          </Button>
           <StartWorkoutModal
             open={showWorkoutModal}
             onClose={() => setShowWorkoutModal(false)}
           />
-        )}
-
-
-        
-        <Typography variant="h5" mt={4} mb={1}>Your Workouts</Typography>
-        <List>
-          {workouts.map((w) => (
-            <ListItem key={w.id} disablePadding>
-              <ListItemText>
-                <Link to={`/workouts/${w.id}`}>Workout {w.name}</Link>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
-
-        <button onClick={() => setShowTemplateModal(true)}>Create new Template</button>
-        {showTemplateModal && (
-          <StartTemplateModal
-            open={showTemplateModal}
-            onClose={() => setShowTemplateModal(false)}
-          />
-        )}
-        <Typography variant="h5" mt={4} mb={1}>Template Workouts</Typography>
-        <List>
-          {templates.map((t) => (
-            <ListItem key={t.id} disablePadding>
-              <ListItemText>
-                <Link to={`/template-workouts/${t.id}`}>{t.name}</Link>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
+        </Grid>
+      </Grid>
+      <Grid size={{ xs:12 }}>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant='h5'>Workouts</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+              <Grid container spacing={2}>
+                {workouts.map(w => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
+                    <Card>
+                      <CardActionArea component={Link} to={`/workouts/${w.id}`}>
+                        <CardContent>
+                          <Typography variant="h6">{w.name}</Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </AccordionDetails>
+        </Accordion>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h5">Template Workouts</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ position: 'relative' }}>
+                <Grid container spacing={2}>
+                  {templates.map(t => (
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={t.id}>
+                      <Card>
+                        <CardActionArea component={Link} to={`/template-workouts/${t.id}`}>
+                          <CardContent>
+                            <Typography variant="h6">{t.name}</Typography>
+                          </CardContent>
+                        </CardActionArea>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+                <Fab
+                  variant="extended"
+                  color="primary"
+                  onClick={() => setShowTemplateModal(true)}
+                  sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                >
+                  <AddIcon sx={{ mr: 1 }} />
+                  Create Template
+                </Fab>
+                <StartTemplateModal
+                  open={showTemplateModal}
+                  onClose={() => setShowTemplateModal(false)}
+                />
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
         {me?.role === 'ADMIN' && (
-          <Box mb={2}>
-            <Link to="/admin">Go to Admin Page</Link>
-          </Box>
+          <Grid size={{ xs: 12 }}>
+            <Box mb={2}>
+              <Link to="/admin">Go to Admin Page</Link>
+            </Box>
+          </Grid>
         )}
-        <Button variant="outlined" onClick={handleLogout}>
-          Logout
-        </Button>
-      </Box>
+
+        <Grid size={{ xs: 12 }}>
+          <Button variant="outlined" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Grid>
     </DashboardLayout>
   )
 }

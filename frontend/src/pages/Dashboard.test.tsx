@@ -51,7 +51,7 @@ function renderPage() {
 
 test('renders workouts and admin link', async () => {
   await act(async () => { renderPage(); });
-  await screen.findByText('Workout w1');
+  await screen.findByText('w1');
   expect(screen.getByText('tpl')).toBeInTheDocument();
   expect(screen.getByText(/go to admin page/i)).toBeInTheDocument();
 });
