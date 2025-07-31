@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails, Card, CardActionArea, CardContent, Fab } from '@mui/material'
+import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails, Fab } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
@@ -10,6 +10,8 @@ import { useGetMe } from '../hooks/users/useGetMe'
 import DashboardLayout from '../layouts/DashboardLayout'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add'
+import WorkoutCard from '../components/workouts/WorkoutCard'
+import TemplateWorkoutCard from '../components/template-workouts/TemplateWorkoutCard'
 
 export default function Dashboard() {
   const { logout } = useAuth()
@@ -72,16 +74,23 @@ export default function Dashboard() {
             <Typography variant='h5'>Workouts</Typography>
           </AccordionSummary>
           <AccordionDetails>
+            <Box mb={2}>
+                <Button
+                  variant='contained'
+                  fullWidth
+                  onClick={() => setShowWorkoutModal(true)}
+                >
+                  Start New Workout
+                </Button>
+                <StartWorkoutModal
+                  open={showWorkoutModal}
+                  onClose={() => setShowWorkoutModal(false)}
+                />
+              </Box>
               <Grid container spacing={2}>
                 {workouts.map(w => (
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
-                    <Card>
-                      <CardActionArea component={Link} to={`/workouts/${w.id}`}>
-                        <CardContent>
-                          <Typography variant="h6">{w.name}</Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Card>
+                    <WorkoutCard workout={w}/>
                   </Grid>
                 ))}
               </Grid>
@@ -94,17 +103,24 @@ export default function Dashboard() {
               <Typography variant="h5">Template Workouts</Typography>
             </AccordionSummary>
             <AccordionDetails>
+              <Box mb={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => setShowTemplateModal(true)}
+                >
+                  Create Template
+                </Button>
+                <StartTemplateModal
+                  open={showTemplateModal}
+                  onClose={() => setShowTemplateModal(false)}
+                />
+              </Box>
               <Box sx={{ position: 'relative' }}>
                 <Grid container spacing={2}>
                   {templates.map(t => (
                     <Grid size={{ xs: 12, sm: 6, md: 4 }} key={t.id}>
-                      <Card>
-                        <CardActionArea component={Link} to={`/template-workouts/${t.id}`}>
-                          <CardContent>
-                            <Typography variant="h6">{t.name}</Typography>
-                          </CardContent>
-                        </CardActionArea>
-                      </Card>
+                      <TemplateWorkoutCard templateWorkout={t}/>
                     </Grid>
                   ))}
                 </Grid>
