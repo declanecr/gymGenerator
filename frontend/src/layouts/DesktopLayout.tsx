@@ -3,12 +3,12 @@ import { Box, Container } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import NavBar from '../components/common/NavBar'
 
-interface BaseLayoutProps {
+interface DesktopLayoutProps {
   children: ReactNode
   sidebar?: ReactNode
 }
 
-const BaseLayout = ({ children, sidebar }: BaseLayoutProps) => {
+const DesktopLayout = ({ children, sidebar }: DesktopLayoutProps) => {
   return (
     <Box>
       <NavBar />
@@ -29,4 +29,4 @@ const BaseLayout = ({ children, sidebar }: BaseLayoutProps) => {
   )
 }
 
-export default BaseLayout
+export default DesktopLayout

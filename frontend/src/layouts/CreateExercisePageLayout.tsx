@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import BaseLayout from './BaseLayout'
+import DesktopLayout from './DesktopLayout'
 
 interface Props {
   children: ReactNode
@@ -7,8 +7,8 @@ interface Props {
 
 export default function CreateExercisePageLayout({ children }: Props) {
   return (
-    <BaseLayout>
+    <DesktopLayout>
       {children}
-    </BaseLayout>
+    </DesktopLayout>
   )
 }

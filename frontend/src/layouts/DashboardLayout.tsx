@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import BaseLayout from './BaseLayout'
+import DesktopLayout from './DesktopLayout'
 // import { ListItemButton } from '@mui/material/ListItemButton'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 /*
-  // call this inside BaseLayout<sidebar ={<Sidebar />}> to have a sidebar appear
+  // call this inside DesktopLayout<sidebar ={<Sidebar />}> to have a sidebar appear
   const TestSidebar = () => (
     <Box sx={{ p: 2 }}>
       <List dense>
@@ -27,8 +27,8 @@ interface Props {
 
 export default function DashboardLayout({ children }: Props) {
   return (
-    <BaseLayout>
+    <DesktopLayout>
       {children}
-    </BaseLayout>
+    </DesktopLayout>
   )
 }
