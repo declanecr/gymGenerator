@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { DeviceProvider } from './DeviceProvider';
 import { DeviceContext } from './DeviceContext';
-import { useDeviceType } from '../hooks/useDevice';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 // Mock useDeviceType hook
 jest.mock('../hooks/useDevice', () => ({

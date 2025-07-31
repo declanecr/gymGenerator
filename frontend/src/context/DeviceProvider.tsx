@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { useDeviceType } from '../hooks/useDevice';
+import { useDeviceType } from '../hooks/useDeviceType';
 import { DeviceContext } from './DeviceContext';
 
 export const DeviceProvider = ({ children }: { children: ReactNode }) => {

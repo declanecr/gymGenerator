@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { useDeviceType } from './useDevice';
+import { useDeviceType } from './useDeviceType';
 import * as mui from '@mui/material';
 
 jest.mock('@mui/material', () => {
