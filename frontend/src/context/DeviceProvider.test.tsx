@@ -5,7 +5,7 @@ import { DeviceContext } from './DeviceContext';
 import { useDeviceType } from '../hooks/useDeviceType';
 
 // Mock useDeviceType hook
-jest.mock('../hooks/useDevice', () => ({
+jest.mock('../hooks/useDeviceType', () => ({
     useDeviceType: jest.fn(),
 }));
 
