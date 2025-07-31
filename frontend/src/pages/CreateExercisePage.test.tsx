@@ -6,6 +6,7 @@ import CreateExercisePage from './CreateExercisePage';
 import { useCreateCustomExercise } from '../hooks/catalog/useCreateCustomExercise';
 import { useCreateDefaultExercise } from '../hooks/catalog/useCreateDefaultExercise';
 import { useGetMe } from '../hooks/users/useGetMe';
+import { DeviceProvider } from '../context/DeviceProvider';
 
 jest.mock('../hooks/useAuth', () => ({
   useAuth: () => ({ isAuthenticated: true }),
@@ -33,7 +34,9 @@ function renderPage(role: string = 'USER') {
   (useCreateDefaultExercise as jest.Mock).mockReturnValue({ mutateAsync: mockDefault, isLoading: false, isError: false, isPending: false });  render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
-        <CreateExercisePage />
+        <DeviceProvider>
+          <CreateExercisePage />
+        </DeviceProvider>
       </MemoryRouter>
     </QueryClientProvider>
   );

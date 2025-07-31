@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import WorkoutPage from './WorkoutPage';
 import { useAuth } from '../hooks/useAuth';
+import { DeviceProvider } from '../context/DeviceProvider';
 
 jest.mock('../hooks/useAuth', ()=>({useAuth: jest.fn() }));
 
@@ -50,9 +51,11 @@ function renderPage() {
   render(
     <QueryClientProvider client={qc}>
       <MemoryRouter initialEntries={['/workouts/w1']}>
-        <Routes>
-          <Route path="/workouts/:id" element={<WorkoutPage />} />
-        </Routes>
+        <DeviceProvider>
+          <Routes>
+            <Route path="/workouts/:id" element={<WorkoutPage />} />
+          </Routes>
+        </DeviceProvider>
       </MemoryRouter>
     </QueryClientProvider>
   );

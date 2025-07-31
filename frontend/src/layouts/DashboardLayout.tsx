@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 import DesktopLayout from './DesktopLayout'
+import { useDevice } from '../context/DeviceContext'
+import MobileLayout from './MobileLayout'
 // import { ListItemButton } from '@mui/material/ListItemButton'
 
 interface Props {
@@ -26,9 +28,12 @@ interface Props {
     */
 
 export default function DashboardLayout({ children }: Props) {
+  const { isMobile } = useDevice()
+  const Layout = isMobile ? MobileLayout : DesktopLayout
+
   return (
-    <DesktopLayout>
+    <Layout>
       {children}
-    </DesktopLayout>
+    </Layout>
   )
 }

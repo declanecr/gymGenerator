@@ -1,14 +1,19 @@
 import { ReactNode } from 'react'
 import DesktopLayout from './DesktopLayout'
+import MobileLayout from './MobileLayout'
+import { useDevice } from '../context/DeviceContext'
 
 interface Props {
   children: ReactNode
 }
 
 export default function WorkoutPageLayout({ children }: Props) {
+  const { isDesktop } = useDevice()
+  const Layout = isDesktop ? DesktopLayout : MobileLayout
+
   return (
-    <DesktopLayout>
+    <Layout>
       {children}
-    </DesktopLayout>
+    </Layout>
   )
 }
