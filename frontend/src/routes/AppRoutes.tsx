@@ -81,7 +81,6 @@ export default function AppRoutes() {
           </PrivateRoute>
         }
       />
-
       
       <Route 
         path='/admin'

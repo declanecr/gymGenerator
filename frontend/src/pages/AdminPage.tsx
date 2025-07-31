@@ -43,6 +43,9 @@ export default function AdminPage() {
               Create Global Template
             </Button>
           </Grid>
+          <Grid>
+            <Link to="/create-default">Create Default Exercise</Link>
+          </Grid>
         </Grid>
         {showTemplateModal && (
           <StartGlobalTemplateModal

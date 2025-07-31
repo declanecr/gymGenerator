@@ -4,6 +4,7 @@ import {
   createCustomExercise,
   updateCustomExercise,
   deleteCustomExercise,
+  createDefaultExercise,
 } from '../exerciseCatalog';
 
 jest.mock('../axios', () => ({
@@ -57,7 +58,7 @@ describe('exerciseCatalog API', () => {
     expect(result).toEqual(response);
   });
 
-   it('createCustomExercise posts to /exercises-catalog/custom and returns data', async () => {
+  it('createCustomExercise posts to /exercises-catalog/custom and returns data', async () => {
     const dto = { name: 'Curl', primaryMuscle: 'Biceps' };
     const created = { exerciseId: 2, name: 'Curl', primaryMuscle: 'Biceps', default: false, templateExercises: [], workoutExercises: [] };
     mockedApi.post.mockResolvedValueOnce({ data: created });
@@ -65,6 +66,24 @@ describe('exerciseCatalog API', () => {
     const result = await createCustomExercise(dto);
 
     expect(mockedApi.post).toHaveBeenCalledWith('/exercises-catalog/custom', dto);
+    expect(result).toEqual(created);
+  });
+
+  it('createDefaultExercise posts to /exercises-catalog/default and returns data', async () => {
+    const dto = { name: 'Press', primaryMuscle: 'Chest' };
+    const created = {
+      exerciseId: 3,
+      name: 'Press',
+      primaryMuscle: 'Chest',
+      default: true,
+      templateExercises: [],
+      workoutExercises: [],
+    };
+    mockedApi.post.mockResolvedValueOnce({ data: created });
+
+    const result = await createDefaultExercise(dto);
+
+    expect(mockedApi.post).toHaveBeenCalledWith('/exercises-catalog/default', dto);
     expect(result).toEqual(created);
   });
 

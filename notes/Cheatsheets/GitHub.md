@@ -103,3 +103,5 @@
 - Avoid force-pushing (`git push --force`) on shared branches—use it only on personal feature branches.
     
 - Tag releases: **`git tag -a v1.0.0 -m "Release v1.0.0"`** and **`git push origin --tags`**.
+![[Git-Cheat-Sheet-1899010241.png]]
+![[sEgcpMUWtqeswjDKd2V_HBD6Pvkl3iffvb5sLJsb3WU-277746339.png]]

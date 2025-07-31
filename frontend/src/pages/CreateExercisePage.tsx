@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateCustomExercise } from '../hooks/catalog/useCreateCustomExercise';
 import CreateExercisePageLayout from '../layouts/CreateExercisePageLayout';
+import { useGetMe } from '../hooks/users/useGetMe';
+import { useCreateDefaultExercise } from '../hooks/catalog/useCreateDefaultExercise';
 
 const schema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -18,7 +20,9 @@ type FormInputs = z.infer<typeof schema>;
 
 export default function CreateExercisePage() {
   const navigate = useNavigate();
-  const createExercise = useCreateCustomExercise();
+  const {data: me} = useGetMe();
+  const createCustom = useCreateCustomExercise();
+  const createDefault = useCreateDefaultExercise();
   const {
     register,
     handleSubmit,
@@ -27,8 +31,13 @@ export default function CreateExercisePage() {
 
   async function onSubmit(data: FormInputs) {
     try {
-      await createExercise.mutateAsync(data);
-      navigate('/dashboard');
+      if(me?.role==='ADMIN') {
+        await createDefault.mutateAsync(data);
+        navigate('/admin');
+      } else {
+        await createCustom.mutateAsync(data);
+        navigate('/dashboard');
+      }
     } catch {
       // error handled via isError
     }
@@ -38,7 +47,7 @@ export default function CreateExercisePage() {
     <CreateExercisePageLayout>
       <Box p={4} maxWidth={400}>
         <Typography variant="h4" gutterBottom>Create Exercise</Typography>
-        {createExercise.isError && (
+        {(createCustom.isError || createDefault.isError) && (
           <Alert severity="error" sx={{ mb: 2 }}>
             Failed to create exercise
           </Alert>
@@ -76,12 +85,12 @@ export default function CreateExercisePage() {
             error={!!errors.equipment}
             helperText={errors.equipment?.message}
           />
-          <Button type="submit" variant="contained" disabled={createExercise.isPending}>
-            {createExercise.isPending ? 'Saving…' : 'Create'}
+          <Button type="submit" variant="contained" disabled={createCustom.isPending || createDefault.isPending}>
+            {createCustom.isPending || createDefault.isPending ? 'Saving…' : 'Create'}
           </Button>
         </Box>
         <Box mt={2}>
-          <Link to="/dashboard">Back to Dashboard</Link>
+          <Link to={me?.role === 'ADMIN' ? '/admin' : '/dashboard'}>Back to {me?.role === 'ADMIN' ? 'Admin Page' : 'Dashboard'}</Link>
         </Box>
       </Box>
     </CreateExercisePageLayout>

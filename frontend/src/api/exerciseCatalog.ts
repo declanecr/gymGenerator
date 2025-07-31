@@ -42,3 +42,13 @@ export async function updateCustomExercise(id: number, dto: UpdateCustomExercise
 export async function deleteCustomExercise(id: number): Promise<void> {
     await api.delete(`/exercises-catalog/custom/${id}`)
 }
+
+export async function createDefaultExercise(
+    dto: CreateCustomExerciseDto
+): Promise<ExerciseCatalogItem> {
+    const res = await api.post<ExerciseCatalogItem>(
+        `/exercises-catalog/default`,
+        dto
+    )
+    return res.data
+}
