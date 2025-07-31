@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAllWorkouts } from '../hooks/workouts/useAllWorkouts';
 import StartGlobalTemplateModal from '../components/template-workouts/StartGlobalTemplateModal';
-import { List, ListItem, ListItemText, Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { List, ListItem, ListItemText, Box, Typography, CircularProgress, Alert, Grid, Button } from '@mui/material';
 import { useGetMe } from '../hooks/users/useGetMe';
 import AdminPageLayout from '../layouts/AdminPageLayout';
 
@@ -34,8 +34,16 @@ export default function AdminPage() {
   return (
     <AdminPageLayout>
       <Box p={4}>
-        <Link to="/dashboard">Back to dashboard</Link>
-        <button onClick={() => setShowTemplateModal(true)}>Create Global Template</button>
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+          <Grid>
+            <Link to="/dashboard">Back to dashboard</Link>
+          </Grid>
+          <Grid>
+            <Button variant="contained" onClick={() => setShowTemplateModal(true)}>
+              Create Global Template
+            </Button>
+          </Grid>
+        </Grid>
         {showTemplateModal && (
           <StartGlobalTemplateModal
             open={showTemplateModal}
