@@ -9,6 +9,7 @@ export interface TemplateSet {
 
 export interface TemplateExercise {
   templateExerciseId: string
+  name: string
   exerciseId: number
   position: number
   sets: TemplateSet[]
@@ -28,6 +29,7 @@ export interface TemplateWorkout {
 // shape returned by the backend
 interface RawTemplateExercise {
   id: string
+  name: string
   exerciseId: number
   position: number
   sets: TemplateSet[]
@@ -37,6 +39,7 @@ interface RawTemplateExercise {
 function mapTemplateExercise(raw: RawTemplateExercise): TemplateExercise {
   return {
     templateExerciseId: raw.id,
+    name: raw.name,
     exerciseId: raw.exerciseId,
     position: raw.position,
     sets: raw.sets || [],

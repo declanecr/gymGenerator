@@ -1,5 +1,5 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails, Fab } from '@mui/material'
+import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate,Link } from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
@@ -9,7 +9,6 @@ import StartTemplateModal from '../components/template-workouts/StartTemplateMod
 import { useGetMe } from '../hooks/users/useGetMe'
 import DashboardLayout from '../layouts/DashboardLayout'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddIcon from '@mui/icons-material/Add'
 import WorkoutCard from '../components/workouts/WorkoutCard'
 import TemplateWorkoutCard from '../components/template-workouts/TemplateWorkoutCard'
 
@@ -59,9 +58,6 @@ export default function Dashboard() {
     <DashboardLayout >
       <Grid container spacing={2} sx={{ p: 2}}>
         <Grid size={{xs:12}}>
-          <Button variant='contained' onClick={() => setShowWorkoutModal(true)}>
-            Start New Workout
-          </Button>
           <StartWorkoutModal
             open={showWorkoutModal}
             onClose={() => setShowWorkoutModal(false)}
@@ -124,15 +120,6 @@ export default function Dashboard() {
                     </Grid>
                   ))}
                 </Grid>
-                <Fab
-                  variant="extended"
-                  color="primary"
-                  onClick={() => setShowTemplateModal(true)}
-                  sx={{ position: 'absolute', bottom: 16, right: 16 }}
-                >
-                  <AddIcon sx={{ mr: 1 }} />
-                  Create Template
-                </Fab>
                 <StartTemplateModal
                   open={showTemplateModal}
                   onClose={() => setShowTemplateModal(false)}
