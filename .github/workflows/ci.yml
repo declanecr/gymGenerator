@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm Install
+        run: npm install
 
       - name: Run TypeScript (tsc)
         run: npm run tsc
