@@ -42,7 +42,7 @@ describe('JwtStrategy', () => {
     });
 
     expect(result).toEqual(newUser);
-    // eslint-disable-next-line @typescript-eslint/unbound-method -- BECAUSE jest-mock-extended mocks are safe to use directly because they're already wrapped
+     
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
       where: { id: 1 },
       select: { id: true, email: true, role: true },
