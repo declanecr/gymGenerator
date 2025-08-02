@@ -1,4 +1,4 @@
-// <root>/jest.config.js
+// <root>/jest.config.cjs
 module.exports = {
   projects: [
       '<rootDir>/backend/jest.config.ts',

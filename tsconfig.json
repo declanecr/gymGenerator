@@ -1,0 +1,8 @@
+// tsconfig.json (at /)
+{
+  "files": [],
+  "references": [
+    { "path": "backend" },
+    { "path": "frontend" }
+  ]
+}

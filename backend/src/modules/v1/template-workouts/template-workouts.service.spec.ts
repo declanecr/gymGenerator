@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
+ 
 import { TemplateWorkoutsService } from './template-workouts.service';
 import {
   createMockPrismaService,

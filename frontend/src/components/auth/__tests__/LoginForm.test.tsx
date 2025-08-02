@@ -78,7 +78,7 @@ describe('LoginForm', () => {
 
     render(<LoginForm onError={errorSpy} />, {
       wrapper: ({ children }) => (
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         <AuthContext.Provider value={{ login: loginSpy } as any}>
           {children}
         </AuthContext.Provider>

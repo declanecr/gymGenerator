@@ -4,6 +4,7 @@ import { WorkoutSet } from "./sets";
 
 export interface WorkoutExercise {
     workoutExerciseId: string
+    name: string
     exerciseId: number // the id of the exercise from the exercise catalog used for this
     name: string
     createdAt: string
@@ -16,6 +17,7 @@ export interface WorkoutExercise {
 
 interface RawWorkoutExercise {
     id: string
+    name: string
     exerciseId: number
     name: string
     createdAt: string
@@ -29,6 +31,7 @@ interface RawWorkoutExercise {
 export function mapTemplateExercise(raw: RawWorkoutExercise): WorkoutExercise {
     return{
         workoutExerciseId: raw.id,
+        name: raw.name,
         exerciseId: raw.exerciseId,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,

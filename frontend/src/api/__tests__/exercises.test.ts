@@ -22,6 +22,7 @@ describe('exercises API', () => {
     const workoutId = 'WID';
     const rawExercise = {
       id: 'EID',
+      name: 'test',
       createdAt: '2025-06-10T00:00:00.000Z',
       updatedAt: '2025-06-10T00:00:00.000Z',
       exerciseId: 1,
@@ -47,9 +48,11 @@ describe('exercises API', () => {
   it('updateWorkoutExercise calls PATCH /workouts/:workoutId/exercises/:id and returns data', async () => {
     const dto = { position: 3 };
     const id = 'EID';
+    const name= 'test';
     const workoutId = 'WID';
     const updated = {
       id,
+      name,
       createdAt: '2025-06-10T00:00:00.000Z',
       updatedAt: '2025-06-10T00:00:00.000Z',
       exerciseId: '1',
