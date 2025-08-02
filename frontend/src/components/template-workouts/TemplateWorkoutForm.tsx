@@ -5,7 +5,7 @@ import { ExerciseFields } from '../exercises/ExerciseFields';
 import { TemplateWorkoutInfoEditable } from './TemplateWorkoutInfoEditable';
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { FormHelperText } from '@mui/material';
+import { Box, Button, FormHelperText, Grid } from '@mui/material';
 
 export interface TemplateWorkoutFormProps {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
@@ -48,7 +48,7 @@ export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercis
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <TemplateWorkoutInfoEditable name={nameValue} notes={notesValue} onPatch={handleInfoPatch} />
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
@@ -68,12 +68,18 @@ export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercis
           {errors.exercises?.message ?? 'Add at least one exercise'}
         </FormHelperText>
       )}
-      <button type="button" onClick={openSelector}>
-        Add Exercise
-      </button>
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Saving…' : 'Finish'}
-      </button>
-    </form>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid>
+          <Button variant="outlined" type="button" onClick={openSelector}>
+            Add Exercise
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="contained" type="submit" disabled={isLoading}>
+            {isLoading ? 'Saving…' : 'Finish'}
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

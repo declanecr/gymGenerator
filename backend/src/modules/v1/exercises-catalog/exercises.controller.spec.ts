@@ -3,7 +3,11 @@ import { ExercisesCatalogController } from './exercises.controller';
 import { ExercisesCatalogService } from './exercises.service';
 import { AuthGuard } from '@nestjs/passport';
 
-class MockAuthGuard { canActivate() { return true; } }
+class MockAuthGuard {
+  canActivate() {
+    return true;
+  }
+}
 
 describe('ExercisesCatalogController', () => {
   let controller: ExercisesCatalogController;
@@ -17,7 +21,9 @@ describe('ExercisesCatalogController', () => {
       .useClass(MockAuthGuard)
       .compile();
 
-    controller = module.get<ExercisesCatalogController>(ExercisesCatalogController);
+    controller = module.get<ExercisesCatalogController>(
+      ExercisesCatalogController,
+    );
   });
 
   it('should be defined', () => {

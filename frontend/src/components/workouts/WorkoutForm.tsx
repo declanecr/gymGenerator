@@ -7,7 +7,7 @@ import { WorkoutInfoEditable } from './WorkoutInfoEditable';
 
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Box, FormHelperText } from '@mui/material';
+import { Box, Button, FormHelperText, Grid } from '@mui/material';
 
 export interface WorkoutFormProps {
     onSubmit: React.FormEventHandler<HTMLFormElement>;
@@ -67,7 +67,7 @@ export function WorkoutForm({ onSubmit,
 
   return (
 
-    <form onSubmit={onSubmit}>
+    <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       
       <WorkoutInfoEditable
         name={nameValue}
@@ -84,7 +84,7 @@ export function WorkoutForm({ onSubmit,
           {fields.map((field, idx) => (
             <Box key={field.id} mb={2}>
               <ExerciseFields
-                id={field.id}   // for useSortable
+                id={field.exerciseId}   // for useSortable
                 index={idx}   // for RHF
                 onRemove={() => removeExercise(idx)}
                 />
@@ -99,14 +99,19 @@ export function WorkoutForm({ onSubmit,
         </FormHelperText>
       )}
 
-      <button type="button" onClick={openSelector}>
-        Add Exercise
-      </button>
-
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Saving…' : 'Finish'}
-      </button>
-    </form>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid>
+          <Button variant="outlined" type="button" onClick={openSelector}>
+            Add Exercise
+          </Button>
+        </Grid>
+        <Grid>
+          <Button variant="contained" type="submit" disabled={isLoading}>
+            {isLoading ? 'Saving…' : 'Finish'}
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
 
   )
 }

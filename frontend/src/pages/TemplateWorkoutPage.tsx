@@ -17,10 +17,11 @@ import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateW
 import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
 import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
 import { useGetMe } from '../hooks/users/useGetMe';
-import { Button } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { createWorkout } from '../api/workouts';
 import { createWorkoutExercise } from '../api/exercises';
 import { createWorkoutSet } from '../api/sets';
+import TemplateWorkoutPageLayout from '../layouts/TemplateWorkoutPageLayout';
 //import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
@@ -74,10 +75,18 @@ export default function TemplateWorkoutPage() {
   const hasSetsError = setsQueries.some(q => q.error);
 
   if (isWorkoutLoading || isExercisesLoading || isSetsLoading) {
-    return <div>Loading…</div>;
+    return (
+      <Grid container justifyContent="center" p={4}>
+        <Typography>Loading…</Typography>
+      </Grid>
+    );
   }
   if (workoutError || exercisesError || hasSetsError || !workout) {
-    return <div>Error loading template</div>;
+    return (
+      <Grid container justifyContent="center" p={4}>
+        <Typography>Error loading template</Typography>
+      </Grid>
+    );
   }
 
   const initialExercises: ExerciseFormValues[] = (workoutExercises || []).map((ex:TemplateExercise, idx: number) => ({
@@ -227,17 +236,34 @@ export default function TemplateWorkoutPage() {
   const canDelete = (workout.userId !== null && workout.userId !== undefined) || isAdmin;
 
   return (
-    <div>
-      <Link to="/dashboard">back to dashboard</Link>
-      <Button onClick={handleStart}
-        
-      > Start this workout </Button>
-      <h1>Template Workout Details</h1>
-      {canDelete && (<Button onClick={handleDelete} color="error" variant="outlined">
-        Delete Template
-      </Button>
-      )}
-      <TemplateWorkoutContainer ref={formRef} initialValues={initialValues} onSubmit={handleSubmit} />
-    </div>
+    <TemplateWorkoutPageLayout>
+      <Grid container direction="column" spacing={2} p={2}>
+        <Grid>
+          <Link to="/dashboard">back to dashboard</Link>
+        </Grid>
+        <Grid>
+          <Button onClick={handleStart}>Start this workout</Button>
+        </Grid>
+        <Grid>
+          <Typography variant="h4" component="h1">
+            Template Workout Details
+          </Typography>
+        </Grid>
+        {canDelete && (
+          <Grid>
+            <Button onClick={handleDelete} color="error" variant="outlined">
+              Delete Template
+            </Button>
+          </Grid>
+        )}
+        <Grid>
+          <TemplateWorkoutContainer
+            ref={formRef}
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+          />
+        </Grid>
+      </Grid>
+    </TemplateWorkoutPageLayout>
   );
 }

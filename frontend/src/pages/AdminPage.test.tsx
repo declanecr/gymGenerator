@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AdminPage from './AdminPage';
 import { useAllWorkouts } from '../hooks/workouts/useAllWorkouts';
 import { useGetMe } from '../hooks/users/useGetMe';
+import { DeviceProvider } from '../context/DeviceProvider';
 
 jest.mock('../hooks/workouts/useAllWorkouts', () => ({
   useAllWorkouts: jest.fn(),
@@ -30,7 +31,9 @@ function renderPage() {
   render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
-        <AdminPage />
+        <DeviceProvider>
+          <AdminPage />
+        </DeviceProvider>
       </MemoryRouter>
     </QueryClientProvider>
   );

@@ -9,7 +9,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form"; //gives RHF form state tooks (register, handleSubmit, etc)
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Grid } from '@mui/material'
 import { loginUser } from "../../api/auth";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -53,8 +53,8 @@ export function LoginForm({ onLoadingChange, onError }: LoginFormProps = {}) {  
             login(accessToken)      // Store in context + localStorage
             console.log ('Token', accessToken)
             navigate('/dashboard')    //redirect to main app view
-        } catch (err) {
-            console.error('Login failed', err)
+        } catch /*(err)*/ {
+            //console.error('Login failed', err)
             onError?.('Login failed')
         } finally {
             onLoadingChange?.(false)
@@ -71,28 +71,29 @@ export function LoginForm({ onLoadingChange, onError }: LoginFormProps = {}) {  
     */
    return(
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Box display="flex" flexDirection="column" gap={2}>
+            <Grid container direction={"column"} alignItems={"center"} justifyContent={"center"} rowSpacing={1} >
+                <Grid container direction={"column"} rowGap={1}>
+                    <TextField
+                        label="Email"
+                        {...register('email')}    
+                        error={!!errors.email}    
+                        helperText={errors.email?.message}    
+                    />
 
-                <TextField
-                label="Email"
-                {...register('email')}    
-                error={!!errors.email}    
-                helperText={errors.email?.message}    
-                />
-
-                <TextField
-                label="Password"
-                type="password"
-                {...register('password')}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                />
-
-                <Button type="submit" variant="contained" disabled={isSubmitting}>
-                {isSubmitting ? 'Logging in...' : 'Login'}
-                </Button>
-
-            </Box>
+                    <TextField
+                        label="Password"
+                        type="password"
+                        {...register('password')}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                        />
+                </Grid>
+                <Grid>
+                    <Button type="submit" variant="contained" disabled={isSubmitting}>
+                        {isSubmitting ? 'Logging in...' : 'Login'}
+                    </Button>
+                </Grid>
+            </Grid>
         </form>
    )
 }

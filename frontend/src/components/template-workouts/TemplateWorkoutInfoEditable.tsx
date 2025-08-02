@@ -1,3 +1,4 @@
+import { Box, Button, Grid, TextField } from '@mui/material';
 import React, { useState } from 'react';
 
 export function TemplateWorkoutInfoEditable({
@@ -30,37 +31,61 @@ export function TemplateWorkoutInfoEditable({
   }
 
   return (
-    <div>
-      <div>
-        <strong>Name: </strong>
-        {editingField === 'name' ? (
-          <>
-            <input type="text" aria-label="Name" value={editValue} onChange={e => setEditValue(e.target.value)} />
-            <button type="button" onClick={saveEdit}>Save</button>
-            <button type="button" onClick={cancelEdit}>Cancel</button>
-          </>
-        ) : (
-          <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid>
+          <strong>Name:</strong>
+        </Grid>
+        <Grid size={{xs: 6}}>
+          {editingField === 'name' ? (
+            <TextField
+              size="small"
+              label="Name"
+              value={editValue}
+              onChange={e => setEditValue(e.target.value)}
+            />
+          ) : (
             <span>{name}</span>
-            <button type= "button" aria-label="edit name" onClick={() => startEditing('name')}>Edit</button>
-          </>
-        )}
-      </div>
-      <div>
-        <strong>Notes: </strong>
-        {editingField === 'notes' ? (
-          <>
-            <input type="text" aria-label="Notes" value={editValue} onChange={e => setEditValue(e.target.value)} />
-            <button type="button" onClick={saveEdit}>Save</button>
-            <button type="button" onClick={cancelEdit}>Cancel</button>
-          </>
-        ) : (
-          <>
+          )}
+        </Grid>
+        <Grid>
+          {editingField === 'name' ? (
+            <>
+              <Button size="small" onClick={saveEdit}>Save</Button>
+              <Button size="small" onClick={cancelEdit}>Cancel</Button>
+            </>
+          ) : (
+            <Button size="small" aria-label="edit name" onClick={() => startEditing('name')}>Edit</Button>
+          )}
+        </Grid>
+      </Grid>
+      <Grid container spacing={1} alignItems="center">
+        <Grid>
+          <strong>Notes:</strong>
+        </Grid>
+        <Grid size={{xs: 6}}>
+          {editingField === 'notes' ? (
+            <TextField
+              size="small"
+              label="Notes"
+              value={editValue}
+              onChange={e => setEditValue(e.target.value)}
+            />
+          ) : (
             <span>{notes}</span>
-            <button type="button" aria-label="edit notes" onClick={() => startEditing('notes')}>Edit</button>
-          </>
-        )}
-      </div>
-    </div>
+          )}
+        </Grid>
+        <Grid>
+          {editingField === 'notes' ? (
+            <>
+              <Button size="small" onClick={saveEdit}>Save</Button>
+              <Button size="small" onClick={cancelEdit}>Cancel</Button>
+            </>
+          ) : (
+            <Button size="small" aria-label="edit notes" onClick={() => startEditing('notes')}>Edit</Button>
+          )}
+        </Grid>
+      </Grid>
+    </Box>
   );
 }

@@ -18,7 +18,8 @@ import { useUpdateSet } from '../hooks/workoutSets/useUpdateSet';
 import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
 import { useDeleteSet } from '../hooks/workoutSets/useDeleteSet';
 import { useDeleteWorkout } from '../hooks/workouts/useDeleteWorkout';
-import { Button } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
+import WorkoutPageLayout from '../layouts/WorkoutPageLayout';
 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
@@ -78,10 +79,18 @@ export default function WorkoutPage() {
 
   // loading & error states
   if (isWorkoutLoading || isExercisesLoading || isSetsLoading) {
-    return <div>Loading…</div>;
+    return (
+      <Grid container justifyContent="center" p={4}>
+        <Typography>Loading…</Typography>
+      </Grid>
+    );
   }
   if (workoutError || exercisesError || hasSetsError || !workout) {
-    return <div>Error loading workout</div>;
+    return (
+      <Grid container justifyContent="center" p={4}>
+        <Typography>Error loading workout</Typography>
+      </Grid>
+    );
   }
 
  // build initial form data
@@ -158,20 +167,28 @@ export default function WorkoutPage() {
   }
 
   return (
-    <div>
-      <Link to="/dashboard">
-        back to dashboard
-      </Link>
-      <h1>Workout Details</h1>    
-      <Button onClick={handleDelete} color="error" variant="outlined">
-        Delete Workout
-      </Button>
+    <WorkoutPageLayout>
+      <Grid container direction="column" spacing={2} p={2}>
+        <Grid>
+          <Link to="/dashboard">back to dashboard</Link>
+        </Grid>
+        <Grid>
+          <Typography variant="h4" component="h1">Workout Details</Typography>
+        </Grid>
+        <Grid>
+          <Button onClick={handleDelete} color="error" variant="outlined">
+            Delete Workout
+          </Button>
+        </Grid>
 
-      {/* Exercises/sets are always editable */}
-      <WorkoutContainer
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-      />
-    </div>
+        {/* Exercises/sets are always editable */}
+        <Grid>
+          <WorkoutContainer
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+          />
+        </Grid>
+      </Grid>
+    </WorkoutPageLayout>
   );
 }
