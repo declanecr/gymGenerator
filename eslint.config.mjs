@@ -5,6 +5,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import prettier from 'eslint-config-prettier';
+import eslintPluginJest from 'eslint-plugin-jest'
 
 export default tseslint.config(
   js.configs.recommended,
@@ -47,11 +48,26 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{test,spec}.{ts,tsx}'],
+    files: ['**/*.{test,spec}.{ts,tsx,js}'],
     languageOptions: {
       globals: { ...globals.jest },
     },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
+  {
+    files: ['**/*.test.{js,ts,jsx,tsx}'],
+    plugins: {
+      jest: eslintPluginJest,
+    },
+    languageOptions: {
+      globals: {
+        ...eslintPluginJest.environments.globals.globals,
+      },
+    },
+  },
+  
   {
     ignores: [
       '**/node_modules/**',
