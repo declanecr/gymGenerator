@@ -14,7 +14,7 @@
   },
   "scripts": {
     "tsc": "tsc --build",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint backend frontend --ext .ts,.tsx",
     "test": "jest --runInBand --watchAll=false",
     "test:e2e": "jest --config=backend/test/jest-e2e.json --runInBand"
   },

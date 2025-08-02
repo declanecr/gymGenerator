@@ -1,6 +1,3 @@
- 
- 
- 
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorkoutsController } from './workouts.controller';
 import { WorkoutsService } from './workouts.service';
@@ -9,6 +6,7 @@ import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 import { ROLES_KEY } from 'src/shared/decorators/roles.decorator';
 import { WorkoutResponseDto } from './dto/workout-response.dto';
+import type { Workout } from '@prisma/client';
 
 class MockAuthGuard {
   canActivate() {
@@ -25,6 +23,16 @@ describe('WorkoutsController', () => {
   let controller: WorkoutsController;
   let service: DeepMockProxy<WorkoutsService>;
   const user = { id: 1, email: 't@e.com', role: 'USER' };
+
+  const workout: Workout = {
+    id: 'w1',
+    name: 'W1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    notes: null,
+    workoutTemplateId: null,
+    userId: 1,
+  };
 
   beforeEach(async () => {
     service = mockDeep<WorkoutsService>();
@@ -47,15 +55,6 @@ describe('WorkoutsController', () => {
 
   it('create calls service and returns dto', async () => {
     const dto = { name: 'W1' };
-    const workout = {
-      id: 'w1',
-      name: 'W1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: null,
-      userId: 1,
-    } as any;
     service.create.mockResolvedValue(workout);
     const res = await controller.create(user as any, dto as any);
     expect(service.create).toHaveBeenCalledWith(user.id, dto);
@@ -63,15 +62,6 @@ describe('WorkoutsController', () => {
   });
 
   it('createFromTemplate calls copyFromTemplate', async () => {
-    const workout = {
-      id: 'w2',
-      name: 'W2',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: 'tpl1',
-      userId: 1,
-    } as any;
     service.copyFromTemplate.mockResolvedValue(workout);
     const res = await controller.createFromTemplate(user as any, 'tpl1');
     expect(service.copyFromTemplate).toHaveBeenCalledWith('tpl1', user.id);
@@ -79,15 +69,6 @@ describe('WorkoutsController', () => {
   });
 
   it('findAll maps to DTOs', async () => {
-    const workout = {
-      id: 'w1',
-      name: 'n',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: null,
-      userId: 1,
-    } as any;
     service.findAll.mockResolvedValue([workout]);
     const res = await controller.findAll(user as any);
     expect(service.findAll).toHaveBeenCalledWith(user.id);
@@ -103,15 +84,6 @@ describe('WorkoutsController', () => {
   });
 
   it('findAllAdmin maps to DTOs', async () => {
-    const workout = {
-      id: 'w1',
-      name: 'n',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: null,
-      userId: 1,
-    } as any;
     service.findAllAdmin.mockResolvedValue([workout]);
     const res = await controller.findAllAdmin();
     expect(service.findAllAdmin).toHaveBeenCalled();
@@ -119,15 +91,6 @@ describe('WorkoutsController', () => {
   });
 
   it('findOne returns dto', async () => {
-    const workout = {
-      id: 'w3',
-      name: 'X',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: null,
-      userId: 1,
-    } as any;
     service.findOne.mockResolvedValue(workout);
     const res = await controller.findOne(user as any, 'w3');
     expect(service.findOne).toHaveBeenCalledWith('w3', user.id);
@@ -135,15 +98,6 @@ describe('WorkoutsController', () => {
   });
 
   it('update calls service and returns dto', async () => {
-    const workout = {
-      id: 'w3',
-      name: 'Y',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      notes: null,
-      workoutTemplateId: null,
-      userId: 1,
-    } as any;
     service.update.mockResolvedValue(workout);
     const dto = { name: 'Y' };
     const res = await controller.update(user as any, 'w3', dto as any);
