@@ -1,6 +1,6 @@
 // *****CONTEXT COMPONENT******
 //set up a "context", and what it will provide
-interface AuthContextType {
+export interface AuthContextType {
     token: string | null
     login: (token: string) => void
     logout: ()=>void
