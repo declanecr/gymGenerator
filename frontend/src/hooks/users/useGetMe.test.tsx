@@ -4,12 +4,20 @@ import { http, HttpResponse } from 'msw';
 import { server } from '../../mocks/server';
 import { useGetMe } from './useGetMe';
 
+
+
+// mock out auth hook so enabled:true by default
+jest.mock('../useAuth', ()=> ({
+  useAuth: () => ({isAuthenticated: true}),
+}));
+
 function wrapper({ children }: { children: React.ReactNode }) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
+
 
 describe('useGetMe', () => {
   const url = 'http://localhost:3000/api/v1/users/me';

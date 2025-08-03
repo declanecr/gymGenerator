@@ -82,7 +82,7 @@ describe('Admin workouts endpoint (e2e)', () => {
 
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     expect(res.body.length).toBeGreaterThanOrEqual(2);
   });
 

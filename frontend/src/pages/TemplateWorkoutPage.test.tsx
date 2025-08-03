@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TemplateWorkoutPage from '../pages/TemplateWorkoutPage';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DeviceProvider } from '../context/DeviceProvider';
 
 /* ------------------------------------------------------------------ */
 /* 🔧 core-query mocks (workout + exercises + sets)                    */
@@ -109,9 +110,11 @@ function renderWithProviders() {
   return render(
     <QueryClientProvider client={qc}>
       <MemoryRouter initialEntries={['/template-workouts/tpl1']}>
-        <Routes>
-          <Route path="/template-workouts/:id" element={<TemplateWorkoutPage />} />
-        </Routes>
+        <DeviceProvider>
+          <Routes>
+            <Route path="/template-workouts/:id" element={<TemplateWorkoutPage />} />
+          </Routes>
+        </DeviceProvider>
       </MemoryRouter>
     </QueryClientProvider>,
   );
@@ -201,4 +204,8 @@ describe('TemplateWorkoutPage – saving a global template', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/workouts/newWorkout');
     });
   });
+
+
+
+
 });

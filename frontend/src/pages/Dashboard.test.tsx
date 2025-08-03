@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import { fetchWorkouts } from '../api/workouts';
 import { fetchTemplateWorkouts } from '../api/templateWorkouts';
+import { DeviceProvider } from '../context/DeviceProvider';
 
 const mockLogout = jest.fn();
 jest.mock('../hooks/useAuth', () => ({
@@ -43,7 +44,9 @@ function renderPage() {
   render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
-        <Dashboard />
+        <DeviceProvider>
+          <Dashboard />
+        </DeviceProvider>
       </MemoryRouter>
     </QueryClientProvider>
   );
@@ -51,7 +54,7 @@ function renderPage() {
 
 test('renders workouts and admin link', async () => {
   await act(async () => { renderPage(); });
-  await screen.findByText('Workout w1');
+  await screen.findByText('w1');
   expect(screen.getByText('tpl')).toBeInTheDocument();
   expect(screen.getByText(/go to admin page/i)).toBeInTheDocument();
 });

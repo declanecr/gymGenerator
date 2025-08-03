@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 export interface StartNamedModalProps<E> {
   open: boolean;
@@ -37,16 +37,33 @@ export function StartNamedModal<E>({
   }
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <form onSubmit={handleSubmit} style={{ /* your styles */ }}>
-        <h2>{title}</h2>
-        <label>Name:</label>
-        <input value={name} onChange={e => setName(e.target.value)} required />
-        <label>Notes:</label>
-        <input value={notes} onChange={e => setNotes(e.target.value)} />
-        <button onClick={onClose} disabled={submitting}>Cancel</button>
-        <button type="submit" disabled={submitting}>Start</button>
-      </form>
-    </Modal>
+    <Dialog open={open} onClose={onClose}>
+      <Box component={"form"} onSubmit={handleSubmit}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            fullWidth
+            margin="normal"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
+          />
+          <TextField
+            label="Notes"
+            fullWidth
+            margin="normal"
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} disabled={submitting}>Cancel</Button>
+          <Button type='submit' variant='contained' disabled={submitting}>
+            Start
+          </Button>
+        </DialogActions>
+      </Box>
+    </Dialog>
   );
 }

@@ -1,6 +1,7 @@
-import React, { useState, useEffect, ReactNode} from "react";
+import React, { useState, useEffect, ReactNode, useMemo} from "react";
 import { AuthContext } from "./AuthContext";
 import api from "../api/axios";
+import { isTokenValid } from "../utils/auth";
 
 
 
@@ -11,6 +12,7 @@ import api from "../api/axios";
 */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null)
+  
 
   // Load token from localStorage on mount
   useEffect(() => {
@@ -33,6 +35,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [token])
 
+  const isAuthenticated = useMemo(()=> isTokenValid(token), [token]);
+
 
   const login = (newToken: string) => {
     localStorage.setItem('accessToken', newToken)
@@ -45,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ token, login, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   )

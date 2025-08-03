@@ -6,7 +6,7 @@ import { useExercisesCatalog } from '../../hooks/catalog/useExercisesCatalog';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Box, Select, MenuItem, Button, FormHelperText } from '@mui/material';
+import { Box, Select, MenuItem, Button, FormHelperText, Grid } from '@mui/material';
 
 interface ExerciseFieldsProps {
   id: number;
@@ -65,7 +65,7 @@ export function ExerciseFields({ id, index, onRemove, requireSets = true }: Exer
         name={`exercises.${index}.exerciseId`}
         control={control}
         render={({ field }) => (
-          <Select {...field} displayEmpty sx={{ minWidth: 200, color: 'cyan' }}>
+          <Select {...field} displayEmpty sx={{ minWidth: 200, color: 'red' }}>
             <MenuItem value={-1} disabled>
               Select exercise…
             </MenuItem>
@@ -87,36 +87,41 @@ export function ExerciseFields({ id, index, onRemove, requireSets = true }: Exer
       {/* sets list */}
       <Box sx={{ flex: 1 }}>
         {setFields.map((set, sIdx) => (
-          <Box key={set.id} sx={{ display: 'flex', gap: 1, mb: 1 }}>
-            <input
-              type="number"
-              placeholder="Reps"
-              {...register(`exercises.${index}.sets.${sIdx}.reps`, { valueAsNumber: true })}
-            />
-            {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.reps?.message && (
-              <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
-                {errors.exercises[index].sets![sIdx].reps!.message}
-              </Box>
-            )}
-            <input
-              type="number"
-              placeholder="Weight"
-              {...register(`exercises.${index}.sets.${sIdx}.weight`, { valueAsNumber: true })}
-            />
-            {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.weight?.message && (
-              <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
-                {errors.exercises[index].sets![sIdx].weight!.message}
-              </Box>
-            )}
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={()=> handleRemoveSet(sIdx)}
-            >
-              Remove Set
-            </Button>
-            
-          </Box>
+          <Grid container spacing={1} key={set.id} alignItems="center" sx={{ mb: 1 }}>
+            <Grid>
+              <input
+                type="number"
+                placeholder="Reps"
+                {...register(`exercises.${index}.sets.${sIdx}.reps`, { valueAsNumber: true })}
+              />
+              {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.reps?.message && (
+                <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
+                  {errors.exercises[index].sets![sIdx].reps!.message}
+                </Box>
+              )}
+            </Grid>
+            <Grid>
+              <input
+                type="number"
+                placeholder="Weight"
+                {...register(`exercises.${index}.sets.${sIdx}.weight`, { valueAsNumber: true })}
+              />
+              {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.weight?.message && (
+                <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
+                  {errors.exercises[index].sets![sIdx].weight!.message}
+                </Box>
+              )}
+            </Grid>
+            <Grid>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => handleRemoveSet(sIdx)}
+              >
+                Remove Set
+              </Button>
+            </Grid>
+          </Grid>
         ))}
         {/* only show this once a “Finish” has been clicked and there are no sets */}
         {submitCount > 0 && noSets && requireSets && (

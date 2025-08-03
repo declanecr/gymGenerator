@@ -1,9 +1,15 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
 import api from '../api/axios';
 import { AuthProvider } from './AuthProvider';
 import { useAuth } from '../hooks/useAuth';
+
+// mock out token-validation helper so tests don't depend on jwt-decode
+jest.mock('../utils/auth', ()=>({
+  isTokenValid: jest.fn((token: string | null)=>Boolean(token))
+}))
+
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <AuthProvider>{children}</AuthProvider>;
@@ -14,26 +20,37 @@ describe('AuthProvider', () => {
     localStorage.clear();
   });
 
-  it('hydrates token from localStorage', () => {
-    localStorage.setItem('accessToken', 'stored');
+  it('hydrates token from localStorage', async () => {
+    // a fake-but-decodable JWT with exp far in the future
+    const validToken = 'eyJhbGciOiJub25lIn0.eyJleHAiOjMzk5OTk5OTk5OX0.';
+    localStorage.setItem('accessToken', validToken);
+
     const { result } = renderHook(() => useAuth(), { wrapper });
-    expect(result.current.token).toBe('stored');
+    await waitFor(() => expect(result.current.token).toBe(validToken));
     expect(result.current.isAuthenticated).toBe(true);
   });
 
   it('login stores token in state and localStorage', () => {
+    const validToken = 'eyJhbGciOiJub25lIn0.eyJleHAiOjMzk5OTk5OTk5OX0.';
     const { result } = renderHook(() => useAuth(), { wrapper });
+
     act(() => {
-      result.current.login('abc');
+      result.current.login(validToken);
     });
-    expect(result.current.token).toBe('abc');
-    expect(localStorage.getItem('accessToken')).toBe('abc');
+    expect(result.current.token).toBe(validToken);
+    expect(localStorage.getItem('accessToken')).toBe(validToken);
     expect(result.current.isAuthenticated).toBe(true);
   });
 
   it('logout clears token from state and storage', () => {
-    localStorage.setItem('accessToken', 'abc');
+    const validToken = 'eyJhbGciOiJub25lIn0.eyJleHAiOjMzk5OTk5OTk5OX0.';
     const { result } = renderHook(() => useAuth(), { wrapper });
+
+    // first, login so there is something to clear
+    act(() => result.current.login(validToken));
+    expect(result.current.isAuthenticated).toBe(true);
+
+    // then loguot
     act(() => {
       result.current.logout();
     });

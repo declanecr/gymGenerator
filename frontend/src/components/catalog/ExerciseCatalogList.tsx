@@ -41,10 +41,10 @@ export function ExerciseCatalogList({ showCustom =true, onSelect, onAdd, }: Exer
       <List>
         {exercises.map((exercise)=>(
           <ListItem 
-            key={exercise.id} 
+            key={exercise.exerciseId} 
             disablePadding
             secondaryAction={
-              hoveredId === exercise.id && onAdd ? (
+              hoveredId === exercise.exerciseId && onAdd ? (
                 <IconButton
                   edge="end"
                   size="small"
@@ -57,7 +57,7 @@ export function ExerciseCatalogList({ showCustom =true, onSelect, onAdd, }: Exer
                 </IconButton>
               ) :null
             }
-            onMouseEnter={() => setHoveredId(exercise.id)}
+            onMouseEnter={() => setHoveredId(exercise.exerciseId)}
             onMouseLeave={() => setHoveredId(null)}
             onClick={() => onSelect?.(exercise)}
           >

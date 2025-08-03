@@ -56,7 +56,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: CreateTemplateWorkoutDto = { name: 'A' };
     const res = await controller.create(dto, user);
     expect(res).toEqual({ id: '1', name: 'A' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.create).toHaveBeenCalledWith(user.id, dto);
   });
 
@@ -68,7 +68,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: CreateTemplateWorkoutDto = { name: 'G' };
     const res = await controller.createGlobal(dto);
     expect(res).toEqual({ id: 'g', name: 'G' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.createGlobal).toHaveBeenCalledWith(dto);
   });
 
@@ -81,7 +81,7 @@ describe('TemplateWorkoutsController', () => {
     ] as unknown as FindAllReturn);
     const res = await controller.findAll(user);
     expect(res).toEqual([{ id: '1' }]);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.findAll).toHaveBeenCalledWith(user.id);
   });
 
@@ -92,7 +92,7 @@ describe('TemplateWorkoutsController', () => {
     service.findOne.mockResolvedValue({ id: '1' } as unknown as FindOneReturn);
     const res = await controller.findOne('1', admin);
     expect(res).toEqual({ id: '1' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.findOne).toHaveBeenCalledWith('1', admin.id, admin.role);
   });
 
@@ -104,14 +104,14 @@ describe('TemplateWorkoutsController', () => {
     const dto: UpdateTemplateWorkoutDto = { name: 'B' };
     const res = await controller.update('1', dto, admin);
     expect(res).toEqual({ id: '1', name: 'B' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.update).toHaveBeenCalledWith('1', admin.id, dto, admin.role);
   });
 
   it('remove', async () => {
     service.remove.mockResolvedValue(undefined);
     await controller.remove('1', user);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.remove).toHaveBeenCalledWith('1', user.id, user.role);
   });
 
@@ -122,7 +122,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: CreateTemplateExerciseDto = { exerciseId: 3, position: 1 };
     const res = await controller.addExercise('1', dto, user);
     expect(res).toEqual({ id: 'e1' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.addExercise).toHaveBeenCalledWith(
       '1',
       user.id,
@@ -158,7 +158,7 @@ describe('TemplateWorkoutsController', () => {
       description: undefined,
       workoutTemplateId: '1',
     });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.getExercises).toHaveBeenCalledWith('1', user.id, user.role);
   });
 
@@ -170,7 +170,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: UpdateTemplateExerciseDto = { position: 2 };
     const res = await controller.updateExercise('1', 'ex', dto, user);
     expect(res).toEqual({ id: 'ex', position: 2 });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.updateExercise).toHaveBeenCalledWith(
       '1',
       'ex',
@@ -183,7 +183,7 @@ describe('TemplateWorkoutsController', () => {
   it('removeExercise', async () => {
     service.removeExercise.mockResolvedValue(undefined);
     await controller.removeExercise('1', 'ex', admin);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.removeExercise).toHaveBeenCalledWith(
       '1',
       'ex',
@@ -197,7 +197,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: CreateTemplateSetDto = { reps: 5, weight: 0, position: 1 };
     const res = await controller.addSet('ex', dto, admin);
     expect(res).toEqual({ id: 's1' });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.addSet).toHaveBeenCalledWith(
       'ex',
       admin.id,
@@ -212,7 +212,7 @@ describe('TemplateWorkoutsController', () => {
     ] as unknown as TemplateSet[]);
     const res = await controller.getSets('1', 'ex', user);
     expect(res).toEqual([{ id: 's1' }]);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.getSets).toHaveBeenCalledWith('ex', '1', user.id, user.role);
   });
 
@@ -224,7 +224,7 @@ describe('TemplateWorkoutsController', () => {
     const dto: UpdateTemplateSetDto = { reps: 10 };
     const res = await controller.updateSet('s1', user, dto);
     expect(res).toEqual({ id: 's1', reps: 10 });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.updateSet).toHaveBeenCalledWith(
       's1',
       user.id,
@@ -236,7 +236,7 @@ describe('TemplateWorkoutsController', () => {
   it('removeSet', async () => {
     service.removeSet.mockResolvedValue(undefined);
     await controller.removeSet('s1', user);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+     
     expect(service.removeSet).toHaveBeenCalledWith('s1', user.id, user.role);
   });
 

@@ -18,7 +18,7 @@ describe('bootstrap', () => {
     (NestFactory.create as jest.Mock).mockResolvedValue(mockApp);
   });
 
-  /* eslint-disable @typescript-eslint/unbound-method */
+   
   // disable the eslint because these are mock functions, so they don't rely on 'this' and so we KNOW the test context
   it('configures and starts the app', async () => {
     await bootstrap();
@@ -31,5 +31,5 @@ describe('bootstrap', () => {
     );
     expect(mockApp.listen).toHaveBeenCalledWith(3000);
   });
-  /* eslint-enable @typescript-eslint/unbound-method */
+   
 });

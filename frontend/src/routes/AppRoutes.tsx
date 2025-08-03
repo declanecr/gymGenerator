@@ -8,6 +8,9 @@ import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkoutPage'
 import WorkoutPage from '../pages/WorkoutPage'
 import AdminPage from '../pages/AdminPage'
+import CreateExercisePage from '../pages/CreateExercisePage'
+import ProgressPage from '../pages/ProgressPage'
+import UserPage from '../pages/UserPage'
 
 export default function AppRoutes() {
   return (
@@ -33,6 +36,24 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/progress"
+        element={
+          <PrivateRoute>
+            <ProgressPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/user"
+        element={
+          <PrivateRoute>
+            <UserPage />
+          </PrivateRoute>
+        }
+      />
+
       
       <Route
         path="/workouts/:id"
@@ -52,6 +73,14 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path='/create-exercise'
+        element={
+          <PrivateRoute>
+            <CreateExercisePage />
+          </PrivateRoute>
+        }
+      />
       
       <Route 
         path='/admin'

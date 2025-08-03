@@ -4,7 +4,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Grid } from '@mui/material'
 import { registerUser } from '../../api/auth'
 import { useAuth } from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
@@ -39,8 +39,8 @@ export function RegisterForm({ onLoadingChange, onError }: RegisterFormProps = {
       const { accessToken } = await registerUser(data)
       login(accessToken)          // auto-login
       navigate('/dashboard')
-    } catch (err) {
-      console.error('Register failed:', err)
+    } catch /*(err)*/ {
+      //console.error('Register failed:', err)
       onError?.('Register failed')
     } finally {
       onLoadingChange?.(false)
@@ -49,7 +49,7 @@ export function RegisterForm({ onLoadingChange, onError }: RegisterFormProps = {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box display="flex" flexDirection="column" gap={2}>
+      <Grid container direction={'column'}>
         <TextField
           label="Name"
           {...register('name')}
@@ -75,7 +75,7 @@ export function RegisterForm({ onLoadingChange, onError }: RegisterFormProps = {
         <Button type="submit" variant="contained" disabled={isSubmitting}>
           {isSubmitting ? 'Registering…' : 'Create account'}
         </Button>
-      </Box>
+      </Grid>
     </form>
   )
 }
