@@ -23,6 +23,15 @@ jest.mock('../hooks/users/useGetMe', () => ({
   useGetMe: () => ({ data: { role: 'ADMIN' } }),
 }));
 
+jest.mock('../hooks/workoutExercises/useExercises', () => ({
+  useWorkoutExercises: () => ({ data: [], isLoading: false }),
+}));
+
+jest.mock('../hooks/templateExercises/useTemplateExercises', () => ({
+  useTemplateExercises: () => ({ data: [], isLoading: false }),
+}));
+
+
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
