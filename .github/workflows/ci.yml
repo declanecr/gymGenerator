@@ -42,4 +42,9 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --coverage
+
+      - name: Upload coverage repository
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/**/lcov.info
