@@ -30,8 +30,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run commitment
-        uses: wagoid/commitment-github-action@v5
+      - name: Run commitment linter
+        uses: wagoid/commitment-github-action@v3
         with:
           configFile: commitlint.config.js
 
