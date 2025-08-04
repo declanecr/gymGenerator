@@ -231,4 +231,42 @@ describe('WorkoutsService', () => {
     const res = await service.getSets('e1', 'w1', 1);
     expect(res).toEqual([{ id: 's1' }]);
   });
+
+  describe('getExerciseProgress', () => {
+    it('aggregates volume by date', async () => {
+      const grouped = [
+        {
+          workoutExerciseId: 'we1',
+          createdAt: new Date('2024-01-01T10:00:00Z'),
+          _sum: { reps: 5, weight: 100 },
+        },
+        {
+          workoutExerciseId: 'we2',
+          createdAt: new Date('2024-01-01T12:00:00Z'),
+          _sum: { reps: 3, weight: 50 },
+        },
+        {
+          workoutExerciseId: 'we1',
+          createdAt: new Date('2024-01-02T10:00:00Z'),
+          _sum: { reps: 4, weight: 80 },
+        },
+      ];
+      prisma.workoutSet.groupBy.mockResolvedValue(grouped as any);
+
+      const res = await service.getExerciseProgress(1, 2);
+
+      expect(prisma.workoutSet.groupBy).toHaveBeenCalledWith({
+        by: ['workoutExerciseId', 'createdAt'],
+        where: {
+          workoutExercise: { exerciseId: 2, workout: { userId: 1 } },
+        },
+        _sum: { reps: true, weight: true },
+        orderBy: { createdAt: 'asc' },
+      });
+      expect(res).toEqual([
+        { date: '2024-01-01', volume: 650 },
+        { date: '2024-01-02', volume: 320 },
+      ]);
+    });
+  });
 });

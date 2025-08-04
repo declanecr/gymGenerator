@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Box, Tabs, Tab } from '@mui/material'
+import { Box, Tabs, Tab, Typography } from '@mui/material'
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs, { Dayjs } from 'dayjs'
@@ -8,11 +8,15 @@ import type { Workout } from "../api/workouts"
 import ProgressPageLayout from '../layouts/ProgressPageLayout'
 import WorkoutModal from '../components/workouts/WorkoutModal'
 import ExerciseSearch from '../components/catalog/ExerciseSearch'
+import { useProgress } from '../hooks/progress/useProgress'
+import { LineChart } from '@mui/x-charts'
 
 export default function ProgressPage() {
   const [tab, setTab] = useState(0)
   const { data: workouts = [] } = useWorkouts()
   const [selected, setSelected] = useState<Workout[] | null>(null)
+  const [selectedExerciseId, setSelectedExerciseId]=useState<number | null>(null)
+  const { data: progress = [] } = useProgress(selectedExerciseId ?? 0)
 
   const byDate = useMemo(() => {
     const map: Record<string, Workout[]> = {}
@@ -48,7 +52,17 @@ export default function ProgressPage() {
       )}
       {tab === 1 && (
         <Box sx={{ mt: 2 }}>
-          <ExerciseSearch />
+          <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)}/>
+            {selectedExerciseId && (progress.length ? (
+              <LineChart
+                xAxis={[{data: progress.map(p => p.date)}]}
+                series={[{data: progress.map(p => p.weight)}]}
+                height={300}
+              />
+            ):(
+              <Typography>No data yet</Typography>
+            )
+            )}
         </Box>
       )}
       <WorkoutModal open={!!selected} workouts={selected || []} onClose={() => setSelected(null)} />

@@ -239,4 +239,15 @@ describe('WorkoutsController', () => {
     await controller.removeSet(user as any, 's1');
     expect(service.removeSet).toHaveBeenCalledWith('s1', user.id);
   });
+
+  it('getExerciseProgress delegates to service and maps to DTO', async () => {
+    const progress = [
+      { date: '2024-01-01', volume: 100 },
+      { date: '2024-01-02', volume: 150 },
+    ];
+    service.getExerciseProgress.mockResolvedValue(progress);
+    const res = await controller.getExerciseProgress(user as any, 2);
+    expect(service.getExerciseProgress).toHaveBeenCalledWith(user.id, 2);
+    expect(res).toEqual(progress);
+  });
 });

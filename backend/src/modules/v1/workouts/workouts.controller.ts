@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { WorkoutsService } from './workouts.service';
@@ -22,6 +23,7 @@ import { UpdateWorkoutSetDto } from './dto/update-workout-set.dto';
 import { WorkoutExerciseResponseDto } from './dto/workout-exercise-response.dto';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
 import { Roles } from 'src/shared/decorators/roles.decorator';
+import { ExerciseProgressResponseDto } from './dto/exercise-progress-response.dto';
 
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('workouts')
@@ -57,6 +59,18 @@ export class WorkoutsController {
   async findAllAdmin(): Promise<WorkoutResponseDto[]> {
     const workouts = await this.workoutsService.findAllAdmin();
     return workouts.map((w) => new WorkoutResponseDto(w));
+  }
+
+  @Get('progress/exercise')
+  async getExerciseProgress(
+    @GetUser() user: JwtPayload,
+    @Query('exerciseId') exerciseId: number,
+  ): Promise<ExerciseProgressResponseDto[]> {
+    const progress = await this.workoutsService.getExerciseProgress(
+      user.id,
+      exerciseId,
+    );
+    return progress.map((p) => new ExerciseProgressResponseDto(p));
   }
 
   @Get(':id')

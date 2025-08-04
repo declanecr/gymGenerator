@@ -216,4 +216,31 @@ export class WorkoutsService {
     }
     return this.prisma.workoutSet.delete({ where: { id: setId } });
   }
+
+  async getExerciseProgress(userId: number, exerciseId: number) {
+    const grouped = await this.prisma.workoutSet.groupBy({
+      by: ['workoutExerciseId', 'createdAt'],
+      where: {
+        workoutExercise: {
+          exerciseId,
+          workout: { userId },
+        },
+      },
+      _sum: { reps: true, weight: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    const map = new Map<string, number>();
+
+    for (const g of grouped) {
+      const date = g.createdAt.toISOString().split('T')[0]; // format date as YYYY-MM-DD
+      const volume = (g._sum.reps || 0) * (g._sum.weight || 0);
+      map.set(date, (map.get(date) ?? 0) + volume);
+    }
+
+    const res = Array.from(map.entries()).map(([date, volume]) => ({
+      date,
+      volume,
+    }));
+    return res;
+  }
 }
