@@ -1,16 +1,16 @@
 import React, {useEffect, useState } from 'react'
-import { Typography, Box, Button, CircularProgress, Alert, Grid, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import {  Box,  CircularProgress, Alert } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate,Link } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { fetchWorkouts, Workout } from '../api/workouts'
 import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
-import StartWorkoutModal from '../components/workouts/StartWorkoutModal'
-import StartTemplateModal from '../components/template-workouts/StartTemplateModal'
+
 import { useGetMe } from '../hooks/users/useGetMe'
-import DashboardLayout from '../layouts/DashboardLayout'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import WorkoutCard from '../components/workouts/WorkoutCard'
-import TemplateWorkoutCard from '../components/template-workouts/TemplateWorkoutCard'
+
+import DashboardMobile from './Dashboard/DashboardMobile'
+import DashboardTablet from './Dashboard/DashboardTablet'
+import DashboardDesktop from './Dashboard/DashboardDesktop'
+import { useDevice } from '../context/DeviceContext'
 
 export default function Dashboard() {
   const { logout } = useAuth()
@@ -23,6 +23,7 @@ export default function Dashboard() {
 
   const [showWorkoutModal, setShowWorkoutModal] =useState(false);
   const [showTemplateModal,setShowTemplateModal] = useState(false);
+  const { isMobile, isTablet } = useDevice()
 
   const handleLogout = () => {
     logout()    // clear token + state
@@ -54,93 +55,17 @@ export default function Dashboard() {
     )
   }
 
-  return (
-    <DashboardLayout >
-      <Grid container spacing={2} sx={{ p: 2}}>
-        <Grid size={{xs:12}}>
-          <StartWorkoutModal
-            open={showWorkoutModal}
-            onClose={() => setShowWorkoutModal(false)}
-          />
-        </Grid>
-      </Grid>
-      <Grid size={{ xs:12 }}>
-        <Accordion defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant='h5'>Workouts</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box mb={2}>
-                <Button
-                  variant='contained'
-                  fullWidth
-                  onClick={() => setShowWorkoutModal(true)}
-                >
-                  Start New Workout
-                </Button>
-                <StartWorkoutModal
-                  open={showWorkoutModal}
-                  onClose={() => setShowWorkoutModal(false)}
-                />
-              </Box>
-              <Grid container spacing={2}>
-                {workouts.map(w => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
-                    <WorkoutCard workout={w}/>
-                  </Grid>
-                ))}
-              </Grid>
-            </AccordionDetails>
-        </Accordion>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-          <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h5">Template Workouts</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Box mb={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => setShowTemplateModal(true)}
-                >
-                  Create Template
-                </Button>
-                <StartTemplateModal
-                  open={showTemplateModal}
-                  onClose={() => setShowTemplateModal(false)}
-                />
-              </Box>
-              <Box sx={{ position: 'relative' }}>
-                <Grid container spacing={2}>
-                  {templates.map(t => (
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={t.id}>
-                      <TemplateWorkoutCard templateWorkout={t}/>
-                    </Grid>
-                  ))}
-                </Grid>
-                <StartTemplateModal
-                  open={showTemplateModal}
-                  onClose={() => setShowTemplateModal(false)}
-                />
-              </Box>
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
-        {me?.role === 'ADMIN' && (
-          <Grid size={{ xs: 12 }}>
-            <Box mb={2}>
-              <Link to="/admin">Go to Admin Page</Link>
-            </Box>
-          </Grid>
-        )}
-
-        <Grid size={{ xs: 12 }}>
-          <Button variant="outlined" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Grid>
-    </DashboardLayout>
+  const View = isMobile ? DashboardMobile : isTablet ? DashboardTablet : DashboardDesktop
+ return (
+    <View
+      workouts={workouts}
+      templates={templates}
+      me={me}
+      showWorkoutModal={showWorkoutModal}
+      setShowWorkoutModal={setShowWorkoutModal}
+      showTemplateModal={showTemplateModal}
+      setShowTemplateModal={setShowTemplateModal}
+      handleLogout={handleLogout}
+    />
   )
 }
