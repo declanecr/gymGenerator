@@ -56,7 +56,7 @@ export default function ProgressPage() {
             {selectedExerciseId && (progress.length ? (
               <LineChart
                 xAxis={[{data: progress.map(p => p.date)}]}
-                series={[{data: progress.map(p => p.weight)}]}
+                series={[{data: progress.map(p => p.volume)}]}
                 height={300}
               />
             ):(
