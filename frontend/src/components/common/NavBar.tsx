@@ -8,6 +8,8 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useFilteredExercises } from '../../hooks/catalog/useFilteredExercise';
 import StartWorkoutModal from '../workouts/StartWorkoutModal';
 import StartTemplateModal from '../template-workouts/StartTemplateModal';
+import BarChartIcon from '@mui/icons-material/BarChart';
+
 
 export default function NavBar() {
   const navigate = useNavigate();
@@ -25,6 +27,9 @@ export default function NavBar() {
       <Toolbar>
         <IconButton color="inherit" onClick={() => navigate('/dashboard')}>
           <HomeIcon />
+        </IconButton>
+        <IconButton color="inherit" onClick={() => navigate('/progress')}>
+          <BarChartIcon />
         </IconButton>
         <Box sx={{ flexGrow: 1, mx: 2 }}>
           <Autocomplete
