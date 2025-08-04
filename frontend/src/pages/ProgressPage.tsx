@@ -55,7 +55,11 @@ export default function ProgressPage() {
           <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)}/>
             {selectedExerciseId && (progress.length ? (
               <LineChart
-                xAxis={[{data: progress.map(p => p.date)}]}
+                xAxis={[{
+                  data: progress.map(p => new Date(p.date)),
+                  scaleType: 'time',
+                  valueFormatter: (d: Date) => dayjs(d).format('MMM D'),
+                }]}
                 series={[{data: progress.map(p => p.volume)}]}
                 height={300}
               />
