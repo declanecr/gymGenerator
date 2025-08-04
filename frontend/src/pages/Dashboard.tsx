@@ -7,9 +7,9 @@ import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
 
 import { useGetMe } from '../hooks/users/useGetMe'
 
-import DashboardMobile from './Dashboard/DashboardMobile'
-import DashboardTablet from './Dashboard/DashboardTablet'
-import DashboardDesktop from './Dashboard/DashboardDesktop'
+import DashboardMobile from './dashboard/DashboardMobile'
+import DashboardTablet from './dashboard/DashboardTablet'
+import DashboardDesktop from './dashboard/DashboardDesktop'
 import { useDevice } from '../context/DeviceContext'
 
 export default function Dashboard() {
