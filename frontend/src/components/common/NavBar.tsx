@@ -9,6 +9,8 @@ import { useFilteredExercises } from '../../hooks/catalog/useFilteredExercise';
 import StartWorkoutModal from '../workouts/StartWorkoutModal';
 import StartTemplateModal from '../template-workouts/StartTemplateModal';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import { ExerciseCatalogItem } from '../../api/exerciseCatalog';
+import { ExerciseInfoModal } from '../exercises/ExerciseInfoModal';
 
 
 export default function NavBar() {
@@ -21,6 +23,7 @@ export default function NavBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showWorkout, setShowWorkout] = useState(false);
   const [showTemplate, setShowTemplate] = useState(false);
+  const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
 
   return (
     <AppBar position="static">
@@ -38,6 +41,11 @@ export default function NavBar() {
             getOptionLabel={o => typeof o ==='string' ? o: o.name}
             inputValue={query}
             onInputChange={(_, v) => setQuery(v)}
+            onChange={(_, value)=> {
+              if (value && typeof value === 'object'){
+                setDetailEx(value as ExerciseCatalogItem);
+              }
+            }}
             renderInput={params => (
               <TextField {...params} variant="outlined" size="small" placeholder="Search exercises..." />
             )}
@@ -54,6 +62,11 @@ export default function NavBar() {
         </Menu>
         <StartTemplateModal open={showTemplate} onClose={() => setShowTemplate(false)} />
         <StartWorkoutModal open={showWorkout} onClose={() => setShowWorkout(false)} />
+        <ExerciseInfoModal
+          open={!!detailEx}
+          exercise={detailEx}
+          onClose={()=> setDetailEx(null)}
+        />
       </Toolbar>
     </AppBar>
   );

@@ -25,6 +25,11 @@ jest.mock('../template-workouts/StartTemplateModal', () => ({
   default: (props: { open: boolean }) => props.open ? <div data-testid="template-modal" /> : null
 }));
 
+jest.mock('../exercises/ExerciseInfoModal', () => ({
+  __esModule: true,
+  ExerciseInfoModal: (props: { open: boolean }) => props.open ? <div data-testid="info-modal" /> : null
+}));
+
 function renderNavBar() {
   const client = new QueryClient();
   render(
@@ -48,4 +53,12 @@ test('opens menu and shows workout modal', () => {
   fireEvent.click(screen.getByLabelText(/add/i));
   fireEvent.click(screen.getByText(/workout/i));
   expect(screen.getByTestId('workout-modal')).toBeInTheDocument();
+});
+
+test('search select shows exercise info modal', () => {
+  renderNavBar();
+  const input = screen.getByPlaceholderText('Search exercises...');
+  fireEvent.change(input, { target: { value: 'Bench' } });
+  fireEvent.click(screen.getByText('Bench'));
+  expect(screen.getByTestId('info-modal')).toBeInTheDocument();
 });
