@@ -1,27 +1,24 @@
 import React, { useState } from 'react'
-import { Box, Paper, Typography, CircularProgress, Alert, Grid } from '@mui/material'
-import { RegisterForm } from '../components/auth/RegisterForm'
 import { useAuth } from '../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
+import { useDevice } from '../context/DeviceContext'
+import RegisterMobile from './register/RegisterMobile'
+import RegisterTablet from './register/RegisterTablet'
+import RegisterDesktop from './register/RegisterDesktop'
+import { Box } from '@mui/material'
 
 export default function Register() {
   const { isAuthenticated } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { isMobile, isTablet } = useDevice()
   if (isAuthenticated) return <Navigate to="/dashboard" replace />
 
+  const View = isMobile ? RegisterMobile : isTablet ? RegisterTablet : RegisterDesktop
+
   return (
-    <Grid>
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-          <Typography variant="h5" gutterBottom align="center">
-            Create an Account
-          </Typography>
-          {loading && <CircularProgress data-testid="loading" />}
-          {error && <Alert severity="error">{error}</Alert>}
-          <RegisterForm onLoadingChange={setLoading} onError={setError} />
-        </Paper>
-      </Box>
-    </Grid>
+    <Box sx={{ width: '100vw', height: '100vh' }}>
+      <View loading={loading} error={error} onLoadingChange={setLoading} onError={setError} />
+    </Box>
   )
 }

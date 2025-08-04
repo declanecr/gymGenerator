@@ -10,13 +10,16 @@ jest.mock('../api/auth', () => ({
 }));
 import { loginUser } from '../api/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DeviceContext } from '../context/DeviceContext';
 
 function renderPage(children: React.ReactElement, initialEntries: string[] = ['/']) {
   const qc = new QueryClient();
   render(
     <QueryClientProvider client={qc}>
       <MemoryRouter initialEntries={initialEntries}>
-        {children}
+        <DeviceContext.Provider value={{ isMobile: false, isTablet: false, isDesktop: true}}>
+          {children}
+        </DeviceContext.Provider>
       </MemoryRouter>
     </QueryClientProvider>
   );
