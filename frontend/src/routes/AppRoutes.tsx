@@ -1,16 +1,16 @@
 // frontend\src\routes\AppRoutes.tsx
 import { Routes, Route } from 'react-router-dom'
 
-import Login from '../pages/Login'
-import Register from '../pages/Register'
-import Dashboard from '../pages/Dashboard'
+import Login from '../pages/login/Login'
+import Register from '../pages/register/Register'
+import Dashboard from '../pages/dashboard/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/TemplateWorkoutPage'
 import WorkoutPage from '../pages/WorkoutPage'
-import AdminPage from '../pages/AdminPage'
-import CreateExercisePage from '../pages/CreateExercisePage'
+import AdminPage from '../pages/admin/AdminPage'
+import CreateExercisePage from '../pages/create-exercise/CreateExercisePage'
 import ProgressPage from '../pages/ProgressPage'
-import UserPage from '../pages/UserPage'
+import UserPage from '../pages/user/UserPage'
 
 export default function AppRoutes() {
   return (

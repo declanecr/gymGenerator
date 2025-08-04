@@ -2,15 +2,14 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
-
 jest.mock('../hooks/useAuth', () => ({ useAuth: jest.fn() }));
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 jest.mock('../api/auth', () => ({
   loginUser: jest.fn(),
 }));
-import { loginUser } from '../api/auth';
+import { loginUser } from '../../api/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DeviceContext } from '../context/DeviceContext';
+import { DeviceContext } from '../../context/DeviceContext';
 
 function renderPage(children: React.ReactElement, initialEntries: string[] = ['/']) {
   const qc = new QueryClient();

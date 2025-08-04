@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import AdminPage from './AdminPage';
-import { useAllWorkouts } from '../hooks/workouts/useAllWorkouts';
-import { useGetMe } from '../hooks/users/useGetMe';
-import { DeviceProvider } from '../context/DeviceProvider';
+import { useAllWorkouts } from '../../hooks/workouts/useAllWorkouts';
+import { useGetMe } from '../../hooks/users/useGetMe';
+import { DeviceProvider } from '../../context/DeviceProvider';
 
 jest.mock('../hooks/workouts/useAllWorkouts', () => ({
   useAllWorkouts: jest.fn(),

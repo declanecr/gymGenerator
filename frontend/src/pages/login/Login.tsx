@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
-import { useDevice } from '../context/DeviceContext'
-import LoginDesktop from './login/LoginDesktop'
-import LoginMobile from './login/LoginMobile'
-import LoginTablet from './login/LoginTablet'
+import { useDevice } from '../../context/DeviceContext'
+import LoginDesktop from './LoginDesktop'
+import LoginMobile from './LoginMobile'
+import LoginTablet from './LoginTablet'
 import { Box } from '@mui/material'
 
 export default function Login() {

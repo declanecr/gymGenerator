@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
-import { useDevice } from '../context/DeviceContext'
-import RegisterMobile from './register/RegisterMobile'
-import RegisterTablet from './register/RegisterTablet'
-import RegisterDesktop from './register/RegisterDesktop'
+import { useDevice } from '../../context/DeviceContext'
+import RegisterMobile from './RegisterMobile'
+import RegisterTablet from './RegisterTablet'
+import RegisterDesktop from './RegisterDesktop'
 import { Box } from '@mui/material'
 
 export default function Register() {

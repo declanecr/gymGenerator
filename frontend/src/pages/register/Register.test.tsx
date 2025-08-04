@@ -4,13 +4,13 @@ import { MemoryRouter } from 'react-router-dom';
 import Register from './Register';
 
 jest.mock('../hooks/useAuth', () => ({ useAuth: jest.fn() }));
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 jest.mock('../api/auth', () => ({
   registerUser: jest.fn(),
 }));
-import { registerUser } from '../api/auth';
+import { registerUser } from '../../api/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DeviceContext } from '../context/DeviceContext';
+import { DeviceContext } from '../../context/DeviceContext';
 
 function renderPage(children: React.ReactElement, initialEntries: string[] = ['/']) {
   const qc = new QueryClient();

@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CreateExercisePage from './CreateExercisePage';
-import { useCreateCustomExercise } from '../hooks/catalog/useCreateCustomExercise';
-import { useCreateDefaultExercise } from '../hooks/catalog/useCreateDefaultExercise';
-import { useGetMe } from '../hooks/users/useGetMe';
-import { DeviceProvider } from '../context/DeviceProvider';
+import { useCreateCustomExercise } from '../../hooks/catalog/useCreateCustomExercise';
+import { useCreateDefaultExercise } from '../../hooks/catalog/useCreateDefaultExercise';
+import { useGetMe } from '../../hooks/users/useGetMe';
+import { DeviceProvider } from '../../context/DeviceProvider';
 
 jest.mock('../hooks/useAuth', () => ({
   useAuth: () => ({ isAuthenticated: true }),

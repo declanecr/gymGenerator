@@ -2,9 +2,9 @@ import { act, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import Dashboard from './Dashboard';
-import { fetchWorkouts } from '../api/workouts';
-import { fetchTemplateWorkouts } from '../api/templateWorkouts';
-import { DeviceProvider } from '../context/DeviceProvider';
+import { fetchWorkouts } from '../../api/workouts';
+import { fetchTemplateWorkouts } from '../../api/templateWorkouts';
+import { DeviceProvider } from '../../context/DeviceProvider';
 
 const mockLogout = jest.fn();
 jest.mock('../hooks/useAuth', () => ({

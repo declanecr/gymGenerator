@@ -1,16 +1,16 @@
 import React, {useEffect, useState } from 'react'
 import {  Box,  CircularProgress, Alert } from '@mui/material'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../../hooks/useAuth'
 import { useNavigate} from 'react-router-dom'
-import { fetchWorkouts, Workout } from '../api/workouts'
-import { fetchTemplateWorkouts, TemplateWorkout } from '../api/templateWorkouts'
+import { fetchWorkouts, Workout } from '../../api/workouts'
+import { fetchTemplateWorkouts, TemplateWorkout } from '../../api/templateWorkouts'
 
-import { useGetMe } from '../hooks/users/useGetMe'
+import { useGetMe } from '../../hooks/users/useGetMe'
 
-import DashboardMobile from './dashboard/DashboardMobile'
-import DashboardTablet from './dashboard/DashboardTablet'
-import DashboardDesktop from './dashboard/DashboardDesktop'
-import { useDevice } from '../context/DeviceContext'
+import DashboardMobile from './DashboardMobile'
+import DashboardTablet from './DashboardTablet'
+import DashboardDesktop from './DashboardDesktop'
+import { useDevice } from '../../context/DeviceContext'
 
 export default function Dashboard() {
   const { logout } = useAuth()
