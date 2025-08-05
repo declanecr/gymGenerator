@@ -14,7 +14,7 @@ export default function ProgressPageLayout({ children }: Props) {
 
   return (
     <Layout>
-      {children}
+        {children}
     </Layout>
   )
 }
