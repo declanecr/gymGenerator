@@ -1,27 +1,30 @@
 import React, {useRef} from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { TemplateWorkoutContainer, TemplateWorkoutContainerHandle } from '../components/template-workouts/TemplateWorkoutContainer';
-import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../components/forms/types';
-import { createTemplateExercise, createTemplateSet,  fetchTemplateSets } from '../api/templateWorkouts';
+import { useParams,  useNavigate } from 'react-router-dom';
+import {  TemplateWorkoutContainerHandle } from '../../components/template-workouts/TemplateWorkoutContainer';
+import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../../components/forms/types';
+import { createTemplateExercise, createTemplateSet,  fetchTemplateSets } from '../../api/templateWorkouts';
 import { useQueries } from '@tanstack/react-query';
-import { TemplateExercise, TemplateSet } from '../api/templateWorkouts';
-import { useTemplateExercises } from '../hooks/templateExercises/useTemplateExercises';
-import { useCreateTemplateExercise } from '../hooks/templateExercises/useCreateTemplateExercise';
-import { useUpdateTemplateExercise } from '../hooks/templateExercises/useUpdateTemplateExercise';
-import { useDeleteTemplateExercise } from '../hooks/templateExercises/useDeleteTemplateExercise';
-import { useCreateTemplateSet } from '../hooks/templateSets/useCreateTemplateSet';
-import { useUpdateTemplateSet } from '../hooks/templateSets/useUpdateTemplateSet';
-import { useDeleteTemplateSet } from '../hooks/templateSets/useDeleteTemplateSet';
-import { useCreateTemplateWorkout } from '../hooks/templateWorkouts/useCreateTemplateWorkout';
-import { useGetTemplateWorkout } from '../hooks/templateWorkouts/useGetTemplateWorkout';
-import { useCreateWorkoutFromTemplate } from '../hooks/workouts/useCreateFromTemplate';
-import { useDeleteTemplateWorkout } from '../hooks/templateWorkouts/useDeleteTemplateWorkout';
-import { useGetMe } from '../hooks/users/useGetMe';
-import { Button, Grid, Typography } from '@mui/material';
-import { createWorkout } from '../api/workouts';
-import { createWorkoutExercise } from '../api/exercises';
-import { createWorkoutSet } from '../api/sets';
-import TemplateWorkoutPageLayout from '../layouts/TemplateWorkoutPageLayout';
+import { TemplateExercise, TemplateSet } from '../../api/templateWorkouts';
+import { useTemplateExercises } from '../../hooks/templateExercises/useTemplateExercises';
+import { useCreateTemplateExercise } from '../../hooks/templateExercises/useCreateTemplateExercise';
+import { useUpdateTemplateExercise } from '../../hooks/templateExercises/useUpdateTemplateExercise';
+import { useDeleteTemplateExercise } from '../../hooks/templateExercises/useDeleteTemplateExercise';
+import { useCreateTemplateSet } from '../../hooks/templateSets/useCreateTemplateSet';
+import { useUpdateTemplateSet } from '../../hooks/templateSets/useUpdateTemplateSet';
+import { useDeleteTemplateSet } from '../../hooks/templateSets/useDeleteTemplateSet';
+import { useCreateTemplateWorkout } from '../../hooks/templateWorkouts/useCreateTemplateWorkout';
+import { useGetTemplateWorkout } from '../../hooks/templateWorkouts/useGetTemplateWorkout';
+import { useCreateWorkoutFromTemplate } from '../../hooks/workouts/useCreateFromTemplate';
+import { useDeleteTemplateWorkout } from '../../hooks/templateWorkouts/useDeleteTemplateWorkout';
+import { useGetMe } from '../../hooks/users/useGetMe';
+import {  Grid, Typography } from '@mui/material';
+import { createWorkout } from '../../api/workouts';
+import { createWorkoutExercise } from '../../api/exercises';
+import { createWorkoutSet } from '../../api/sets';
+import { useDevice } from '../../context/DeviceContext';
+import TemplateWorkoutPageMobile from './TemplateWorkoutPageMobile';
+import TemplateWorkoutPageTablet from './TemplateWorkoutPageTablet';
+import TemplateWorkoutPageDesktop from './TemplateWorkoutPageDesktop';
 //import { useCopyWorkoutFromTemplate } from '../hooks/workouts/useCopyWorkoutFromTemplate';
 
 function toSetFormValues(apiSet: TemplateSet): SetFormValues {
@@ -43,6 +46,8 @@ export default function TemplateWorkoutPage() {
   const { mutateAsync: deleteTemplateWorkout } = useDeleteTemplateWorkout();
   const {mutateAsync: createTemplateWorkout } =useCreateTemplateWorkout();
   const { data: me } = useGetMe();
+    const { isMobile, isTablet } = useDevice();
+
   
   
 
@@ -234,36 +239,20 @@ export default function TemplateWorkoutPage() {
   
   const isAdmin = me?.role === 'ADMIN';
   const canDelete = (workout.userId !== null && workout.userId !== undefined) || isAdmin;
+  const View = isMobile
+    ? TemplateWorkoutPageMobile
+    : isTablet
+      ? TemplateWorkoutPageTablet
+      : TemplateWorkoutPageDesktop;
 
   return (
-    <TemplateWorkoutPageLayout>
-      <Grid container direction="column" spacing={2} p={2}>
-        <Grid>
-          <Link to="/dashboard">back to dashboard</Link>
-        </Grid>
-        <Grid>
-          <Button onClick={handleStart}>Start this workout</Button>
-        </Grid>
-        <Grid>
-          <Typography variant="h4" component="h1">
-            Template Workout Details
-          </Typography>
-        </Grid>
-        {canDelete && (
-          <Grid>
-            <Button onClick={handleDelete} color="error" variant="outlined">
-              Delete Template
-            </Button>
-          </Grid>
-        )}
-        <Grid>
-          <TemplateWorkoutContainer
-            ref={formRef}
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-          />
-        </Grid>
-      </Grid>
-    </TemplateWorkoutPageLayout>
+    <View
+      formRef={formRef}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      onStart={handleStart}
+      onDelete={handleDelete}
+      canDelete={canDelete}
+    />
   );
 }

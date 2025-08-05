@@ -18,3 +18,17 @@ look for nodejs hekroku pipeline on github actions
 
 STEP 1: setup hello world CI
 
+# MEETING WITH CALEB
+- next CI step is deployment
+	- can do that in a GHA (github action)
+- Post Deployment validation
+	- have a few checks that run to check endpoints and such
+- next is rollbacks
+	- if you deploy somehting and it fails , how do you undeploy and redploy previous artifact
+- being able to that automated (that's hard to do)
+- SYSTEM DESIGN
+	- big database would be accessed via something like "reddis" which actually accesses database and caches to prevent having to go all the way through ot the databse again
+		- Axios may have caching options
+- LOAD TESTING - using tons of fake users to see if app can handle it
+	- SCALING - configure at what point does your app scale up or down based on number of users
+- PRODUCTIONALIZATION - getting ready for PROD

@@ -2,12 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import WorkoutPage from './WorkoutPage';
-import { useAuth } from '../hooks/useAuth';
-import { DeviceProvider } from '../context/DeviceProvider';
+import { useAuth } from '../../hooks/useAuth';
+import { DeviceProvider } from '../../context/DeviceProvider';
 
-jest.mock('../hooks/useAuth', ()=>({useAuth: jest.fn() }));
+jest.mock('../../hooks/useAuth', ()=>({useAuth: jest.fn() }));
 
-jest.mock('../hooks/workouts/useGetWorkout', () => ({
+jest.mock('../../hooks/workouts/useGetWorkout', () => ({
   useGetWorkout: () => ({
     data: { id: 'w1', name: 'W1', notes: '', createdAt: '', updatedAt: '', workoutTemplateId: null, workoutExercises: [] },
     isLoading: false,
@@ -15,7 +15,7 @@ jest.mock('../hooks/workouts/useGetWorkout', () => ({
   }),
 }));
 
-jest.mock('../hooks/workoutExercises/useExercises', () => ({
+jest.mock('../../hooks/workoutExercises/useExercises', () => ({
   useWorkoutExercises: () => ({
     data: [],
     isLoading: false,
@@ -28,13 +28,13 @@ jest.mock('@tanstack/react-query', () => {
   return { ...actual, useQueries: () => [] };
 });
 
-jest.mock('../hooks/workoutExercises/useCreateExercise', () => ({ useCreateExercise: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workoutExercises/useUpdateExercise', () => ({ useUpdateExercise: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workoutExercises/useDeleteExercise', () => ({ useDeleteExercise: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workoutSets/useCreateSet', () => ({ useCreateSet: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workoutSets/useUpdateSet', () => ({ useUpdateSet: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workoutSets/useDeleteSet', () => ({ useDeleteSet: () => ({ mutateAsync: jest.fn() }) }));
-jest.mock('../hooks/workouts/useDeleteWorkout', () => ({ useDeleteWorkout: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutExercises/useCreateExercise', () => ({ useCreateExercise: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutExercises/useUpdateExercise', () => ({ useUpdateExercise: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutExercises/useDeleteExercise', () => ({ useDeleteExercise: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutSets/useCreateSet', () => ({ useCreateSet: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutSets/useUpdateSet', () => ({ useUpdateSet: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workoutSets/useDeleteSet', () => ({ useDeleteSet: () => ({ mutateAsync: jest.fn() }) }));
+jest.mock('../../hooks/workouts/useDeleteWorkout', () => ({ useDeleteWorkout: () => ({ mutateAsync: jest.fn() }) }));
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {

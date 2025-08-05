@@ -1,21 +1,21 @@
 // TemplateWorkoutPage.test.tsx
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TemplateWorkoutPage from '../pages/TemplateWorkoutPage';
+import TemplateWorkoutPage from './TemplateWorkoutPage';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DeviceProvider } from '../context/DeviceProvider';
+import { DeviceProvider } from '../../context/DeviceProvider';
 
 /* ------------------------------------------------------------------ */
 /* 🔧 core-query mocks (workout + exercises + sets)                    */
 /* ------------------------------------------------------------------ */
-jest.mock('../hooks/templateWorkouts/useGetTemplateWorkout', () => ({
+jest.mock('../../hooks/templateWorkouts/useGetTemplateWorkout', () => ({
   useGetTemplateWorkout: () => ({
     data: { id: 'tpl1', name: 'T', notes: '', userId: null }, // ⬅️ global template
     isLoading: false,
     error: null,
   }),
 }));
-jest.mock('../hooks/templateExercises/useTemplateExercises', () => ({
+jest.mock('../../hooks/templateExercises/useTemplateExercises', () => ({
   useTemplateExercises: () => ({
     data: [{ templateExerciseId: 'ex1', exerciseId: 123, position: 1 }],
     isLoading: false,
@@ -34,10 +34,10 @@ jest.mock('@tanstack/react-query', () => {
       })),
   };
 });
-jest.mock('../hooks/users/useGetMe', () => ({
+jest.mock('../../hooks/users/useGetMe', () => ({
   useGetMe: () => ({ data: { role: 'USER' }, isLoading: false, error: null }),
 }));
-jest.mock('../hooks/catalog/useExercisesCatalog', () => ({
+jest.mock('../../hooks/catalog/useExercisesCatalog', () => ({
   useExercisesCatalog: () => ({
     data: [{ exerciseId: 123, name: 'Bench Press', primaryMuscle: 'Chest' }],
     isLoading: false,
@@ -49,16 +49,16 @@ jest.mock('../hooks/catalog/useExercisesCatalog', () => ({
 /* 🔧 mutation spies used in <TemplateWorkoutPage/>                    */
 /* ------------------------------------------------------------------ */
 export const createTplSpy = jest.fn().mockResolvedValue({ id: 'newTpl' });
-jest.mock('../hooks/templateWorkouts/useCreateTemplateWorkout', () => ({
+jest.mock('../../hooks/templateWorkouts/useCreateTemplateWorkout', () => ({
   useCreateTemplateWorkout: () => ({ mutateAsync: createTplSpy }),
 }));
 export const createWkFromTplSpy = jest.fn().mockResolvedValue({ id: 'newWorkout' });
-jest.mock('../hooks/workouts/useCreateFromTemplate', () => ({
+jest.mock('../../hooks/workouts/useCreateFromTemplate', () => ({
   useCreateWorkoutFromTemplate: () => ({ mutateAsync: createWkFromTplSpy }),
 }));
 
 /* helpers called when we clone templates */
-jest.mock('../api/templateWorkouts', () => ({
+jest.mock('../../api/templateWorkouts', () => ({
   fetchTemplateSets: jest.fn().mockResolvedValue([]),
   createTemplateExercise: jest.fn().mockResolvedValue({
     templateExerciseId: 'ex-new',
@@ -79,17 +79,17 @@ jest.mock('../api/templateWorkouts', () => ({
 
 
 export const createWorkoutSpy = jest.fn().mockResolvedValue({ id: 'newWorkout' });
-jest.mock('../api/workouts', () => ({
+jest.mock('../../api/workouts', () => ({
   createWorkout: (...args: []) => createWorkoutSpy(...args),
 }));
 export const createWorkoutExerciseSpy = jest
   .fn()
   .mockResolvedValue({ workoutExerciseId: 'we1' });
-jest.mock('../api/exercises', () => ({
+jest.mock('../../api/exercises', () => ({
   createWorkoutExercise: (...args: unknown[]) => createWorkoutExerciseSpy(...args),
 }));
 export const createWorkoutSetSpy = jest.fn().mockResolvedValue({ id: 'ws1' });
-jest.mock('../api/sets', () => ({
+jest.mock('../../api/sets', () => ({
   createWorkoutSet: (...args: unknown[]) => createWorkoutSetSpy(...args),
 }));
 

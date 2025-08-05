@@ -1,25 +1,27 @@
 import React from 'react';
-import { useParams, Link,  useNavigate } from 'react-router-dom';
-import { useGetWorkout } from '../hooks/workouts/useGetWorkout';
-import { WorkoutContainer } from '../components/workouts/WorkoutContainer';
-import { WorkoutFormValues } from '../components/forms/types';
-import { useCreateExercise } from '../hooks/workoutExercises/useCreateExercise';
-import { useCreateSet } from '../hooks/workoutSets/useCreateSet';
-import { WorkoutExercise } from '../api/exercises';
-import { ExerciseFormValues } from '../components/forms/types';
-import { SetFormValues } from '../components/forms/types';
-import { WorkoutSet } from '../api/sets';
-import { fetchWorkoutSets } from '../api/sets';
-import { useWorkoutExercises } from '../hooks/workoutExercises/useExercises';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGetWorkout } from '../../hooks/workouts/useGetWorkout';
+import { WorkoutFormValues } from '../../components/forms/types';
+import { useCreateExercise } from '../../hooks/workoutExercises/useCreateExercise';
+import { useCreateSet } from '../../hooks/workoutSets/useCreateSet';
+import { WorkoutExercise } from '../../api/exercises';
+import { ExerciseFormValues } from '../../components/forms/types';
+import { SetFormValues } from '../../components/forms/types';
+import { WorkoutSet } from '../../api/sets';
+import { fetchWorkoutSets } from '../../api/sets';
+import { useWorkoutExercises } from '../../hooks/workoutExercises/useExercises';
 import { useQueries } from '@tanstack/react-query';
 
-import { useUpdateExercise } from '../hooks/workoutExercises/useUpdateExercise';
-import { useUpdateSet } from '../hooks/workoutSets/useUpdateSet';
-import { useDeleteExercise } from '../hooks/workoutExercises/useDeleteExercise';
-import { useDeleteSet } from '../hooks/workoutSets/useDeleteSet';
-import { useDeleteWorkout } from '../hooks/workouts/useDeleteWorkout';
-import { Button, Grid, Typography } from '@mui/material';
-import WorkoutPageLayout from '../layouts/WorkoutPageLayout';
+import { useUpdateExercise } from '../../hooks/workoutExercises/useUpdateExercise';
+import { useUpdateSet } from '../../hooks/workoutSets/useUpdateSet';
+import { useDeleteExercise } from '../../hooks/workoutExercises/useDeleteExercise';
+import { useDeleteSet } from '../../hooks/workoutSets/useDeleteSet';
+import { useDeleteWorkout } from '../../hooks/workouts/useDeleteWorkout';
+import { Grid, Typography } from '@mui/material';
+import { useDevice } from '../../context/DeviceContext';
+import WorkoutPageMobile from './WorkoutPageMobile';
+import WorkoutPageTablet from './WorkoutPageTablet';
+import WorkoutPageDesktop from './WorkoutPageDesktop';
 
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
@@ -45,6 +47,8 @@ export default function WorkoutPage() {
   const { mutateAsync: updateSet } = useUpdateSet();
   const { mutateAsync: deleteSet } = useDeleteSet();
   const { mutateAsync: deleteWorkout } = useDeleteWorkout();
+
+  const { isMobile, isTablet } = useDevice();
 
 
   // fetch workout
@@ -166,29 +170,13 @@ export default function WorkoutPage() {
     navigate('/dashboard');
   }
 
-  return (
-    <WorkoutPageLayout>
-      <Grid container direction="column" spacing={2} p={2}>
-        <Grid>
-          <Link to="/dashboard">back to dashboard</Link>
-        </Grid>
-        <Grid>
-          <Typography variant="h4" component="h1">Workout Details</Typography>
-        </Grid>
-        <Grid>
-          <Button onClick={handleDelete} color="error" variant="outlined">
-            Delete Workout
-          </Button>
-        </Grid>
+  const View = isMobile ? WorkoutPageMobile : isTablet ? WorkoutPageTablet : WorkoutPageDesktop;
 
-        {/* Exercises/sets are always editable */}
-        <Grid>
-          <WorkoutContainer
-            initialValues={initialValues}
-            onSubmit={handleSubmit}
-          />
-        </Grid>
-      </Grid>
-    </WorkoutPageLayout>
+  return (
+    <View
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      onDelete={handleDelete}
+    />
   );
 }
