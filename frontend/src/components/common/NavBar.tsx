@@ -28,13 +28,15 @@ export default function NavBar() {
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton color="inherit" onClick={() => navigate('/dashboard')}>
-          <HomeIcon />
-        </IconButton>
-        <IconButton color="inherit" onClick={() => navigate('/progress')}>
-          <BarChartIcon />
-        </IconButton>
-        <Box sx={{ flexGrow: 1, mx: 2 }}>
+        <Box sx={{display:'flex', width: '20%', alignItems:'center'}}>
+          <IconButton color="inherit" onClick={() => navigate('/dashboard')}>
+            <HomeIcon />
+          </IconButton>
+          <IconButton color="inherit" onClick={() => navigate('/progress')}>
+            <BarChartIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ display:'flex', width: '65%'}}>
           <Autocomplete
             freeSolo
             options={filtered}
@@ -49,24 +51,27 @@ export default function NavBar() {
             renderInput={params => (
               <TextField {...params} variant="outlined" size="small" placeholder="Search exercises..." />
             )}
+            sx={{width: '80%'}}
           />
         </Box>
-        {me && <Typography sx={{ mr: 2 }}>{me.name || me.email}</Typography>}
-        <IconButton color="inherit" onClick={e => setAnchorEl(e.currentTarget)} aria-label="add">
-          <AddIcon />
-        </IconButton>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
-          <MenuItem onClick={() => { setAnchorEl(null); setShowTemplate(true); }}>Template</MenuItem>
-          <MenuItem onClick={() => { setAnchorEl(null); setShowWorkout(true); }}>Workout</MenuItem>
-          <MenuItem onClick={() => { setAnchorEl(null); navigate('/create-exercise'); }}>Exercise</MenuItem>
-        </Menu>
-        <StartTemplateModal open={showTemplate} onClose={() => setShowTemplate(false)} />
-        <StartWorkoutModal open={showWorkout} onClose={() => setShowWorkout(false)} />
-        <ExerciseInfoModal
-          open={!!detailEx}
-          exercise={detailEx}
-          onClose={()=> setDetailEx(null)}
-        />
+        <Box sx={{display:'flex', alignItems:'center', width: '15%'}}>
+          {me && <Typography sx={{ mr: 2 }}>{me.name || me.email}</Typography>}
+          <IconButton color="inherit" onClick={e => setAnchorEl(e.currentTarget)} aria-label="add">
+            <AddIcon />
+          </IconButton>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+            <MenuItem onClick={() => { setAnchorEl(null); setShowTemplate(true); }}>Template</MenuItem>
+            <MenuItem onClick={() => { setAnchorEl(null); setShowWorkout(true); }}>Workout</MenuItem>
+            <MenuItem onClick={() => { setAnchorEl(null); navigate('/create-exercise'); }}>Exercise</MenuItem>
+          </Menu>
+          <StartTemplateModal open={showTemplate} onClose={() => setShowTemplate(false)} />
+          <StartWorkoutModal open={showWorkout} onClose={() => setShowWorkout(false)} />
+          <ExerciseInfoModal
+            open={!!detailEx}
+            exercise={detailEx}
+            onClose={()=> setDetailEx(null)}
+          />
+        </Box>
       </Toolbar>
     </AppBar>
   );
