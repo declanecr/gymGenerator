@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const TabletLayout = ({ children }: LayoutProps) => {
   return (
-    <Box>
+    <Box sx={{width: '100%', height: '100%'}}>
       <NavBar />
 
       <Container maxWidth="md" sx={{ mt: 2 }}>

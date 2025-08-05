@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const MobileLayout = ({ children }: LayoutProps) => {
   return (
-    <Box>
+    <Box sx={{width: '100%', height: '100%'}}>
       <Container maxWidth="sm" sx={{ pb: 8 }}>
         <Grid container spacing={2}>
           {children}

@@ -9,7 +9,7 @@ interface DesktopLayoutProps {
 
 const DesktopLayout = ({ children }: DesktopLayoutProps) => {
   return (
-    <Box>
+    <Box sx={{width: '100%', height: '100%'}}>
       <NavBar />
 
       <Container maxWidth={false} sx={{ mt: 4 }}>
