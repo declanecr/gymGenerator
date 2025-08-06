@@ -1,15 +1,20 @@
-// WorkoutDateCalendar.tsx
+// src/components/progress/WorkoutDateCalendar.tsx
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import Badge from '@mui/material/Badge';
-import { DateCalendar, DateCalendarProps } from '@mui/x-date-pickers/DateCalendar';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
 
-/** Custom day cell: 48 px high, shows a 🏋️ badge on workout days, disables the rest. */
-function WorkoutDay(
-  props: PickersDayProps<Dayjs> & { workoutDates: Set<string> }
-) {
-  const { workoutDates, day, outsideCurrentMonth, ...other } = props;
+/* ---------- 1.  Custom day cell (48 px + badge) ---------- */
+type WorkoutDayExtra = { workoutDates: Set<string> };
+type WorkoutDayProps = PickersDayProps & WorkoutDayExtra;
+
+const WorkoutDay: React.FC<WorkoutDayProps> = ({
+  workoutDates,
+  day,
+  outsideCurrentMonth,
+  ...other
+}) => {
   const iso = day.format('YYYY-MM-DD');
   const hasWorkout = workoutDates.has(iso);
 
@@ -20,41 +25,41 @@ function WorkoutDay(
         day={day}
         outsideCurrentMonth={outsideCurrentMonth}
         disabled={!hasWorkout}
-        sx={{ height: 48, width: 48 }}   // Original is 36×36
+        sx={{ width: 48, height: 48 }}
       />
     </Badge>
   );
-}
+};
 
+/* ---------- 2.  Calendar wrapper ---------- */
 export interface WorkoutDateCalendarProps
   extends Omit<
-    DateCalendarProps<Dayjs>,
+    React.ComponentProps<typeof DateCalendar>,
     'slots' | 'slotProps' | 'shouldDisableDate'
   > {
-  /** ISO-8601 strings (`YYYY-MM-DD`) for days that contain workouts */
+  /** ISO strings (`YYYY-MM-DD`) that contain workouts */
   workoutDates: Set<string>;
 }
 
-/**
- * Replacement for MUI’s `<DateCalendar>` that:
- * • badges workout days
- * • enlarges day cells to 48 px
- * • disables everything else
- * • otherwise behaves exactly like the stock component
- */
 export default function WorkoutDateCalendar({
   workoutDates,
   ...calendarProps
 }: WorkoutDateCalendarProps) {
+  /* capture the workoutDates in a wrapper component */
+  const DayComponent = React.useCallback(
+    (props: PickersDayProps) => (
+      <WorkoutDay {...props} workoutDates={workoutDates} />
+    ),
+    [workoutDates]
+  );
+
   return (
     <DateCalendar
       {...calendarProps}
-      /* Disable any day not in the workout set */
-      shouldDisableDate={(d) => !workoutDates.has(dayjs(d).format('YYYY-MM-DD'))}
-      /* Inject custom day renderer */
-      slots={{ day: WorkoutDay }}
-      /* Pass the workout set down to each cell */
-      slotProps={{ day: { workoutDates } as any }}
+      slots={{ day: DayComponent }}
+      shouldDisableDate={(d) =>
+        !workoutDates.has(dayjs(d as Dayjs).format('YYYY-MM-DD'))
+      }
     />
   );
 }

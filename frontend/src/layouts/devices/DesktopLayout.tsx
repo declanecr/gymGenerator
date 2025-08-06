@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
-import { Box, Container } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import { Box, Grid } from '@mui/material'
 import NavBar from '../../components/common/NavBar'
 
 interface DesktopLayoutProps {
@@ -9,14 +8,20 @@ interface DesktopLayoutProps {
 
 const DesktopLayout = ({ children }: DesktopLayoutProps) => {
   return (
-    <Box sx={{width: '100%', height: '100%'}}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',   // full dynamic viewport height
+      width: '100dvw',
+      overflowX: 'hidden'
+    }}>
       <NavBar />
 
-      <Container maxWidth={false} sx={{ mt: 4 }}>
-        <Grid container spacing={2}>
+      <Box sx={{flexGrow: 1, overflow: 'auto', width: 1}}>
+        <Grid container sx={{flex: 1, height: 1, width: 1}}>
           {children}
         </Grid>
-      </Container>
+      </Box>
     </Box>
   )
 }

@@ -25,7 +25,7 @@ export default function AdminPageDesktop({ workouts, showTemplateModal, setShowT
             </Button>
           </Grid>
           <Grid>
-            <Link to="/create-default">Create Default Exercise</Link>
+            <Link to="/create-exercise">Create Default Exercise</Link>
           </Grid>
         </Grid>
         {showTemplateModal && (

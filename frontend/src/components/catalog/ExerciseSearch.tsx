@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, Box, TextField } from '@mui/material'
 import { useDebounce } from '../../hooks/useDebounce'
 import { useFilteredExercises } from '../../hooks/catalog/useFilteredExercise'
 import { ExerciseCatalogItem } from '../../api/exerciseCatalog'
@@ -16,7 +16,7 @@ export default function ExerciseSearch({ onSelect }: ExerciseSearchProps) {
     const [selected, setSelected] = useState<ExerciseCatalogItem | null>(null)
 
     return (
-        <>
+        <Box sx={{width: '100%', minWidth: 200}} >
             <Autocomplete
                 freeSolo
                 options={filtered}
@@ -32,8 +32,9 @@ export default function ExerciseSearch({ onSelect }: ExerciseSearchProps) {
                 renderInput={params => (
                     <TextField {...params} placeholder="Search exercises..." fullWidth />
                 )}
+                fullWidth
             />
             <ExerciseInfoModal open={!!selected} exercise={selected} onClose={() => setSelected(null)} />
-        </>
+        </Box>
     )
 }

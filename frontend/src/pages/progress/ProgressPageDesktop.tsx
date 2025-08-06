@@ -40,40 +40,41 @@ export default function ProgressPageDesktop({
 }: Props) {
   return (
     <ProgressPageLayout>
-      <Grid>
-        <Grid sx={{minWidth: '100vw'}}>
-          <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
-            <Tab label="History" />
-            <Tab label="Exercises" />
-          </Tabs>
-        </Grid>
-        <Grid container sx={{minWidth: '100vw', minHeight:'100vh'}}>
-          {tab === 0 && (
-            <Box sx={{height: 1, width: 1}}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <WorkoutDateCalendar
-                  onChange={handleSelect}
-                  workoutDates={daysWithWorkouts}
-                  /* You can still pass any DateCalendar prop, e.g. defaultValue, minDate, etc. */
-                />
-              </LocalizationProvider>
+        <Grid container size={12} direction={'column'} rowSpacing={2} sx={{width: 1, flex: 1}}>
+          <Grid size={12}>
+            <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
+              <Tab label="History" />
+              <Tab label="Exercises" />
+            </Tabs>
+          </Grid>
+          <Grid size={12} sx={{flex: 1, }}>
+            {tab === 0 && (
+              <Box sx={{height: 1, width: 1}}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <WorkoutDateCalendar
+                    onChange={handleSelect}
+                    workoutDates={daysWithWorkouts}
+                    
+                    /* You can still pass any DateCalendar prop, e.g. defaultValue, minDate, etc. */
+                  />
+                </LocalizationProvider>
 
-            </Box>
-          )}
-          {tab === 1 && (
-            <Grid>
-              <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)} />
-              <Grid sx={{ height: 600, minWidth: 700}}>
-                <ProgressLineChart
-                  progress={progress}
-                  selectedExerciseId={selectedExerciseId}
-                />
-              </Grid>
-            </Grid>
-          )}
+              </Box>
+            )}
+            {tab === 1 && (
+              <Box sx={{height: 1, width: 1}}>
+                <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)} />
+                <Box sx={{ height: 600, width: 1}}>
+                  <ProgressLineChart
+                    progress={progress}
+                    selectedExerciseId={selectedExerciseId}
+                  />
+                </Box>
+              </Box>
+            )}
+          </Grid>
         </Grid>
         <WorkoutModal open={!!selected} workouts={selected || []} onClose={() => setSelected(null)} />
-      </Grid>
     </ProgressPageLayout>
   );
 }

@@ -26,8 +26,9 @@ export default function NavBar() {
   const [detailEx, setDetailEx] = useState<ExerciseCatalogItem | null>(null);
 
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar position='static' >
+      <Toolbar >
+
         <Box sx={{display:'flex', width: '20%', alignItems:'center'}}>
           <IconButton color="inherit" onClick={() => navigate('/dashboard')}>
             <HomeIcon />
@@ -55,7 +56,7 @@ export default function NavBar() {
           />
         </Box>
         <Box sx={{display:'flex', alignItems:'center', width: '15%'}}>
-          {me && <Typography sx={{ mr: 2 }}>{me.name || me.email}</Typography>}
+          {me && <Typography >{me.name || me.email}</Typography>}
           <IconButton color="inherit" onClick={e => setAnchorEl(e.currentTarget)} aria-label="add">
             <AddIcon />
           </IconButton>
