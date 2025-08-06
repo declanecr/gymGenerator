@@ -34,11 +34,11 @@ export default function DashboardDesktop({
   return (
     <DashboardLayout>
       <Grid container spacing={2} sx={{ p: 2 }}>
-        <Grid size={{ xs: 12 }}>
+        <Grid size={12}>
           <StartWorkoutModal open={showWorkoutModal} onClose={() => setShowWorkoutModal(false)} />
         </Grid>
       </Grid>
-      <Grid size={{ xs: 12 }}>
+      <Grid size={12}>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant='h5'>Workouts</Typography>
@@ -64,7 +64,7 @@ export default function DashboardDesktop({
           </AccordionDetails>
         </Accordion>
       </Grid>
-      <Grid size={{ xs: 12 }}>
+      <Grid size={12}>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h5">Template Workouts</Typography>
@@ -94,13 +94,13 @@ export default function DashboardDesktop({
         </Accordion>
       </Grid>
       {me?.role === 'ADMIN' && (
-        <Grid size={{ xs: 12 }}>
+        <Grid size={12}>
           <Box mb={2}>
             <Link to="/admin">Go to Admin Page</Link>
           </Box>
         </Grid>
       )}
-      <Grid size={{ xs: 12 }}>
+      <Grid size={12}>
         <Button variant="outlined" onClick={handleLogout}>
           Logout
         </Button>

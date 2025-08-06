@@ -9,7 +9,13 @@ interface LayoutProps {
 
 const TabletLayout = ({ children }: LayoutProps) => {
   return (
-    <Box sx={{width: '100%', height: '100%'}}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',   // full dynamic viewport height
+      width: '100dvw',
+      overflowX: 'hidden'
+    }}>
       <NavBar />
 
       <Container maxWidth="md" sx={{ mt: 2 }}>

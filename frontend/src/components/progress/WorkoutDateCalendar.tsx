@@ -25,7 +25,7 @@ const WorkoutDay: React.FC<WorkoutDayProps> = ({
         day={day}
         outsideCurrentMonth={outsideCurrentMonth}
         disabled={!hasWorkout}
-        sx={{ width: 48, height: 48 }}
+        //sx={{ width: 48, height: 48 }}
       />
     </Badge>
   );
