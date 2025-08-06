@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Box, Container, Grid, useMediaQuery, useTheme } from '@mui/material';
-import NavBar from '../../components/common/NavBar';
-import MobileNavBar from '../../components/common/MobileNavBar';
+import NavBar from '../components/common/NavBar';
+import MobileNavBar from '../components/common/MobileNavBar';
 
 interface DefaultLayoutProps {
   children: ReactNode;

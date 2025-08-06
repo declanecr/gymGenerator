@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, Button } from '@mui/material';
 import { TemplateWorkoutContainer, TemplateWorkoutContainerHandle } from '../../components/template-workouts/TemplateWorkoutContainer';
-import TemplateWorkoutPageLayout from '../../layouts/TemplateWorkoutPageLayout';
 import type { WorkoutFormValues } from '../../components/forms/types';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Props {
   formRef: React.RefObject<TemplateWorkoutContainerHandle | null>;
@@ -23,7 +23,7 @@ export default function TemplateWorkoutPageDesktop({
   canDelete,
 }: Props) {
   return (
-    <TemplateWorkoutPageLayout>
+    <DefaultLayout>
       <Grid container direction="column" spacing={2} p={2}>
         <Grid>
           <Link to="/dashboard">back to dashboard</Link>
@@ -51,6 +51,6 @@ export default function TemplateWorkoutPageDesktop({
           />
         </Grid>
       </Grid>
-    </TemplateWorkoutPageLayout>
+    </DefaultLayout>
   );
 }

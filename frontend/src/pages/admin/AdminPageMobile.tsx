@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { List, ListItem, ListItemText, Box, Typography, Grid, Button } from '@mui/material';
 import StartGlobalTemplateModal from '../../components/template-workouts/StartGlobalTemplateModal';
-import AdminPageLayout from '../../layouts/AdminPageLayout';
 import type { Workout } from '../../api/workouts';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Props {
   workouts: Workout[] | undefined;
@@ -13,7 +13,7 @@ interface Props {
 
 export default function AdminPageMobile({ workouts, showTemplateModal, setShowTemplateModal }: Props) {
   return (
-    <AdminPageLayout>
+    <DefaultLayout>
       <Box p={4}>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid>
@@ -42,6 +42,6 @@ export default function AdminPageMobile({ workouts, showTemplateModal, setShowTe
           ))}
         </List>
       </Box>
-    </AdminPageLayout>
+    </DefaultLayout>
   );
 }

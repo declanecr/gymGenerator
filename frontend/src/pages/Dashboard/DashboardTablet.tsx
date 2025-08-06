@@ -2,13 +2,13 @@ import React from 'react'
 import { Typography, Box, Button, Grid, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Link } from 'react-router-dom'
-import DashboardLayout from '../../layouts/DashboardLayout'
 import StartWorkoutModal from '../../components/workouts/StartWorkoutModal'
 import StartTemplateModal from '../../components/template-workouts/StartTemplateModal'
 import WorkoutCard from '../../components/workouts/WorkoutCard'
 import TemplateWorkoutCard from '../../components/template-workouts/TemplateWorkoutCard'
 import { Workout } from '../../api/workouts'
 import { TemplateWorkout } from '../../api/templateWorkouts'
+import DefaultLayout from '../../layouts/DefaultLayout'
 
 interface Props {
   workouts: Workout[]
@@ -32,7 +32,7 @@ export default function DashboardTablet({
   handleLogout,
 }: Props) {
   return (
-    <DashboardLayout>
+    <DefaultLayout>
       <Grid container spacing={2} sx={{ p: 2 }}>
         <Grid size={{ xs: 12 }}>
           <StartWorkoutModal open={showWorkoutModal} onClose={() => setShowWorkoutModal(false)} />
@@ -105,6 +105,6 @@ export default function DashboardTablet({
           Logout
         </Button>
       </Grid>
-    </DashboardLayout>
+    </DefaultLayout>
   )
 }

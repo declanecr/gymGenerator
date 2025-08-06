@@ -3,12 +3,12 @@ import { Tabs, Tab, Grid, Box } from '@mui/material';
 import {  LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import  { Dayjs } from 'dayjs';
-import ProgressPageLayout from '../../layouts/ProgressPageLayout';
 import WorkoutModal from '../../components/workouts/WorkoutModal';
 import ExerciseSearch from '../../components/catalog/ExerciseSearch';
 import type { Workout } from '../../api/workouts';
 import ProgressLineChart from '../../components/progress/LineChart';
 import WorkoutDateCalendar from '../../components/progress/WorkoutDateCalendar';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Progress {
   date: string;
@@ -39,7 +39,7 @@ export default function ProgressPageDesktop({
   progress,
 }: Props) {
   return (
-    <ProgressPageLayout>
+    <DefaultLayout>
         <Grid container spacing={2} sx={{ p: 2 }}>
           <Grid size={12}>
             <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
@@ -76,6 +76,6 @@ export default function ProgressPageDesktop({
           </Grid>
         </Grid>
         <WorkoutModal open={!!selected} workouts={selected || []} onClose={() => setSelected(null)} />
-    </ProgressPageLayout>
+    </DefaultLayout>
   );
 }

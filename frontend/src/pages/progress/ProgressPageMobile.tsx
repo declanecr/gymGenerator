@@ -3,11 +3,11 @@ import { Box, Tabs, Tab, Typography, Grid } from '@mui/material';
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
-import ProgressPageLayout from '../../layouts/ProgressPageLayout';
 import WorkoutModal from '../../components/workouts/WorkoutModal';
 import ExerciseSearch from '../../components/catalog/ExerciseSearch';
 import { LineChart } from '@mui/x-charts';
 import type { Workout } from '../../api/workouts';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Progress {
   date: string;
@@ -38,7 +38,7 @@ export default function ProgressPageMobile({
   progress,
 }: Props) {
   return (
-    <ProgressPageLayout>
+    <DefaultLayout>
       <Grid container>
         <Grid container sx={{minWidth: '100vw'}}>
           <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
@@ -75,6 +75,6 @@ export default function ProgressPageMobile({
           )}
           <WorkoutModal open={!!selected} workouts={selected || []} onClose={() => setSelected(null)} />
       </Grid>
-    </ProgressPageLayout>
+    </DefaultLayout>
   );
 }

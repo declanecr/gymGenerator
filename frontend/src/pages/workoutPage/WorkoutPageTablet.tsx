@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, Button } from '@mui/material';
 import { WorkoutContainer } from '../../components/workouts/WorkoutContainer';
-import WorkoutPageLayout from '../../layouts/WorkoutPageLayout';
 import type { WorkoutFormValues } from '../../components/forms/types';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Props {
   initialValues: WorkoutFormValues;
@@ -13,7 +13,7 @@ interface Props {
 
 export default function WorkoutPageTablet({ initialValues, onSubmit, onDelete }: Props) {
   return (
-    <WorkoutPageLayout>
+    <DefaultLayout>
       <Grid container direction="column" spacing={2} p={2}>
         <Grid>
           <Link to="/dashboard">back to dashboard</Link>
@@ -30,6 +30,6 @@ export default function WorkoutPageTablet({ initialValues, onSubmit, onDelete }:
           <WorkoutContainer initialValues={initialValues} onSubmit={onSubmit} />
         </Grid>
       </Grid>
-    </WorkoutPageLayout>
+    </DefaultLayout>
   );
 }

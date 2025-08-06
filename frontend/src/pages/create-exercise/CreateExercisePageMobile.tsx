@@ -2,8 +2,8 @@ import React from 'react';
 import { Box, Typography, TextField, Button, Alert } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { UseFormRegister, FieldErrors } from 'react-hook-form';
-import CreateExercisePageLayout from '../../layouts/CreateExercisePageLayout';
 import type { FormInputs } from './CreateExercisePage';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 interface Props {
   me: { role: string } | undefined;
@@ -23,7 +23,7 @@ export default function CreateExercisePageMobile({
   isError,
 }: Props) {
   return (
-    <CreateExercisePageLayout>
+    <DefaultLayout>
       <Box p={4} maxWidth={400}>
         <Typography variant="h4" gutterBottom>
           Create Exercise
@@ -70,6 +70,6 @@ export default function CreateExercisePageMobile({
           </Link>
         </Box>
       </Box>
-    </CreateExercisePageLayout>
+    </DefaultLayout>
   );
 }

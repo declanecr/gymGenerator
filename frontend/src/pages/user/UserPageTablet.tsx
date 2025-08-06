@@ -1,11 +1,11 @@
 import React from 'react';
 import { Typography } from '@mui/material';
-import DashboardLayout from '../../layouts/DashboardLayout';
+import DefaultLayout from '../../layouts/DefaultLayout';
 
 export default function UserPageTablet() {
   return (
-    <DashboardLayout>
+    <DefaultLayout>
       <Typography variant="h5">User Account Page Placeholder</Typography>
-    </DashboardLayout>
+    </DefaultLayout>
   );
 }
