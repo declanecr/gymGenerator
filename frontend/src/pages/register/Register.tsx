@@ -2,23 +2,31 @@ import React, { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 import { useDevice } from '../../context/DeviceContext'
-import RegisterMobile from './RegisterMobile'
-import RegisterTablet from './RegisterTablet'
-import RegisterDesktop from './RegisterDesktop'
-import { Box } from '@mui/material'
+import { Box, Paper, Typography, Alert, CircularProgress, Grid } from '@mui/material'
+import { RegisterForm } from '../../components/auth/RegisterForm'
 
 export default function Register() {
   const { isAuthenticated } = useAuth()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { isMobile, isTablet } = useDevice()
+
   if (isAuthenticated) return <Navigate to="/dashboard" replace />
 
-  const View = isMobile ? RegisterMobile : isTablet ? RegisterTablet : RegisterDesktop
+  const maxWidth = isMobile ? 400 : isTablet ? 500 : 600
 
   return (
-    <Box sx={{ width: '100vw', height: '100vh' }}>
-      <View loading={loading} error={error} onLoadingChange={setLoading} onError={setError} />
-    </Box>
+    <Grid>
+      <Box width='100%' display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth }}>
+          <Typography variant="h5" gutterBottom align="center">
+            Create an Account
+          </Typography>
+          {loading && <CircularProgress data-testid="loading" />}
+          {error && <Alert severity="error">{error}</Alert>}
+          <RegisterForm onLoadingChange={setLoading} onError={setError} />
+        </Paper>
+      </Box>
+    </Grid>
   )
 }

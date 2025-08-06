@@ -1,10 +1,11 @@
-import UserPageMobile from './UserPageMobile';
-import UserPageTablet from './UserPageTablet';
-import UserPageDesktop from './UserPageDesktop';
-import { useDevice } from '../../context/DeviceContext';
+import React from 'react'
+import { Typography } from '@mui/material'
+import DefaultLayout from '../../layouts/DefaultLayout'
 
 export default function UserPage() {
-  const { isMobile, isTablet } = useDevice();
-  const View = isMobile ? UserPageMobile : isTablet ? UserPageTablet : UserPageDesktop;
-  return <View />;
+  return (
+    <DefaultLayout>
+      <Typography variant="h5">User Account Page Placeholder</Typography>
+    </DefaultLayout>
+  )
 }

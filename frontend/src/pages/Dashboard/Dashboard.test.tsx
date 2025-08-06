@@ -7,27 +7,27 @@ import { fetchTemplateWorkouts } from '../../api/templateWorkouts';
 import { DeviceProvider } from '../../context/DeviceProvider';
 
 const mockLogout = jest.fn();
-jest.mock('../hooks/useAuth', () => ({
+jest.mock('../../hooks/useAuth', () => ({
   useAuth: () => ({ logout: mockLogout }),
 }));
 
-jest.mock('../api/workouts', () => ({
+jest.mock('../../api/workouts', () => ({
   fetchWorkouts: jest.fn(),
 }));
 
-jest.mock('../api/templateWorkouts', () => ({
+jest.mock('../../api/templateWorkouts', () => ({
   fetchTemplateWorkouts: jest.fn(),
 }));
 
-jest.mock('../hooks/users/useGetMe', () => ({
+jest.mock('../../hooks/users/useGetMe', () => ({
   useGetMe: () => ({ data: { role: 'ADMIN' } }),
 }));
 
-jest.mock('../hooks/workoutExercises/useExercises', () => ({
+jest.mock('../../hooks/workoutExercises/useExercises', () => ({
   useWorkoutExercises: () => ({ data: [], isLoading: false }),
 }));
 
-jest.mock('../hooks/templateExercises/useTemplateExercises', () => ({
+jest.mock('../../hooks/templateExercises/useTemplateExercises', () => ({
   useTemplateExercises: () => ({ data: [], isLoading: false }),
 }));
 

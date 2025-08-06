@@ -8,16 +8,16 @@ import { useCreateDefaultExercise } from '../../hooks/catalog/useCreateDefaultEx
 import { useGetMe } from '../../hooks/users/useGetMe';
 import { DeviceProvider } from '../../context/DeviceProvider';
 
-jest.mock('../hooks/useAuth', () => ({
+jest.mock('../../hooks/useAuth', () => ({
   useAuth: () => ({ isAuthenticated: true }),
 }));
 
-jest.mock('../hooks/users/useGetMe', () => ({
+jest.mock('../../hooks/users/useGetMe', () => ({
   useGetMe: jest.fn(),
 }));
 
-jest.mock('../hooks/catalog/useCreateCustomExercise');
-jest.mock('../hooks/catalog/useCreateDefaultExercise');
+jest.mock('../../hooks/catalog/useCreateCustomExercise');
+jest.mock('../../hooks/catalog/useCreateDefaultExercise');
 const mockCustom = jest.fn();
 const mockDefault = jest.fn();
 

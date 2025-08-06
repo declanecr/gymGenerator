@@ -6,11 +6,11 @@ import { useAllWorkouts } from '../../hooks/workouts/useAllWorkouts';
 import { useGetMe } from '../../hooks/users/useGetMe';
 import { DeviceProvider } from '../../context/DeviceProvider';
 
-jest.mock('../hooks/workouts/useAllWorkouts', () => ({
+jest.mock('../../hooks/workouts/useAllWorkouts', () => ({
   useAllWorkouts: jest.fn(),
 }));
 
-jest.mock('../hooks/users/useGetMe', () => ({
+jest.mock('../../hooks/users/useGetMe', () => ({
   useGetMe: jest.fn(),
 }));
 

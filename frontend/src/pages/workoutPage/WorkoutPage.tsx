@@ -1,28 +1,23 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGetWorkout } from '../../hooks/workouts/useGetWorkout';
-import { WorkoutFormValues } from '../../components/forms/types';
-import { useCreateExercise } from '../../hooks/workoutExercises/useCreateExercise';
-import { useCreateSet } from '../../hooks/workoutSets/useCreateSet';
-import { WorkoutExercise } from '../../api/exercises';
-import { ExerciseFormValues } from '../../components/forms/types';
-import { SetFormValues } from '../../components/forms/types';
-import { WorkoutSet } from '../../api/sets';
-import { fetchWorkoutSets } from '../../api/sets';
-import { useWorkoutExercises } from '../../hooks/workoutExercises/useExercises';
-import { useQueries } from '@tanstack/react-query';
+import React from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useGetWorkout } from '../../hooks/workouts/useGetWorkout'
+import { WorkoutFormValues, ExerciseFormValues, SetFormValues } from '../../components/forms/types'
+import { useCreateExercise } from '../../hooks/workoutExercises/useCreateExercise'
+import { useCreateSet } from '../../hooks/workoutSets/useCreateSet'
+import { WorkoutExercise } from '../../api/exercises'
+import { WorkoutSet } from '../../api/sets'
+import { fetchWorkoutSets } from '../../api/sets'
+import { useWorkoutExercises } from '../../hooks/workoutExercises/useExercises'
+import { useQueries } from '@tanstack/react-query'
 
-import { useUpdateExercise } from '../../hooks/workoutExercises/useUpdateExercise';
-import { useUpdateSet } from '../../hooks/workoutSets/useUpdateSet';
-import { useDeleteExercise } from '../../hooks/workoutExercises/useDeleteExercise';
-import { useDeleteSet } from '../../hooks/workoutSets/useDeleteSet';
-import { useDeleteWorkout } from '../../hooks/workouts/useDeleteWorkout';
-import { Grid, Typography } from '@mui/material';
-import { useDevice } from '../../context/DeviceContext';
-import WorkoutPageMobile from './WorkoutPageMobile';
-import WorkoutPageTablet from './WorkoutPageTablet';
-import WorkoutPageDesktop from './WorkoutPageDesktop';
-
+import { useUpdateExercise } from '../../hooks/workoutExercises/useUpdateExercise'
+import { useUpdateSet } from '../../hooks/workoutSets/useUpdateSet'
+import { useDeleteExercise } from '../../hooks/workoutExercises/useDeleteExercise'
+import { useDeleteSet } from '../../hooks/workoutSets/useDeleteSet'
+import { useDeleteWorkout } from '../../hooks/workouts/useDeleteWorkout'
+import { Grid, Typography, Button } from '@mui/material'
+import { WorkoutContainer } from '../../components/workouts/WorkoutContainer'
+import DefaultLayout from '../../layouts/DefaultLayout'
 
 function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
   return {
@@ -30,74 +25,59 @@ function toSetFormValues(apiSet: WorkoutSet): SetFormValues {
     reps: apiSet.reps,
     weight: apiSet.weight,
     position: apiSet.position,
-    // Ignore completed for now unless you want it in your form
-  };
+  }
 }
 
-
 export default function WorkoutPage() {
-  const { id } = useParams();
-  const workoutId = id as string;
-  const navigate= useNavigate();
-   // react-query hooks for create/update/delete
-  const { mutateAsync: createExercise } = useCreateExercise();
-  const { mutateAsync: updateExercise } = useUpdateExercise();
-  const { mutateAsync: deleteExercise } = useDeleteExercise();
-  const { mutateAsync: createSet } = useCreateSet();
-  const { mutateAsync: updateSet } = useUpdateSet();
-  const { mutateAsync: deleteSet } = useDeleteSet();
-  const { mutateAsync: deleteWorkout } = useDeleteWorkout();
+  const { id } = useParams()
+  const workoutId = id as string
+  const navigate= useNavigate()
+  const { mutateAsync: createExercise } = useCreateExercise()
+  const { mutateAsync: updateExercise } = useUpdateExercise()
+  const { mutateAsync: deleteExercise } = useDeleteExercise()
+  const { mutateAsync: createSet } = useCreateSet()
+  const { mutateAsync: updateSet } = useUpdateSet()
+  const { mutateAsync: deleteSet } = useDeleteSet()
+  const { mutateAsync: deleteWorkout } = useDeleteWorkout()
 
-  const { isMobile, isTablet } = useDevice();
-
-
-  // fetch workout
-  const { 
-    data: workout, 
-    isLoading: isWorkoutLoading, 
+  const {
+    data: workout,
+    isLoading: isWorkoutLoading,
     error: workoutError
-  } = useGetWorkout(workoutId);
+  } = useGetWorkout(workoutId)
 
-  // fetch exercises for this workout
   const {
     data: workoutExercises,
     isLoading: isExercisesLoading,
     error: exercisesError,
-  } = useWorkoutExercises(workoutId);
+  } = useWorkoutExercises(workoutId)
 
-  console.log('fetch exercises: ', workoutExercises);
-
-  // fetch sets for each exercise
   const setsQueries = useQueries({
     queries:
       workoutExercises?.map((ex: WorkoutExercise) => ({
         queryKey: ['sets', workoutId, ex.workoutExerciseId],
         queryFn: () => fetchWorkoutSets(workoutId, ex.workoutExerciseId),
       })) || [],
-  });
+  })
 
+  const isSetsLoading = setsQueries.some(q => q.isLoading)
+  const hasSetsError = setsQueries.some(q => q.error)
 
-
-  const isSetsLoading = setsQueries.some(q => q.isLoading);
-  const hasSetsError = setsQueries.some(q => q.error);
-
-  // loading & error states
   if (isWorkoutLoading || isExercisesLoading || isSetsLoading) {
     return (
       <Grid container justifyContent="center" p={4}>
         <Typography>Loading…</Typography>
       </Grid>
-    );
+    )
   }
   if (workoutError || exercisesError || hasSetsError || !workout) {
     return (
       <Grid container justifyContent="center" p={4}>
         <Typography>Error loading workout</Typography>
       </Grid>
-    );
+    )
   }
 
- // build initial form data
   const initialExercises: ExerciseFormValues[] =
     (workoutExercises || []).map((ex:WorkoutExercise, idx: number) => ({
       id: ex.workoutExerciseId,
@@ -106,77 +86,82 @@ export default function WorkoutPage() {
       sets:
         ((setsQueries[idx].data as WorkoutSet[]) || [])
           .map(toSetFormValues),
-    }));
+    }))
 
   const initialValues: WorkoutFormValues = {
     id: workout.id,
     name: workout.name,
     notes: workout.notes ?? '',
     exercises: initialExercises,
-  };
+  }
 
-   // handle create vs update calls
   async function handleSubmit(data: WorkoutFormValues) {
-    console.log('WP submit payload: ', data)
-    // DELETE removed exercises
-    const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[];
-    const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[];
+    const originalIds = initialValues.exercises.map(e => e.id).filter(Boolean) as string[]
+    const currentIds = data.exercises.map(e => e.id).filter(Boolean) as string[]
     await Promise.all(
       originalIds
         .filter(id => !currentIds.includes(id))
         .map(id => deleteExercise({ id, workoutId }))
-    );
+    )
 
-    // UPSERT exercises and their sets
     for (const ex of data.exercises) {
-      const dtoEx = { exerciseId: ex.exerciseId, position: ex.position };
-      let exId = ex.id;
+      const dtoEx = { exerciseId: ex.exerciseId, position: ex.position }
+      let exId = ex.id
       if (exId) {
-        await updateExercise({ workoutId, id: exId, dto: dtoEx });
+        await updateExercise({ workoutId, id: exId, dto: dtoEx })
       } else {
-        const newEx = await createExercise({ workoutId, dto: dtoEx });
-        exId = newEx.workoutExerciseId;
+        const newEx = await createExercise({ workoutId, dto: dtoEx })
+        exId = newEx.workoutExerciseId
       }
 
-      // DELETE removed sets
       const origSets =
         (initialValues.exercises.find(e => e.id === ex.id)?.sets || [])
           .map(s => s.id)
-          .filter(Boolean) as string[];
+          .filter(Boolean) as string[]
       const curSets = (ex.sets || [])
         .map(s => s.id)
-        .filter(Boolean) as string[];
+        .filter(Boolean) as string[]
       await Promise.all(
         origSets
           .filter(id => !curSets.includes(id))
           .map(setId => deleteSet({ workoutId, exerciseId: exId!, setId }))
-      );
+      )
 
-      // UPSERT sets
       for (const s of ex.sets || []) {
-        const dtoSet = { reps: s.reps, weight: s.weight, position: s.position };
+        const dtoSet = { reps: s.reps, weight: s.weight, position: s.position }
         if (s.id) {
-          await updateSet({ workoutId, exerciseId: exId!, setId: s.id, dto: dtoSet });
+          await updateSet({ workoutId, exerciseId: exId!, setId: s.id, dto: dtoSet })
         } else {
-          await createSet({ workoutId, exerciseId: exId!, dto: dtoSet });
+          await createSet({ workoutId, exerciseId: exId!, dto: dtoSet })
         }
       }
     }
-    navigate('/dashboard');
+    navigate('/dashboard')
   }
 
   async function handleDelete() {
-    await deleteWorkout({ id: workoutId });
-    navigate('/dashboard');
+    await deleteWorkout({ id: workoutId })
+    navigate('/dashboard')
   }
 
-  const View = isMobile ? WorkoutPageMobile : isTablet ? WorkoutPageTablet : WorkoutPageDesktop;
-
   return (
-    <View
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      onDelete={handleDelete}
-    />
-  );
+    <DefaultLayout>
+      <Grid container direction="column" spacing={2} p={2}>
+        <Grid>
+          <Link to="/dashboard">back to dashboard</Link>
+        </Grid>
+        <Grid>
+          <Typography variant="h4" component="h1">Workout Details</Typography>
+        </Grid>
+        <Grid>
+          <Button onClick={handleDelete} color="error" variant="outlined">
+            Delete Workout
+          </Button>
+        </Grid>
+        <Grid>
+          <WorkoutContainer initialValues={initialValues} onSubmit={handleSubmit} />
+        </Grid>
+      </Grid>
+    </DefaultLayout>
+  )
 }

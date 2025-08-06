@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 import { useDevice } from '../../context/DeviceContext'
-import LoginDesktop from './LoginDesktop'
-import LoginMobile from './LoginMobile'
-import LoginTablet from './LoginTablet'
-import { Box } from '@mui/material'
+import { Box, Paper, Typography, Alert, CircularProgress, Grid } from '@mui/material'
+import { LoginForm } from '../../components/auth/LoginForm'
 
 export default function Login() {
   const { isAuthenticated } = useAuth()
@@ -17,12 +15,20 @@ export default function Login() {
     return <Navigate to="/dashboard" replace />
   }
 
-  const View = isMobile ? LoginMobile : isTablet ? LoginTablet : LoginDesktop
+  const maxWidth = isMobile ? 400 : isTablet ? 500 : 600
 
   return (
-  <Box sx={{ width: '100vw', height: '100vh' }}>
-    <View loading={loading} error={error} onLoadingChange={setLoading} onError={setError} />
-  </Box>
-)
-
+    <Grid>
+      <Box width="100%" display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth }}>
+          <Typography variant="h5" gutterBottom align="center">
+            Login to Your Account
+          </Typography>
+          {loading && <CircularProgress data-testid="loading" />}
+          {error && <Alert severity="error">{error}</Alert>}
+          <LoginForm onLoadingChange={setLoading} onError={setError} />
+        </Paper>
+      </Box>
+    </Grid>
+  )
 }
