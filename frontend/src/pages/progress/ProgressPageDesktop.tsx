@@ -1,13 +1,14 @@
 import React from 'react';
-import { Tabs, Tab, Grid } from '@mui/material';
-import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { Tabs, Tab, Grid, Box } from '@mui/material';
+import {  LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
+import  { Dayjs } from 'dayjs';
 import ProgressPageLayout from '../../layouts/ProgressPageLayout';
 import WorkoutModal from '../../components/workouts/WorkoutModal';
 import ExerciseSearch from '../../components/catalog/ExerciseSearch';
 import type { Workout } from '../../api/workouts';
 import ProgressLineChart from '../../components/progress/LineChart';
+import WorkoutDateCalendar from '../../components/progress/WorkoutDateCalendar';
 
 interface Progress {
   date: string;
@@ -48,19 +49,21 @@ export default function ProgressPageDesktop({
         </Grid>
         <Grid container sx={{minWidth: '100vw', minHeight:'100vh'}}>
           {tab === 0 && (
-            <Grid container sx={{minWidth: '100vw', minHeight:'100vh'}}>
+            <Box sx={{height: 1, width: 1}}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateCalendar
+                <WorkoutDateCalendar
                   onChange={handleSelect}
-                  shouldDisableDate={d => !daysWithWorkouts.has(dayjs(d).format('YYYY-MM-DD'))}
+                  workoutDates={daysWithWorkouts}
+                  /* You can still pass any DateCalendar prop, e.g. defaultValue, minDate, etc. */
                 />
               </LocalizationProvider>
-            </Grid>
+
+            </Box>
           )}
           {tab === 1 && (
             <Grid>
-              <Grid sx={{ minHeight:350, minWidth: 350}}>
-                <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)} />
+              <ExerciseSearch onSelect={e => setSelectedExerciseId(e.exerciseId)} />
+              <Grid sx={{ height: 600, minWidth: 700}}>
                 <ProgressLineChart
                   progress={progress}
                   selectedExerciseId={selectedExerciseId}
