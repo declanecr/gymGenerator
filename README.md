@@ -27,12 +27,8 @@ Install root dependencies
 npm install
 ```
 
-Install backend and frontend packages
-
-```bash
-cd backend && npm install
-cd ../frontend && npm install
-```
+This monorepo uses **npm workspaces**, so runnign `npm install` once from the repo root installs dependencies for both the
+`backend` and `frontend` packages
 
 ---
 
@@ -53,11 +49,13 @@ cd ../frontend && npm install
 
    > You can choose any string for `JWT_SECRET`. Make sure it’s at least 32 characters in production.
 
-3. Generate and apply the initial Prisma migration (creates `dev.db` in backend/prisma):
+3. Apply the existing Prisma migrations (creates `dev.db` in `backned/prisma`):
 
    ```bash
-   npx prisma migrate dev --name init
+   npx prisma migrate dev
    ```
+
+   > Migrations are already included in the repository. This command aplies them to your local SQLite database. Generate a new migration only after modifying the Prisma schema.
 
 4. Generate Prisma Client:
 
@@ -117,12 +115,13 @@ Then open the URL shown in your browser to view and edit records.
 - Same **Node 20.x** install you used for the backend.
 - Yarn or npm (examples use npm here).
 
-### 6.2 Bootstrap the Vite + TypeScript project
+### 6.2 Navigate to the Vite + TypeScript project
+
+Dependencies were installed via the npm workspaces.
+When you need to run frontend commands, move into its folder:
 
 ```bash
-# From the repo root
 cd frontend
-npm install
 ```
 
 ### 6.3 Create an Axios instance
@@ -158,10 +157,10 @@ Open the printed URL (usually `http://localhost:5173`) — hot-reload is active.
 
 ### 6.6 Verify auth flow
 
-1. Navigate to `/register`, create a user.
-2. On success you should land on `/dashboard` and see the token box.
-3. Refresh the page — the token persists thanks to `localStorage` hydration.
-4. Click **Logout** — you’re redirected to `/login` and the token disappears from dev-tools → Application → Local Storage.
+1. Navigate to `/register` and create a user.
+2. After registering you should land on `/dashboard` where your workouts and templates are listed
+3. Refresh the page and navigate around the app to confirm you remain logged in and can still access the dashboard
+4. Click **Logout** — you're redirected to `/login` and the token disappears from dev-tools → Application → Local Storage.
 
 You now have a working full-stack auth MVP.
 
@@ -178,11 +177,10 @@ You now have a working full-stack auth MVP.
 ### Run tests in root folder (monorepo)
 
 ```bash
-cd ..
 npm test
 ```
 
-This command runs Jest across both packages using the root configuration.
+Run this from the repository root—Jest's root configuration orchestrates tests across the backend and frontend workspaces, so one command exercises the entire monorepo.
 
 > **Tip:** keep backend and frontend dev servers running in two terminal tabs for a smooth workflow.
 
@@ -199,8 +197,11 @@ backend/
 │ └─ schema.prisma ← Prisma schema (User, Exercise, etc.)
 ├─ src/
 │ ├─ modules/v1/
-│ │ ├─ auth/ ← JWT + bcrypt auth flow
-│ │ └─ users/ ← /users/me endpoints
+│ │ ├─ auth/              ← JWT + bcrypt auth flow
+│ │ ├─ users/             ← profile endpoints
+│ │ ├─ exercises-catalog/ ← exercise catalog & custom entries
+│ │ ├─ template-workouts/ ← CRUD for workout templates
+│ │ └─ workouts/          ← workouts API for logging sessions
 │ ├─ shared/
 │ │ ├─ decorators/ ← @GetUser() decorator
 │ │ └─ guards/ ← JWT strategy (`jwt.strategy.ts`)
