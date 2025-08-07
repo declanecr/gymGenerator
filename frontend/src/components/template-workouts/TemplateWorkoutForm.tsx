@@ -54,8 +54,8 @@ export function TemplateWorkoutForm({ onSubmit, isLoading, fields, removeExercis
         <SortableContext items={fields.map(f => f.id)} strategy={verticalListSortingStrategy}>
           {fields.map((field, idx) => (
             <ExerciseFields 
-              key={field.exerciseId} 
-              id={field.exerciseId} 
+              key={field.id} 
+              id={field.id} 
               index={idx} 
               onRemove={() => removeExercise(idx)} 
               requireSets={false}

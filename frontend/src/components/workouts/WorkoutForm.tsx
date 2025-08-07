@@ -84,7 +84,7 @@ export function WorkoutForm({ onSubmit,
           {fields.map((field, idx) => (
             <Box key={field.id} mb={2}>
               <ExerciseFields
-                id={field.exerciseId}   // for useSortable
+                id={field.id}   // for useSortable
                 index={idx}   // for RHF
                 onRemove={() => removeExercise(idx)}
                 />

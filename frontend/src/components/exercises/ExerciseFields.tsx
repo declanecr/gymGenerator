@@ -1,22 +1,23 @@
 // src/components/forms/exercises/ExerciseFields.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormContext, useFieldArray, Controller } from 'react-hook-form';
 import { WorkoutFormValues } from '../forms/types';
 import { useExercisesCatalog } from '../../hooks/catalog/useExercisesCatalog';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Box, Select, MenuItem, Button, FormHelperText, Grid } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { Box, Button, FormHelperText, Grid, Typography, Card, CardContent, IconButton, TextField } from '@mui/material';
 
 interface ExerciseFieldsProps {
-  id: number;
+  id: string;
   index: number;
   onRemove: () => void;
   requireSets?: boolean;
 }
 
 export function ExerciseFields({ id, index, onRemove, requireSets = true }: ExerciseFieldsProps) {
-  const { register, control, clearErrors, formState: { errors, submitCount }, watch } = useFormContext<WorkoutFormValues>();
+  const { register, control, clearErrors, formState: { submitCount }, watch } = useFormContext<WorkoutFormValues>();
   const { data: catalog = [], isLoading, error } = useExercisesCatalog();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
@@ -26,6 +27,12 @@ export function ExerciseFields({ id, index, onRemove, requireSets = true }: Exer
 
   const sets = watch(`exercises.${index}.sets`) as unknown[] | undefined
   const noSets = (sets?.length ?? 0) === 0
+
+  const exerciseId = watch(`exercises.${index}.exerciseId`)
+  const exerciseName = catalog.find(ex => ex.exerciseId === exerciseId)?.name ?? 'Exercise'
+
+  const [pendingSetRemoval, setPendingSetRemoval] = useState<number | null>(null)
+  const [confirmRemove, setConfirmRemove] = useState(false)
 
   const { fields: setFields, append, remove } = useFieldArray({ 
       control, 
@@ -46,109 +53,129 @@ export function ExerciseFields({ id, index, onRemove, requireSets = true }: Exer
     remove(sIdx);
   }
 
+  function handleMinusClick(sIdx: number) {
+    if (pendingSetRemoval === sIdx) {
+      handleRemoveSet(sIdx)
+      setPendingSetRemoval(null)
+    } else {
+      setPendingSetRemoval(sIdx)
+    }
+  }
+
+  function handleRemoveExercise(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (confirmRemove) {
+      onRemove()
+    } else {
+      setConfirmRemove(true)
+    }
+  }
+
   if (isLoading) return <div>Loading exercises…</div>;
   if (error) return <div>Error loading exercises</div>;
 
   return (
-    <Box
-      ref={setNodeRef}
-      sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 1, ...style }}
-    >
-      {/* drag handle */}
-      <Box {...attributes} {...listeners} sx={{ cursor: 'grab', pr: 1 }}>
-        <DragIndicatorIcon />
-      </Box>
-
-      {/* exercise selector */}
-      <Controller
-        
-        name={`exercises.${index}.exerciseId`}
-        control={control}
-        render={({ field }) => (
-          <Select {...field} displayEmpty sx={{ minWidth: 200, color: 'red' }}>
-            <MenuItem value={-1} disabled>
-              Select exercise…
-            </MenuItem>
-            {catalog.map(ex => (
-              <MenuItem key={ex.exerciseId} value={ex.exerciseId}>
-                {ex.name} ({ex.primaryMuscle})
-              </MenuItem>
-            ))}
-          </Select>
-        )}
-      />
-
-      {/* hidden position input for sync */}
-      <input
-        type="hidden"
-        {...register(`exercises.${index}.position`, { valueAsNumber: true })}
-      />
-
-      {/* sets list */}
-      <Box sx={{ flex: 1 }}>
-        {setFields.map((set, sIdx) => (
-          <Grid container spacing={1} key={set.id} alignItems="center" sx={{ mb: 1 }}>
-            <Grid>
-              <input
-                type="number"
-                placeholder="Reps"
-                {...register(`exercises.${index}.sets.${sIdx}.reps`, { valueAsNumber: true })}
-              />
-              {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.reps?.message && (
-                <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
-                  {errors.exercises[index].sets![sIdx].reps!.message}
-                </Box>
+    <Box ref={setNodeRef} sx={{ p: 1, ...style }}>
+      <Grid container spacing={1} alignItems="stretch">
+        <Grid size={{ xs: 1 }} {...attributes} {...listeners} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab' }}>
+          <DragIndicatorIcon />
+        </Grid>
+        <Grid size={{ xs: 11 }}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {exerciseName}
+              </Typography>
+              <input type="hidden" {...register(`exercises.${index}.exerciseId`, { valueAsNumber: true })} />
+              <input type="hidden" {...register(`exercises.${index}.position`, { valueAsNumber: true })} />
+              {setFields.map((set, sIdx) => (
+                <Grid container spacing={1} alignItems="center" key={set.id} sx={{ mb: 1 }}>
+                  <Grid size={{ xs: 2 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <IconButton color={pendingSetRemoval === sIdx ? 'error' : 'default'} onClick={() => handleMinusClick(sIdx)}>
+                      <RemoveIcon />
+                    </IconButton>
+                  </Grid>
+                  <Grid size={{ xs: 5 }}>
+                    <Controller
+                      name={`exercises.${index}.sets.${sIdx}.weight`}
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <>
+                          <TextField
+                            type="number"
+                            label="Weight"
+                            placeholder="Weight"
+                            size="small"
+                            fullWidth
+                            error={!!fieldState.error}
+                            {...field}
+                            value={
+                              Number.isNaN(field.value) || field.value === undefined
+                                ? ''
+                                : field.value
+                            }
+                            onChange={(e) =>
+                              field.onChange(e.target.value === '' ? NaN : Number(e.target.value))
+                            }
+                          />
+                          {fieldState.error && (
+                            <FormHelperText error>{fieldState.error.message}</FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 5 }}>
+                    <Controller
+                      name={`exercises.${index}.sets.${sIdx}.reps`}
+                      control={control}
+                      render={({ field, fieldState }) => (
+                        <>
+                          <TextField
+                            type="number"
+                            label="Reps"
+                            placeholder="Reps"
+                            size="small"
+                            fullWidth
+                            error={!!fieldState.error}
+                            {...field}
+                            value={
+                              Number.isNaN(field.value) || field.value === undefined
+                                ? ''
+                                : field.value
+                            }
+                            onChange={(e) =>
+                              field.onChange(e.target.value === '' ? NaN : Number(e.target.value))
+                            }
+                          />
+                          {fieldState.error && (
+                            <FormHelperText error>{fieldState.error.message}</FormHelperText>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              ))}
+              {submitCount > 0 && noSets && requireSets && (
+                <FormHelperText error>Each exercise needs at least one set</FormHelperText>
               )}
-            </Grid>
-            <Grid>
-              <input
-                type="number"
-                placeholder="Weight"
-                {...register(`exercises.${index}.sets.${sIdx}.weight`, { valueAsNumber: true })}
-              />
-              {submitCount > 0 && errors.exercises?.[index]?.sets?.[sIdx]?.weight?.message && (
-                <Box component="span" sx={{ color: 'red', fontSize: '0.8em' }}>
-                  {errors.exercises[index].sets![sIdx].weight!.message}
-                </Box>
-              )}
-            </Grid>
-            <Grid>
+              <Button variant="contained" fullWidth onClick={handleAddSet} sx={{ mt: 1 }}>
+                Add Set
+              </Button>
               <Button
                 variant="outlined"
-                size="small"
-                onClick={() => handleRemoveSet(sIdx)}
+                color={confirmRemove ? 'error' : 'inherit'}
+                fullWidth
+                sx={{ mt: 1 }}
+                onClick={handleRemoveExercise}
               >
-                Remove Set
+                Remove
               </Button>
-            </Grid>
-          </Grid>
-        ))}
-        {/* only show this once a “Finish” has been clicked and there are no sets */}
-        {submitCount > 0 && noSets && requireSets && (
-          <FormHelperText error>
-            Each exercise needs at least one set
-          </FormHelperText>
-        )}
-        <Button
-          variant="contained"
-          size="small"
-          onClick={handleAddSet}
-        >
-          Add Set
-        </Button>
-      </Box>
-
-      {/* remove exercise */}
-      <Button
-        variant="outlined"
-        color="error"
-        onClick={e => {
-          e.stopPropagation();
-          onRemove();
-        }}
-      >
-        Remove
-      </Button>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

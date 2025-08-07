@@ -56,54 +56,49 @@ export default function Dashboard() {
 
   return (
     <DefaultLayout>
+      <StartWorkoutModal open={showWorkoutModal} onClose={() => setShowWorkoutModal(false)} />
+      <StartTemplateModal open={showTemplateModal} onClose={() => setShowTemplateModal(false)} />
       <Grid container spacing={2} sx={{ p: 2 }}>
-        <Grid size={{ xs: 12 }}>
-          <StartWorkoutModal open={showWorkoutModal} onClose={() => setShowWorkoutModal(false)} />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant='h5'>Workouts</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box mb={2}>
+                <Button
+                  variant='contained'
+                  fullWidth
+                  onClick={() => setShowWorkoutModal(true)}
+                >
+                  Start New Workout
+                </Button>
+              </Box>
+              <Grid container spacing={2}>
+                {workouts.map(w => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
+                    <WorkoutCard workout={w} />
+                  </Grid>
+                ))}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <Accordion defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant='h5'>Workouts</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box mb={2}>
-              <Button
-                variant='contained'
-                fullWidth
-                onClick={() => setShowWorkoutModal(true)}
-              >
-                Start New Workout
-              </Button>
-              <StartWorkoutModal open={showWorkoutModal} onClose={() => setShowWorkoutModal(false)} />
-            </Box>
-            <Grid container spacing={2}>
-              {workouts.map(w => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
-                  <WorkoutCard workout={w} />
-                </Grid>
-              ))}
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <Accordion defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h5">Template Workouts</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box mb={2}>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => setShowTemplateModal(true)}
-              >
-                Create Template
-              </Button>
-              <StartTemplateModal open={showTemplateModal} onClose={() => setShowTemplateModal(false)} />
-            </Box>
-            <Box sx={{ position: 'relative' }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h5">Template Workouts</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box mb={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => setShowTemplateModal(true)}
+                >
+                  Create Template
+                </Button>
+              </Box>
               <Grid container spacing={2}>
                 {templates.map(t => (
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={t.id}>
@@ -111,22 +106,21 @@ export default function Dashboard() {
                   </Grid>
                 ))}
               </Grid>
-              <StartTemplateModal open={showTemplateModal} onClose={() => setShowTemplateModal(false)} />
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-      </Grid>
-      {me?.role === 'ADMIN' && (
-        <Grid size={{ xs: 12 }}>
-          <Box mb={2}>
-            <Link to="/admin">Go to Admin Page</Link>
-          </Box>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
-      )}
-      <Grid size={{ xs: 12 }}>
-        <Button variant="outlined" onClick={handleLogout}>
-          Logout
-        </Button>
+        {me?.role === 'ADMIN' && (
+          <Grid size={{ xs: 12 }}>
+            <Box mb={2}>
+              <Link to="/admin">Go to Admin Page</Link>
+            </Box>
+          </Grid>
+        )}
+        <Grid size={{ xs: 12 }}>
+          <Button variant="outlined" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Grid>
       </Grid>
     </DefaultLayout>
   )
