@@ -24,6 +24,7 @@ export default function TemplateWorkoutCard({ templateWorkout }: { templateWorko
             Array.isArray(exercises)
             ? exercises.map(ex => ({
                   name: ex.name ?? `Exercise ${ex.exerciseId}`,
+                  //setCount: ex.sets.length ?? 0,
                 }))
               : []
           }

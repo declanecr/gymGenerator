@@ -64,19 +64,16 @@ export default function Dashboard() {
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant='h5'>Workouts</Typography>
             </AccordionSummary>
-            <AccordionDetails>
+             <AccordionDetails>
               <Box mb={2}>
-                <Button
-                  variant='contained'
-                  fullWidth
-                  onClick={() => setShowWorkoutModal(true)}
-                >
+                <Button variant='contained' fullWidth onClick={() => setShowWorkoutModal(true)}>
                   Start New Workout
                 </Button>
               </Box>
+              {/* Cards: 1 column on mobile/tablet, 2 columns on desktop */}
               <Grid container spacing={2}>
-                {workouts.map(w => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={w.id}>
+                {workouts.map((w) => (
+                  <Grid key={w.id} size={{ xs: 12, sm: 12, md: 6 }}>
                     <WorkoutCard workout={w} />
                   </Grid>
                 ))}
@@ -91,17 +88,14 @@ export default function Dashboard() {
             </AccordionSummary>
             <AccordionDetails>
               <Box mb={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={() => setShowTemplateModal(true)}
-                >
+                <Button variant="contained" fullWidth onClick={() => setShowTemplateModal(true)}>
                   Create Template
                 </Button>
               </Box>
+              {/* Cards: 1 column on mobile/tablet, 2 columns on desktop */}
               <Grid container spacing={2}>
-                {templates.map(t => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={t.id}>
+                {templates.map((t) => (
+                  <Grid key={t.id} size={{ xs: 12, sm: 12, md: 6 }}>
                     <TemplateWorkoutCard templateWorkout={t} />
                   </Grid>
                 ))}

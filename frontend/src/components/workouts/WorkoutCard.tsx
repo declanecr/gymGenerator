@@ -22,6 +22,7 @@ export default function WorkoutCard({ workout }: { workout: Workout }) {
             Array.isArray(exercises)
               ? exercises.map(ex => ({
                   name: ex.name ?? `Exercise ${ex.exerciseId}`,
+                  // setCount: ex.setCount ?? 0,
                 }))
               : []
           }
