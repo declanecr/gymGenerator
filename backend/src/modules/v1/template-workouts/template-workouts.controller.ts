@@ -32,6 +32,9 @@ export class TemplateWorkoutsController {
 
   @Post()
   create(@Body() dto: CreateTemplateWorkoutDto, @GetUser() user: JwtPayload) {
+    if (user.role === 'ADMIN') {
+      return this.templateWorkoutsService.createGlobal(dto);
+    }
     return this.templateWorkoutsService.create(user.id, dto);
   }
 

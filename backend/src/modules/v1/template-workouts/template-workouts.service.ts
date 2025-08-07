@@ -64,7 +64,7 @@ export class TemplateWorkoutsService {
     await this.ensureEditableOwnership(id, userId, role);
     return this.prisma.templateWorkout.update({
       where: { id },
-      data: dto,
+      data: { ...dto, ...(role === 'ADMIN' && { userId: null }) },
     });
   }
 
@@ -168,6 +168,40 @@ export class TemplateWorkoutsService {
   ) {
     await this.ensureEditableOwnership(id, userId, role);
     try {
+      if (dto.position !== undefined) {
+        return await this.prisma.$transaction(async (tx) => {
+          const current = await tx.templateExercise.findUnique({
+            where: { id: exerciseId },
+          });
+          if (!current) {
+            throw new NotFoundException(
+              `Template exercise ${exerciseId} does not exist`,
+            );
+          }
+          if (current.position !== dto.position) {
+            const other = await tx.templateExercise.findFirst({
+              where: {
+                workoutTemplateId: current.workoutTemplateId,
+                position: dto.position,
+              },
+            });
+            await tx.templateExercise.update({
+              where: { id: exerciseId },
+              data: { position: -1 },
+            });
+            if (other) {
+              await tx.templateExercise.update({
+                where: { id: other.id },
+                data: { position: current.position },
+              });
+            }
+          }
+          return tx.templateExercise.update({
+            where: { id: exerciseId },
+            data: dto,
+          });
+        });
+      }
       return await this.prisma.templateExercise.update({
         where: { id: exerciseId },
         data: dto,

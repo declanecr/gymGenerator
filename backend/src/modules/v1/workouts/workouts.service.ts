@@ -143,16 +143,45 @@ export class WorkoutsService {
     userId: number,
     dto: UpdateWorkoutExerciseDto,
   ) {
-    await this.ensureExerciseOwner(workoutId, userId);
+    const data = {
+      ...(dto.exerciseId !== undefined && { exerciseId: dto.exerciseId }),
+      ...(dto.templateExerciseId !== undefined && {
+        templateExerciseId: dto.templateExerciseId,
+      }),
+      ...(dto.position !== undefined && { position: dto.position }),
+    };
+    if (dto.position !== undefined) {
+      return this.prisma.$transaction(async (tx) => {
+        const current = await tx.workoutExercise.findUnique({
+          where: { id: exerciseId },
+        });
+        if (!current) {
+          throw new NotFoundException('Exercise not found');
+        }
+        if (current.position !== dto.position) {
+          const other = await tx.workoutExercise.findFirst({
+            where: { workoutId, position: dto.position },
+          });
+          await tx.workoutExercise.update({
+            where: { id: exerciseId },
+            data: { position: -1 },
+          });
+          if (other) {
+            await tx.workoutExercise.update({
+              where: { id: other.id },
+              data: { position: current.position },
+            });
+          }
+        }
+        return tx.workoutExercise.update({
+          where: { id: exerciseId },
+          data,
+        });
+      });
+    }
     return this.prisma.workoutExercise.update({
       where: { id: exerciseId },
-      data: {
-        ...(dto.exerciseId !== undefined && { exerciseId: dto.exerciseId }),
-        ...(dto.templateExerciseId !== undefined && {
-          templateExerciseId: dto.templateExerciseId,
-        }),
-        ...(dto.position !== undefined && { position: dto.position }),
-      },
+      data,
     });
   }
 
