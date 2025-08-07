@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 
 import Login from '../pages/login/Login'
 import Register from '../pages/register/Register'
-import Dashboard from '../pages/dashboard/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import TemplateWorkoutPage from '../pages/templateWorkoutPage/TemplateWorkoutPage'
 import WorkoutPage from '../pages/workoutPage/WorkoutPage'
@@ -11,6 +10,7 @@ import AdminPage from '../pages/admin/AdminPage'
 import CreateExercisePage from '../pages/create-exercise/CreateExercisePage'
 import ProgressPage from '../pages/progress/ProgressPage'
 import UserPage from '../pages/user/UserPage'
+import Dashboard from '../pages/Dashboard/Dashboard'
 
 export default function AppRoutes() {
   return (
